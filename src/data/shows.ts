@@ -32,6 +32,15 @@ export const shows: Show[] = [
   // Instantâneos posters, from instantaneos.pt. Dates marked "approx." only order the archive:
   // they come from the poster, or from when the poster was published; fix them when known.
   {
+    date: '2025-03-01T21:30', // approx.
+    title: { en: 'Espontâneo 2025 — International Improv Theatre Festival', pt: 'Espontâneo 2025 — Festival Internacional de Teatro de Improviso' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-espontaneo-2025.jpg',
+    posterBg: '#6ac1b3',
+  },
+  {
     date: '2024-12-07T22:00',
     title: { en: 'A Última Ceia', pt: 'A Última Ceia' },
     with: 'Instantâneos',
