@@ -18,7 +18,7 @@ short text; clicking it expands the rest:
 
 | Section | Anchor (EN / PT) | Content |
 | --- | --- | --- |
-| Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Upcoming shows, add-to-calendar |
+| Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Groups João plays with (`src/data/groups.ts`), upcoming shows |
 | Archive / Em arquivo | `#archive` / `#arquivo` | Past shows |
 | Lessons / Aulas de piano | `#lessons` / `#aulas` | Free first lesson; teaching approach |
 | Portfolio | `#portfolio` | Always open: bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
