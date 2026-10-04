@@ -1,7 +1,7 @@
 ---
 /**
- * One expandable section of the home page. Closed, it shows a picture beside a short text;
- * open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
+ * One expandable section of the home page. Closed, it shows a picture beside a short text
+ * (on the left or the right, so consecutive sections zigzag); open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
  * place and scroll to it.
  */
 import { Image } from 'astro:assets';
@@ -11,24 +11,24 @@ import { sections, type Lang, type SectionKey } from '../i18n';
 interface Props {
   lang: Lang;
   section: SectionKey;
-  num: number;
   title: string;
   sub: string;
   image: ImageMetadata;
   /** CSS object-position, to frame the picture. */
   focus?: string;
+  /** Which side the picture sits on. */
+  side?: 'left' | 'right';
 }
-const { lang, section, num, title, sub, image, focus = '50% 40%' } = Astro.props;
+const { lang, section, title, sub, image, focus = '50% 40%', side = 'left' } = Astro.props;
 const { en, pt, legacy = [] } = sections[section];
 ---
 
-<details class="tab" id={sections[section][lang]} name="sections" data-section={section} data-aliases={[en, pt, ...legacy].join(' ')}>
+<details class:list={["tab", `tab--${side}`]} id={sections[section][lang]} name="sections" data-section={section} data-aliases={[en, pt, ...legacy].join(' ')}>
   <summary>
     <span class="tab__media">
-      <Image src={image} alt="" widths={[220, 440]} sizes="(max-width: 600px) 110px, 220px" style={`object-position: ${focus}`} />
+      <Image src={image} alt="" widths={[320, 640]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
     </span>
     <span class="tab__head">
-      <span class="tab__num">{String(num).padStart(2, '0')}</span>
       <span class="tab__title">{title}</span>
       <span class="tab__sub">{sub}</span>
     </span>
@@ -88,19 +88,23 @@ const { en, pt, legacy = [] } = sections[section];
 </script>
 
 <style>
-  .tab {
-    border-bottom: 1px solid var(--line);
-  }
   summary {
+    --media: clamp(140px, 100px + 14vw, 320px);
     display: grid;
-    grid-template-columns: clamp(110px, 80px + 9vw, 220px) 1fr auto;
+    grid-template-columns: var(--media) 1fr auto;
+    grid-template-areas: 'media head icon';
     align-items: center;
     gap: clamp(1rem, 0.5rem + 2.5vw, 3rem);
-    padding-block: clamp(1.2rem, 1rem + 1vw, 2rem);
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem);
     list-style: none;
     cursor: pointer;
   }
+  .tab--right summary {
+    grid-template-columns: 1fr auto var(--media);
+    grid-template-areas: 'head icon media';
+  }
   .tab__media {
+    grid-area: media;
     display: block;
     aspect-ratio: 4 / 3;
     overflow: hidden;
@@ -124,13 +128,8 @@ const { en, pt, legacy = [] } = sections[section];
     outline-offset: 4px;
     border-radius: 6px;
   }
-  .tab__num {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-  }
   .tab__head {
+    grid-area: head;
     display: grid;
     gap: 0.4rem;
   }
@@ -152,6 +151,7 @@ const { en, pt, legacy = [] } = sections[section];
   }
   /* A plus that turns into a minus. */
   .tab__icon {
+    grid-area: icon;
     position: relative;
     width: 2.6rem;
     height: 2.6rem;
@@ -220,13 +220,10 @@ const { en, pt, legacy = [] } = sections[section];
   }
   @media (max-width: 600px) {
     summary {
-      grid-template-columns: 88px 1fr auto;
+      --media: 88px;
       gap: 0.9rem;
       /* Keep the + clear of the contact tab on the screen's edge. */
       padding-right: 1.6rem;
-    }
-    .tab__num {
-      display: none;
     }
     .tab__icon {
       width: 2rem;

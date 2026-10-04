@@ -8,9 +8,8 @@ import image from '../../assets/joao-eiro-live.jpg';
 
 interface Props {
   lang: Lang;
-  num: number;
 }
-const { lang, num } = Astro.props;
+const { lang } = Astro.props;
 
 const copy = {
   en: {
@@ -24,7 +23,7 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="archive" num={num} title={copy.title} sub={copy.sub} image={image} focus="85% 70%">
+<Tab lang={lang} section="archive" title={copy.title} sub={copy.sub} image={image} side="left" focus="85% 70%">
   <div class="tab-block">
     <ShowList lang={lang} when="past" />
   </div>

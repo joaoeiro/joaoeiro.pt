@@ -9,9 +9,8 @@ import image from '../../assets/joao-eiro-live.jpg';
 
 interface Props {
   lang: Lang;
-  num: number;
 }
-const { lang, num } = Astro.props;
+const { lang } = Astro.props;
 
 const copy = {
   en: {
@@ -73,7 +72,7 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="lessons" num={num} title={copy.title} sub={copy.sub} image={image} focus="30% 20%">
+<Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="30% 20%">
   <p class="tab-lead">{copy.lead}</p>
 
   <div class="tab-block">

@@ -1,21 +1,18 @@
 ---
-/** Home-page section: biography, videos and repertoire, in short. */
-import Tab from '../Tab.astro';
-import VideoGallery from '../VideoGallery.astro';
-import { asset, pick, useT, type Lang } from '../../i18n';
-import { site } from '../../config/site';
-import { instagram, tiktok } from '../../data/media';
-import { repertoire } from '../../data/repertoire';
-import { gallery } from '../../data/gallery';
-import { getYouTubeVideos } from '../../lib/youtube';
-// Placeholder picture until the section's own photo arrives.
-import image from '../../assets/joao-eiro-live.jpg';
+/** Home-page Portfolio: biography, videos and repertoire. Always open, unlike the expandable sections above it. */
+import SectionHead from './SectionHead.astro';
+import VideoGallery from './VideoGallery.astro';
+import { asset, pick, sections, useT, type Lang } from '../i18n';
+import { site } from '../config/site';
+import { instagram, tiktok } from '../data/media';
+import { repertoire } from '../data/repertoire';
+import { gallery } from '../data/gallery';
+import { getYouTubeVideos } from '../lib/youtube';
 
 interface Props {
   lang: Lang;
-  num: number;
 }
-const { lang, num } = Astro.props;
+const { lang } = Astro.props;
 const t = useT(lang);
 const youtube = await getYouTubeVideos();
 const featured = <T extends { featured?: boolean }>(list: T[]) => [
@@ -51,7 +48,8 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="portfolio" num={num} title={copy.title} sub={copy.sub} image={image} focus="45% 30%">
+<div class="portfolio" id={sections.portfolio[lang]}>
+  <SectionHead title={copy.title} lead={copy.sub} />
   <div class="tab-block">
     <p class="eyebrow">{copy.bioLabel}</p>
     <div class="bio">{copy.bio.map((p) => <p class="tab-lead">{p}</p>)}</div>
@@ -95,9 +93,34 @@ const copy = {
       </div>
     )
   }
-</Tab>
+</div>
 
 <style>
+  .portfolio {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  .portfolio :global(.head) {
+    margin-bottom: 0;
+  }
+  .tab-block > .eyebrow {
+    margin-bottom: 1.4rem;
+  }
+  .tab-lead {
+    max-width: 60ch;
+    margin: 0;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    color: var(--ivory-dim);
+  }
+  .tab-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold);
+    font-weight: 600;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.15rem;
+  }
   .bio {
     display: grid;
     gap: 1.2rem;
