@@ -46,7 +46,7 @@ Each section's picture is set at the top of its file in `src/components/tabs/`.
 the latest 15 via the public RSS feed, or *every* video when a `YOUTUBE_API_KEY` secret is set.
 The deploy workflow rebuilds weekly, so new videos appear on their own.
 
-**Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
+**Drafts:** items with `draft: true` (the example shows) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
 **Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.

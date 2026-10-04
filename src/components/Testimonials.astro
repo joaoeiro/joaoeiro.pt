@@ -1,4 +1,5 @@
 ---
+/** Review cards: stars, the review, and who wrote it (with an initial in a circle). */
 import { pick, type Lang } from '../i18n';
 import { testimonials } from '../data/testimonials';
 import { published } from '../lib/drafts';
@@ -8,6 +9,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 const items = published(testimonials);
+const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
 ---
 
 {
@@ -15,13 +17,24 @@ const items = published(testimonials);
     <div class="quotes">
       {items.map((q, i) => (
         <figure class="quote card reveal" style={`--i:${i}`}>
-          <span class="mark" aria-hidden="true">
-            “
-          </span>
-          <blockquote>{pick(q.quote, lang)}</blockquote>
+          {q.rating && (
+            <p class="stars" aria-label={`${q.rating} ${outOf}`}>
+              {Array.from({ length: 5 }, (_, s) => (
+                <span aria-hidden="true" class:list={{ off: s >= q.rating! }}>
+                  ★
+                </span>
+              ))}
+            </p>
+          )}
+          <blockquote>“{pick(q.quote, lang)}”</blockquote>
           <figcaption>
-            <strong>{q.author}</strong>
-            <span>{pick(q.role, lang)}</span>
+            <span class="avatar" aria-hidden="true">
+              {q.author.charAt(0)}
+            </span>
+            <span class="who">
+              <strong>{q.author}</strong>
+              <span>{pick(q.role, lang)}</span>
+            </span>
           </figcaption>
         </figure>
       ))}
@@ -32,39 +45,56 @@ const items = published(testimonials);
 <style>
   .quotes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 1.25rem;
+    align-items: start;
   }
   .quote {
+    display: grid;
+    gap: 1.2rem;
     margin: 0;
-    overflow: hidden;
   }
-  .mark {
-    position: absolute;
-    right: 1rem;
-    top: -1.5rem;
-    font-family: var(--font-display);
-    font-size: 9rem;
-    line-height: 1;
-    color: var(--gold);
-    opacity: 0.18;
+  .stars {
+    margin: 0;
+    font-size: 1.15rem;
+    letter-spacing: 0.15em;
+    color: #c99a2e;
+  }
+  .stars .off {
+    color: var(--line);
   }
   blockquote {
-    margin: 0 0 1.5rem;
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    font-style: italic;
-    line-height: 1.35;
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--ivory-dim);
   }
   figcaption {
-    display: grid;
-    gap: 0.15rem;
-    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
   }
-  figcaption span {
-    color: var(--gold);
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: #800000;
+    color: #f6efe6;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+  .who {
+    display: grid;
+    gap: 0.1rem;
+    font-size: 0.95rem;
+  }
+  .who span {
+    color: var(--muted);
+    font-size: 0.85rem;
   }
 </style>
