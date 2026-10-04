@@ -41,7 +41,7 @@ The deploy workflow rebuilds weekly, so new videos appear on their own.
 **Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
-**Contact form:** one form, on the contact page, reached from the "Contacte-me" tab on the right edge of every page.
+**Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.
 With `formEndpoint` empty, it opens the visitor's email app pre-filled with every answer.
 Create a free [Formspree](https://formspree.io) form and paste its URL to receive messages directly.
 
