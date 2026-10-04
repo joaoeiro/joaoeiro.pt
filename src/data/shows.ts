@@ -19,12 +19,22 @@ export interface Show {
   infoUrl?: string;
   free?: boolean;
   soldOut?: boolean;
-  /** Optional poster in /public/images. */
+  /** Poster in /public/images/shows, shown in "Em arquivo". */
   image?: string;
+  /** Who João played with, e.g. 'Lisbon Film Orchestra'. */
+  with?: string;
   draft?: boolean;
 }
 
 export const shows: Show[] = [
+  {
+    date: '2026-01-10T21:00',
+    title: { en: 'Our Stories — Music from Movies & Series', pt: 'Our Stories — Music from Movies & Series' },
+    with: 'Lisbon Film Orchestra',
+    venue: 'MEO Arena',
+    city: 'Lisboa',
+    image: '/images/shows/lisbon-film-orchestra-our-stories.jpg',
+  },
   {
     draft: true,
     date: '2026-11-21T21:30',

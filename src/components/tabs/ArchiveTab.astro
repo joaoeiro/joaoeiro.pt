@@ -1,7 +1,7 @@
 ---
 /** Home-page section "Em arquivo": shows that have already happened. */
 import Tab from '../Tab.astro';
-import ShowList from '../ShowList.astro';
+import Posters from '../Posters.astro';
 import { type Lang } from '../../i18n';
 // Placeholder picture until the section's own photo arrives.
 import image from '../../assets/joao-eiro-live.jpg';
@@ -25,6 +25,6 @@ const copy = {
 
 <Tab lang={lang} section="archive" title={copy.title} sub={copy.sub} image={image} side="left" focus="85% 70%">
   <div class="tab-block">
-    <ShowList lang={lang} when="past" />
+    <Posters lang={lang} />
   </div>
 </Tab>

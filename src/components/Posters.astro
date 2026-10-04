@@ -1,0 +1,98 @@
+---
+/** Past shows as a wall of posters, newest first; shows without a poster get a plain maroon card. */
+import { asset, formatDate, parseLocalDate, pick, useT, type Lang } from '../i18n';
+import { shows, type Show } from '../data/shows';
+import { published } from '../lib/drafts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+
+const endOfDay = (s: Show) => parseLocalDate(s.date.slice(0, 10)).getTime() + 86_400_000;
+const now = Date.now();
+const past = published(shows)
+  .filter((s) => endOfDay(s) <= now)
+  .sort((a, b) => b.date.localeCompare(a.date));
+const when = (s: Show) => formatDate(parseLocalDate(s.date.slice(0, 10)), lang, { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+{
+  past.length ? (
+    <div class="posters">
+      {past.map((s) => (
+        <figure class="poster">
+          <div class="art">
+            {s.image ? (
+              <img src={asset(s.image)} alt={pick(s.title, lang)} loading="lazy" decoding="async" />
+            ) : (
+              <span>{pick(s.title, lang)}</span>
+            )}
+          </div>
+          <figcaption>
+            <strong>{pick(s.title, lang)}</strong>
+            {s.with && <span>{s.with}</span>}
+            <span>
+              {when(s)} · {s.venue}, {s.city}
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  ) : (
+    <p class="tab-note">{t('shows.nonePast')}</p>
+  )
+}
+
+<style>
+  .posters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+  }
+  .poster {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    margin: 0;
+  }
+  .art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #800000;
+    color: #d7cfc4;
+  }
+  .art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease);
+  }
+  .poster:hover .art img {
+    transform: scale(1.04);
+  }
+  .art span {
+    padding: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-style: italic;
+    text-align: center;
+  }
+  figcaption {
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  figcaption strong {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ivory);
+  }
+</style>
