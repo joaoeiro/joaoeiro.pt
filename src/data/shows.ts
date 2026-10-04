@@ -67,6 +67,15 @@ export const shows: Show[] = [
     image: '/images/shows/instantaneos-duelo-improvisado.jpg',
   },
   {
+    date: '2025-10-18T17:00', // approx. year
+    title: { en: 'O Banco', pt: 'O Banco' },
+    with: 'Instantâneos',
+    venue: 'Auditório Carlos Avilez',
+    city: 'Estoril',
+    image: '/images/shows/instantaneos-o-banco.jpg',
+    posterBg: 'linear-gradient(#d4d3c3 50%, #173664 50%)',
+  },
+  {
     date: '2025-11-28T21:30',
     title: { en: 'A Bebedeira de Kant', pt: 'A Bebedeira de Kant' },
     with: 'Instantâneos',
