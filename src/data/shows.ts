@@ -36,6 +36,15 @@ export const shows: Show[] = [
     image: '/images/shows/lisbon-film-orchestra-our-stories.jpg',
   },
   {
+    date: '2025-12-13T21:30',
+    title: { en: 'Christmas is coming to Odivelas', pt: 'Christmas is coming to Odivelas' },
+    with: 'Lisbon Film Orchestra',
+    venue: 'Pavilhão Multiusos de Odivelas',
+    city: 'Odivelas',
+    free: true,
+    image: '/images/shows/lisbon-film-orchestra-christmas-odivelas.jpg',
+  },
+  {
     draft: true,
     date: '2026-11-21T21:30',
     title: { en: 'Solo Recital — Nocturnes & Night Songs', pt: 'Recital a Solo — Noturnos & Canções da Noite' },
