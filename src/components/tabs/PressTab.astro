@@ -1,25 +1,21 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
-import SectionHead from '../components/SectionHead.astro';
-import Icon from '../components/Icon.astro';
-import { asset, path, useT, type Lang } from '../i18n';
-import { site } from '../config/site';
-import { gallery } from '../data/gallery';
+/** Home-page section: press kit — bios to copy, technical requirements, contacts. */
+import Tab from '../Tab.astro';
+import Icon from '../Icon.astro';
+import { asset, type Lang } from '../../i18n';
+import { site } from '../../config/site';
+import { gallery } from '../../data/gallery';
 
 interface Props {
   lang: Lang;
+  num: number;
 }
-const { lang } = Astro.props;
-const t = useT(lang);
+const { lang, num } = Astro.props;
 
 const copy = {
   en: {
     title: 'Press',
-    description: 'Press kit for João Eiró: short and long biographies, photos, technical requirements and contacts.',
-    eyebrow: 'Press & promoters',
-    h1: 'Press <em>kit</em>',
-    lead: 'Everything journalists, programmers and event organisers need — ready to copy and download.',
+    sub: 'Biographies, photos and technical requirements.',
     shortTitle: 'Short bio',
     short:
       'João Eiró is a Portuguese pianist and piano teacher, accompanist, soloist and self-confessed compulsive improviser, moving freely between the classical repertoire and the groove of the moment.',
@@ -30,23 +26,20 @@ const copy = {
     ],
     copy: 'Copy',
     copied: 'Copied!',
-    photosTitle: 'Photos',
+    photosLabel: 'Photos',
     photosEmpty: 'High-resolution photos are available on request.',
-    riderTitle: 'Technical requirements',
+    riderLabel: 'Technical requirements',
     rider: [
       'Acoustic grand or upright piano, tuned on the day — or a digital stage piano (88 weighted keys)',
       'Adjustable piano bench',
       'For amplified events: 2 DI inputs or microphones for the piano, 1 vocal mic for announcements, monitor',
       'Set-up and sound check: 45–60 minutes before doors',
     ],
-    contactTitle: 'Bookings & press contact',
+    contactLabel: 'Bookings & press',
   },
   pt: {
     title: 'Imprensa',
-    description: 'Kit de imprensa de João Eiró: biografias curta e longa, fotografias, requisitos técnicos e contactos.',
-    eyebrow: 'Imprensa & programadores',
-    h1: 'Kit de <em>imprensa</em>',
-    lead: 'Tudo o que jornalistas, programadores e organizadores de eventos precisam — pronto a copiar e descarregar.',
+    sub: 'Biografias, fotografias e requisitos técnicos.',
     shortTitle: 'Biografia curta',
     short:
       'João Eiró é pianista e professor de piano, músico acompanhador, solista e improvisador compulsivo assumido, que se move livremente entre o repertório clássico e o groove do momento.',
@@ -57,82 +50,70 @@ const copy = {
     ],
     copy: 'Copiar',
     copied: 'Copiado!',
-    photosTitle: 'Fotografias',
+    photosLabel: 'Fotografias',
     photosEmpty: 'Fotografias em alta resolução disponíveis mediante pedido.',
-    riderTitle: 'Requisitos técnicos',
+    riderLabel: 'Requisitos técnicos',
     rider: [
       'Piano de cauda ou vertical acústico, afinado no dia — ou piano digital de palco (88 teclas pesadas)',
       'Banco de piano regulável',
       'Para eventos amplificados: 2 entradas DI ou microfones para o piano, 1 microfone de voz para anúncios, monitor',
       'Montagem e teste de som: 45–60 minutos antes da abertura de portas',
     ],
-    contactTitle: 'Contacto para reservas & imprensa',
+    contactLabel: 'Reservas & imprensa',
   },
 }[lang];
 ---
 
-<Layout lang={lang} route="press" title={copy.title} description={copy.description}>
-  <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead} />
+<Tab lang={lang} section="press" num={num} title={copy.title} sub={copy.sub}>
+  <div class="grid grid-2">
+    <article class="card bio">
+      <header>
+        <h3>{copy.shortTitle}</h3>
+        <button class="copy" type="button" data-copy="short-bio" data-done={copy.copied}>{copy.copy}</button>
+      </header>
+      <p id="short-bio">{copy.short}</p>
+    </article>
+    <article class="card bio">
+      <header>
+        <h3>{copy.longTitle}</h3>
+        <button class="copy" type="button" data-copy="long-bio" data-done={copy.copied}>{copy.copy}</button>
+      </header>
+      <div id="long-bio">{copy.long.map((p) => <p>{p}</p>)}</div>
+    </article>
+  </div>
 
-  <section class="section">
-    <div class="wrap grid grid-2">
-      <article class="card reveal bio">
-        <header>
-          <h2>{copy.shortTitle}</h2>
-          <button class="copy" type="button" data-copy="short-bio" data-done={copy.copied}>{copy.copy}</button>
-        </header>
-        <p id="short-bio" class="lead">{copy.short}</p>
-      </article>
-      <article class="card reveal bio" style="--i:1">
-        <header>
-          <h2>{copy.longTitle}</h2>
-          <button class="copy" type="button" data-copy="long-bio" data-done={copy.copied}>{copy.copy}</button>
-        </header>
-        <div id="long-bio">{copy.long.map((p) => <p>{p}</p>)}</div>
-      </article>
-    </div>
-  </section>
+  <div class="tab-block">
+    <p class="eyebrow">{copy.photosLabel}</p>
+    {
+      gallery.length ? (
+        <div class="photos">
+          {gallery.map((g) => (
+            <a href={asset(g.src)} download>
+              <img src={asset(g.src)} alt={g.alt} loading="lazy" />
+              <span>
+                <Icon name="download" size={16} /> {g.alt}
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="tab-note">{copy.photosEmpty}</p>
+      )
+    }
+  </div>
 
-  <section class="section">
-    <div class="wrap">
-      <SectionHead title={copy.photosTitle} />
-      {
-        gallery.length ? (
-          <div class="photos">
-            {gallery.map((g) => (
-              <a class="reveal" href={asset(g.src)} download>
-                <img src={asset(g.src)} alt={g.alt} loading="lazy" />
-                <span>
-                  <Icon name="download" size={16} /> {g.alt}
-                </span>
-              </a>
-            ))}
-          </div>
-        ) : (
-          <p class="muted reveal">{copy.photosEmpty}</p>
-        )
-      }
+  <div class="grid grid-2">
+    <div class="tab-block">
+      <p class="eyebrow">{copy.riderLabel}</p>
+      <ul class="note-list">{copy.rider.map((r) => <li>{r}</li>)}</ul>
     </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap split">
-      <div class="reveal">
-        <SectionHead title={copy.riderTitle} />
-        <ul class="note-list">{copy.rider.map((r) => <li>{r}</li>)}</ul>
-      </div>
-      <div class="card reveal contact">
-        <h2>{copy.contactTitle}</h2>
-        <a href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a>
-        {site.phone && <a href={`tel:${site.phone.replace(/\s/g, '')}`}><Icon name="phone" /> {site.phone}</a>}
-        <a href={site.socials.youtube} target="_blank" rel="noopener"><Icon name="youtube" /> YouTube</a>
-        <a href={site.socials.instagram} target="_blank" rel="noopener"><Icon name="instagram" /> Instagram</a>
-        <a href={site.socials.tiktok} target="_blank" rel="noopener"><Icon name="tiktok" /> TikTok</a>
-        <a class="btn btn--gold" href={path('contact', lang)}>{t('cta.contact')} <Icon name="arrow" /></a>
-      </div>
+    <div class="tab-block contact">
+      <p class="eyebrow">{copy.contactLabel}</p>
+      <a href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a>
+      {site.phone && <a href={`tel:${site.phone.replace(/\s/g, '')}`}><Icon name="phone" /> {site.phone}</a>}
     </div>
-  </section>
-</Layout>
+  </div>
+</Tab>
 
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) =>
@@ -155,8 +136,8 @@ const copy = {
     align-items: baseline;
     gap: 1rem;
   }
-  .bio h2 {
-    font-size: 2rem;
+  .bio h3 {
+    font-size: 1.8rem;
   }
   .bio p {
     color: var(--ivory-dim);
@@ -199,27 +180,19 @@ const copy = {
   .contact {
     display: grid;
     gap: 0.9rem;
+    align-content: start;
     justify-items: start;
   }
-  .contact h2 {
-    font-size: 2rem;
-  }
-  .contact a:not(.btn) {
+  .contact a {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     color: var(--ivory-dim);
   }
-  .contact a:not(.btn):hover {
+  .contact a:hover {
     color: var(--gold-2);
   }
   .contact :global(svg) {
     color: var(--gold);
-  }
-  .contact .btn {
-    margin-top: 0.8rem;
-  }
-  .contact .btn :global(svg) {
-    color: inherit;
   }
 </style>

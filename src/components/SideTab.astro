@@ -1,5 +1,5 @@
 ---
-/** Contact tab fixed to the right edge of every page; opens the form with the page's subject already chosen. */
+/** Contact tab fixed to the right edge of every page; the home-page sections preselect the form's subject (see Tab.astro). */
 import Icon from './Icon.astro';
 import { path, useT, type Lang, type RouteKey } from '../i18n';
 
@@ -9,12 +9,11 @@ interface Props {
 }
 const { lang, route } = Astro.props;
 const t = useT(lang);
-const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=events' : '';
 ---
 
 {
   route !== 'contact' && (
-    <a class="side-tab" href={path('contact', lang) + topic}>
+    <a class="side-tab" href={path('contact', lang)}>
       <Icon name="mail" size={16} />
       <span>{t('cta.side')}</span>
     </a>

@@ -1,0 +1,31 @@
+---
+/**
+ * Old address of a page that is now a section of the home page:
+ * sends visitors (and search engines) straight to that section.
+ */
+import { sectionHref, type Lang, type SectionKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  section: SectionKey;
+}
+const { lang, section } = Astro.props;
+const to = sectionHref(section, lang);
+const origin = Astro.site ?? 'https://joaoeiro.pt';
+---
+
+<!doctype html>
+<html lang={lang === 'pt' ? 'pt-PT' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>João Eiró</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(to, origin).href} />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <script is:inline define:vars={{ to }}>location.replace(to);</script>
+  </head>
+  <body>
+    <a href={to}>João Eiró</a>
+  </body>
+</html>

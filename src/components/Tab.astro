@@ -1,0 +1,207 @@
+---
+/**
+ * One expandable section of the home page. Links to `#<anchor>` (the menu, the
+ * "What I do" cards, old page addresses) open it in place and scroll to it.
+ */
+import { sections, type Lang, type SectionKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  section: SectionKey;
+  num: number;
+  title: string;
+  sub: string;
+}
+const { lang, section, num, title, sub } = Astro.props;
+const { en, pt } = sections[section];
+---
+
+<details class="tab" id={sections[section][lang]} name="sections" data-section={section} data-aliases={`${en} ${pt}`}>
+  <summary>
+    <span class="tab__num">{String(num).padStart(2, '0')}</span>
+    <span class="tab__head">
+      <span class="tab__title">{title}</span>
+      <span class="tab__sub">{sub}</span>
+    </span>
+    <span class="tab__icon" aria-hidden="true"></span>
+  </summary>
+  <div class="tab__body">
+    <slot />
+  </div>
+</details>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLDetailsElement>('details.tab')];
+  const sideTab = document.querySelector<HTMLAnchorElement>('.side-tab');
+  const sideHref = sideTab?.href.split('?')[0];
+  const smooth = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  const find = (hash: string) => tabs.find((t) => t.id === hash || t.dataset.aliases!.split(' ').includes(hash));
+
+  const open = (tab: HTMLDetailsElement) => {
+    tab.open = true;
+    requestAnimationFrame(() => tab.scrollIntoView({ behavior: smooth, block: 'start' }));
+  };
+
+  // Opening one section closes the others; the address and the contact tab follow the open one.
+  tabs.forEach((tab) =>
+    tab.addEventListener('toggle', () => {
+      if (tab.open) {
+        tabs.forEach((t) => t !== tab && (t.open = false));
+        history.replaceState(null, '', `#${tab.id}`);
+      } else if (location.hash === `#${tab.id}`) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+      const current = tabs.find((t) => t.open)?.dataset.section;
+      if (sideTab && sideHref) {
+        sideTab.href = current === 'lessons' || current === 'events' ? `${sideHref}?s=${current}` : sideHref;
+      }
+    }),
+  );
+
+  // Same-page links to a section (menu, cards): open it instead of jumping.
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#"]');
+    if (!link) return;
+    const url = new URL(link.href);
+    const tab = url.pathname === location.pathname && find(decodeURIComponent(url.hash.slice(1)));
+    if (!tab) return;
+    e.preventDefault();
+    open(tab);
+  });
+
+  const fromHash = () => {
+    const tab = find(decodeURIComponent(location.hash.slice(1)));
+    if (tab) open(tab);
+  };
+  addEventListener('hashchange', fromHash);
+  fromHash();
+</script>
+
+<style>
+  .tab {
+    border-bottom: 1px solid var(--line);
+  }
+  summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    padding-block: clamp(1.4rem, 1rem + 1.6vw, 2.4rem);
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--gold-2);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+  .tab__num {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+  .tab__head {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .tab__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.3rem + 2.8vw, 3.8rem);
+    line-height: 1.05;
+    color: var(--ivory);
+    transition: color 0.3s;
+  }
+  summary:hover .tab__title,
+  .tab[open] .tab__title {
+    color: var(--gold);
+  }
+  .tab__sub {
+    color: var(--muted);
+    font-size: 0.98rem;
+  }
+  /* A plus that turns into a minus. */
+  .tab__icon {
+    position: relative;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+  .tab__icon::before,
+  .tab__icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.9rem;
+    height: 1.5px;
+    background: var(--gold);
+    translate: -50% -50%;
+    transition: transform 0.4s var(--ease);
+  }
+  .tab__icon::after {
+    transform: rotate(90deg);
+  }
+  .tab[open] .tab__icon::after {
+    transform: rotate(0deg);
+  }
+  summary:hover .tab__icon {
+    border-color: var(--gold);
+  }
+  .tab__body {
+    display: grid;
+    gap: clamp(2.5rem, 2rem + 2vw, 4rem);
+    padding-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+  .tab[open] .tab__body {
+    animation: tabIn 0.6s var(--ease);
+  }
+  @keyframes tabIn {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+  }
+  /* Shared building blocks for the sections' content. */
+  .tab__body :global(.tab-lead) {
+    max-width: 60ch;
+    margin: 0;
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    color: var(--ivory-dim);
+  }
+  .tab__body :global(.tab-block > .eyebrow) {
+    margin-bottom: 1.4rem;
+  }
+  .tab__body :global(.tab-more) {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gold);
+    font-weight: 600;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 0.15rem;
+  }
+  .tab__body :global(.tab-note) {
+    margin: 1.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  @media (max-width: 600px) {
+    summary {
+      grid-template-columns: 1fr auto;
+    }
+    .tab__num {
+      display: none;
+    }
+    .tab__icon {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
+  }
+</style>

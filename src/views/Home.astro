@@ -3,18 +3,17 @@ import Layout from '../layouts/Layout.astro';
 import PlayablePiano from '../components/PlayablePiano.astro';
 import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
-import VideoGallery from '../components/VideoGallery.astro';
-import ShowList from '../components/ShowList.astro';
 import Testimonials from '../components/Testimonials.astro';
-import CtaBand from '../components/CtaBand.astro';
-import GrandPiano from '../components/GrandPiano.astro';
 import Icon from '../components/Icon.astro';
+import LessonsTab from '../components/tabs/LessonsTab.astro';
+import PortfolioTab from '../components/tabs/PortfolioTab.astro';
+import ShowsTab from '../components/tabs/ShowsTab.astro';
+import EventsTab from '../components/tabs/EventsTab.astro';
+import PressTab from '../components/tabs/PressTab.astro';
 import { Image } from 'astro:assets';
 import photo from '../assets/joao-eiro-live.jpg';
-import { path, useT, type Lang } from '../i18n';
+import { sectionHref, type Lang } from '../i18n';
 import { site } from '../config/site';
-import { instagram, tiktok } from '../data/media';
-import { getYouTubeVideos } from '../lib/youtube';
 import { testimonials } from '../data/testimonials';
 import { published } from '../lib/drafts';
 
@@ -22,12 +21,6 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const t = useT(lang);
-const youtube = await getYouTubeVideos();
-const featured = <T extends { featured?: boolean }>(list: T[]) => [
-  ...list.filter((v) => v.featured),
-  ...list.filter((v) => !v.featured),
-];
 
 const copy = {
   en: {
@@ -68,21 +61,8 @@ const copy = {
         cta: 'Plan your event',
       },
     ] as const,
-    aboutEyebrow: 'Hello, I’m João',
-    aboutTitle: 'Classical roots, <em>improviser’s heart</em>',
-    about: [
-      'I’m a pianist and piano teacher who loves both sides of the instrument: the discipline of the great repertoire and the freedom of making music up on the spot.',
-      'On stage I play as a soloist and as an accompanist. In the classroom I help students of every age find their own sound. And on social media I share small musical moments — a phrase of Beethoven, a groove borrowed for a minute and given back.',
-    ],
-    aboutCta: 'See portfolio',
-    videosEyebrow: 'Watch & listen',
-    videosTitle: 'Moments at <em>the keys</em>',
-    showsEyebrow: 'On stage',
-    showsTitle: 'Next <em>shows</em>',
     quotesEyebrow: 'Kind words',
     quotesTitle: 'From students <em>& clients</em>',
-    ctaTitle: 'Let’s make <em>music together</em>',
-    ctaText: 'Lessons, a concert, or the soundtrack for your celebration — tell me what you are imagining.',
   },
   pt: {
     title: 'João Eiró — Pianista & Professor de Piano',
@@ -122,21 +102,8 @@ const copy = {
         cta: 'Planear o teu evento',
       },
     ] as const,
-    aboutEyebrow: 'Olá, sou o João',
-    aboutTitle: 'Raízes clássicas, <em>alma de improvisador</em>',
-    about: [
-      'Sou pianista e professor de piano e adoro os dois lados do instrumento: a disciplina do grande repertório e a liberdade de inventar música no momento.',
-      'Em palco toco como solista e como acompanhador. Nas aulas ajudo alunos de todas as idades a encontrar o seu som. E nas redes sociais partilho pequenos momentos musicais — uma frase de Beethoven, um groove emprestado por um minuto e devolvido.',
-    ],
-    aboutCta: 'Ver portfólio',
-    videosEyebrow: 'Ver & ouvir',
-    videosTitle: 'Momentos <em>ao piano</em>',
-    showsEyebrow: 'Em palco',
-    showsTitle: 'Próximos <em>concertos</em>',
     quotesEyebrow: 'Palavras simpáticas',
     quotesTitle: 'De alunos <em>& clientes</em>',
-    ctaTitle: 'Vamos fazer <em>música juntos</em>',
-    ctaText: 'Aulas, um concerto ou a banda sonora da tua celebração — conta-me o que estás a imaginar.',
   },
 }[lang];
 
@@ -189,7 +156,7 @@ const hasQuotes = published(testimonials).length > 0;
       <div class="doors">
         {
           copy.doors.map((d, i) => (
-            <a class="door reveal" href={path(d.key, lang)} style={`--i:${i}`}>
+            <a class="door reveal" href={sectionHref(d.key, lang)} style={`--i:${i}`}>
               <span class="door__keys" aria-hidden="true">
                 <i />
                 <i />
@@ -215,42 +182,13 @@ const hasQuotes = published(testimonials).length > 0;
     </div>
   </section>
 
-  <section class="section about">
-    <div class="wrap about__grid">
-      <div class="about__art reveal">
-        <GrandPiano />
-      </div>
-      <div>
-        <SectionHead eyebrow={copy.aboutEyebrow} title={copy.aboutTitle} />
-        {copy.about.map((p, i) => <p class="lead reveal" style={`--i:${i + 1}`}>{p}</p>)}
-        <div class="btn-row reveal" style="--i:3">
-          <a class="btn" href={path('portfolio', lang)}>{copy.aboutCta} <Icon name="arrow" /></a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <SectionHead eyebrow={copy.videosEyebrow} title={copy.videosTitle}>
-        <a class="link-more" href={path('portfolio', lang) + '#videos'}>{t('media.more')} →</a>
-      </SectionHead>
-      <VideoGallery
-        lang={lang}
-        youtube={featured(youtube)}
-        tiktok={featured(tiktok)}
-        instagram={featured(instagram)}
-        limit={6}
-      />
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <SectionHead eyebrow={copy.showsEyebrow} title={copy.showsTitle}>
-        <a class="link-more" href={path('shows', lang)}>{t('common.allShows')} →</a>
-      </SectionHead>
-      <ShowList lang={lang} when="upcoming" limit={3} />
+  <section class="section tabs-section">
+    <div class="wrap tabs">
+      <LessonsTab lang={lang} num={1} />
+      <PortfolioTab lang={lang} num={2} />
+      <ShowsTab lang={lang} num={3} />
+      <EventsTab lang={lang} num={4} />
+      <PressTab lang={lang} num={5} />
     </div>
   </section>
 
@@ -265,10 +203,6 @@ const hasQuotes = published(testimonials).length > 0;
     )
   }
 
-  <CtaBand title={copy.ctaTitle} text={copy.ctaText}>
-    <a class="btn btn--gold" href={path('contact', lang)}>{t('cta.contact')} <Icon name="arrow" /></a>
-    <a class="btn" href={site.socials.youtube} target="_blank" rel="noopener"><Icon name="youtube" /> YouTube</a>
-  </CtaBand>
 </Layout>
 
 <style>
@@ -546,40 +480,11 @@ const hasQuotes = published(testimonials).length > 0;
     transform: translateX(6px);
   }
 
-  .about__grid {
-    display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    align-items: center;
-    gap: clamp(2rem, 1rem + 5vw, 6rem);
+  /* The expandable sections follow the "What I do" cards closely. */
+  .tabs-section {
+    padding-top: 0;
   }
-  .about__art {
-    position: relative;
-  }
-  .about__art::before {
-    content: '';
-    position: absolute;
-    inset: 10% 5%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgb(var(--wine-rgb) / 0.45), transparent 70%);
-    filter: blur(30px);
-    z-index: -1;
-  }
-  .about__art img {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius);
-  }
-  @media (max-width: 860px) {
-    .about__grid {
-      grid-template-columns: 1fr;
-    }
-  }
-  .link-more {
-    display: inline-block;
-    margin-top: 0.5rem;
-    color: var(--gold-2);
-    font-weight: 600;
-    font-size: 0.92rem;
+  .tabs {
+    border-top: 1px solid var(--line);
   }
 </style>

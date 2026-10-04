@@ -5,14 +5,19 @@ export const defaultLang: Lang = 'en';
 /** One entry per page. English lives at the root, Portuguese under /pt. */
 export const routes = {
   home: { en: '/', pt: '/pt/' },
-  lessons: { en: '/piano-lessons/', pt: '/pt/aulas-de-piano/' },
-  portfolio: { en: '/portfolio/', pt: '/pt/portfolio/' },
-  shows: { en: '/shows/', pt: '/pt/concertos/' },
-  events: { en: '/events/', pt: '/pt/eventos/' },
-  press: { en: '/press/', pt: '/pt/imprensa/' },
   contact: { en: '/contact/', pt: '/pt/contacto/' },
 } as const;
 export type RouteKey = keyof typeof routes;
+
+/** Expandable sections of the home page, with their anchor in each language. */
+export const sections = {
+  lessons: { en: 'lessons', pt: 'aulas' },
+  portfolio: { en: 'portfolio', pt: 'portfolio' },
+  shows: { en: 'shows', pt: 'concertos' },
+  events: { en: 'events', pt: 'eventos' },
+  press: { en: 'press', pt: 'imprensa' },
+} as const;
+export type SectionKey = keyof typeof sections;
 
 /**
  * Base path the site is served from: '' on a custom domain (joaoeiro.pt),
@@ -24,6 +29,9 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const asset = (url: string) => (url.startsWith('/') ? BASE + url : url);
 
 export const path = (key: RouteKey, lang: Lang) => asset(routes[key][lang]);
+
+/** Link to a home-page section; opening it expands that section. */
+export const sectionHref = (key: SectionKey, lang: Lang) => `${path('home', lang)}#${sections[key][lang]}`;
 
 /** Locale tags used for <html lang>, hreflang and date formatting. */
 export const locales: Record<Lang, string> = { en: 'en', pt: 'pt-PT' };

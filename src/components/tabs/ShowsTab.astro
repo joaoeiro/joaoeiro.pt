@@ -1,0 +1,42 @@
+---
+/** Home-page section: upcoming and recent concerts. */
+import Tab from '../Tab.astro';
+import ShowList from '../ShowList.astro';
+import { type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+  num: number;
+}
+const { lang, num } = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Shows',
+    sub: 'Solo recitals, collaborations and improvised evenings.',
+    upLabel: 'Coming up',
+    pastLabel: 'Past shows',
+    follow: 'New dates are announced first on social media.',
+  },
+  pt: {
+    title: 'Concertos',
+    sub: 'Recitais a solo, colaborações e noites de improvisação.',
+    upLabel: 'Próximas datas',
+    pastLabel: 'Concertos anteriores',
+    follow: 'As novas datas são anunciadas primeiro nas redes sociais.',
+  },
+}[lang];
+---
+
+<Tab lang={lang} section="shows" num={num} title={copy.title} sub={copy.sub}>
+  <div class="tab-block">
+    <p class="eyebrow">{copy.upLabel}</p>
+    <ShowList lang={lang} when="upcoming" />
+    <p class="tab-note">{copy.follow}</p>
+  </div>
+
+  <div class="tab-block">
+    <p class="eyebrow">{copy.pastLabel}</p>
+    <ShowList lang={lang} when="past" limit={6} />
+  </div>
+</Tab>

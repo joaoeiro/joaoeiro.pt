@@ -1,5 +1,5 @@
 ---
-import { path, useT, type Lang, type RouteKey } from '../i18n';
+import { path, sectionHref, useT, type Lang, type RouteKey } from '../i18n';
 import { site } from '../config/site';
 
 interface Props {
@@ -9,12 +9,13 @@ interface Props {
 const { lang, route } = Astro.props;
 const t = useT(lang);
 const other: Lang = lang === 'en' ? 'pt' : 'en';
-const links: { key: RouteKey; label: string }[] = [
-  { key: 'lessons', label: t('nav.lessons') },
-  { key: 'portfolio', label: t('nav.portfolio') },
-  { key: 'shows', label: t('nav.shows') },
-  { key: 'events', label: t('nav.events') },
-  { key: 'contact', label: t('nav.contact') },
+// Everything but the contact page is a section of the home page.
+const links: { href: string; label: string; current?: boolean }[] = [
+  { href: sectionHref('lessons', lang), label: t('nav.lessons') },
+  { href: sectionHref('portfolio', lang), label: t('nav.portfolio') },
+  { href: sectionHref('shows', lang), label: t('nav.shows') },
+  { href: sectionHref('events', lang), label: t('nav.events') },
+  { href: path('contact', lang), label: t('nav.contact'), current: route === 'contact' },
 ];
 ---
 
@@ -28,7 +29,7 @@ const links: { key: RouteKey; label: string }[] = [
     <nav class="links" aria-label="Main">
       {
         links.map((l) => (
-          <a href={path(l.key, lang)} aria-current={route === l.key ? 'page' : undefined}>
+          <a href={l.href} aria-current={l.current ? 'page' : undefined}>
             {l.label}
           </a>
         ))
@@ -79,12 +80,12 @@ const links: { key: RouteKey; label: string }[] = [
       <a href={path('home', lang)} style="--i:0">{t('nav.home')}</a>
       {
         links.map((l, i) => (
-          <a href={path(l.key, lang)} style={`--i:${i + 1}`} aria-current={route === l.key ? 'page' : undefined}>
+          <a href={l.href} style={`--i:${i + 1}`} aria-current={l.current ? 'page' : undefined}>
             {l.label}
           </a>
         ))
       }
-      <a href={path('press', lang)} style={`--i:${links.length + 1}`}>{t('nav.press')}</a>
+      <a href={sectionHref('press', lang)} style={`--i:${links.length + 1}`}>{t('nav.press')}</a>
     </nav>
     <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
   </div>
@@ -107,6 +108,8 @@ const links: { key: RouteKey; label: string }[] = [
     else setTimeout(() => !nav.classList.contains('is-open') && (drawer.hidden = true), 500);
   };
   burger.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'));
+  // Links to home-page sections stay on the page, so close the menu ourselves.
+  drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
 
   // Light / dark theme: follows the system until the visitor picks one.
   const root = document.documentElement;
