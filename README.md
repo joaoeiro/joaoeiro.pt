@@ -5,7 +5,7 @@ Built with [Astro](https://astro.build), fully static, in **English** (`/`) and 
 Visitors whose browser language is Portuguese are sent to the Portuguese version automatically
 (unless they pick a language with the EN/PT switch, which is remembered).
 
-Two themes: **dark** (noir, gold, ivory) and **light** (cream `#FDF8F1`, rose `#ec8e8e`).
+Two themes: **dark** (noir, gold, ivory) and **light** (sand `#D7CFC4`, maroon `#800000`).
 The site follows the visitor's system setting; the sun/moon button switches and remembers the choice.
 All colours are tokens at the top of `src/styles/global.css` — `:root` for dark, `:root[data-theme='light']` for light.
 
@@ -14,12 +14,12 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 | English | Português | |
 | --- | --- | --- |
 | `/` | `/pt/` | Home — playable piano hero, services, videos, next shows |
-| `/piano-lessons/` | `/pt/aulas-de-piano/` | Lessons — who it's for, formats, method, plans, FAQ, booking form |
+| `/piano-lessons/` | `/pt/aulas-de-piano/` | Lessons — who it's for, formats, method, plans, FAQ |
 | `/portfolio/` | `/pt/portfolio/` | Bio, all videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
 | `/shows/` | `/pt/concertos/` | Upcoming and past concerts, add-to-calendar |
-| `/events/` | `/pt/eventos/` | Weddings, private & corporate events, quote form |
+| `/events/` | `/pt/eventos/` | Weddings, private & corporate events |
 | `/press/` | `/pt/imprensa/` | Press kit — short/long bio (copy buttons), photos, tech rider |
-| `/contact/` | `/pt/contacto/` | Contact form and socials |
+| `/contact/` | `/pt/contacto/` | The contact form (subject: lessons, events or other) and socials. `?s=lessons` / `?s=events` preselects the subject |
 
 ## Editing content — no code needed
 
@@ -41,7 +41,8 @@ The deploy workflow rebuilds weekly, so new videos appear on their own.
 **Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
-**Forms:** with `formEndpoint` empty, forms open the visitor's email app pre-filled.
+**Contact form:** one form, on the contact page, reached from the "Contacte-me" tab on the right edge of every page.
+With `formEndpoint` empty, it opens the visitor's email app pre-filled with every answer.
 Create a free [Formspree](https://formspree.io) form and paste its URL to receive messages directly.
 
 ## Development
@@ -71,3 +72,10 @@ and on the custom domain. To serve it at **joaoeiro.pt**:
 4. Optional: add a `YOUTUBE_API_KEY` repository secret to list *every* YouTube upload (otherwise the latest 15).
 
 Any other static host (Netlify, Vercel, Cloudflare Pages) also works: build command `npm run build`, output `dist`.
+
+## Credits
+
+The playable piano on the home page uses recordings from the
+[Salamander Grand Piano V3](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm,
+licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). They were trimmed to 6 seconds and
+re-encoded; they live in `public/audio/piano/`.

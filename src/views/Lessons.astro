@@ -4,17 +4,14 @@ import PageHero from '../components/PageHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Steps from '../components/Steps.astro';
 import Faq from '../components/Faq.astro';
-import ContactForm from '../components/ContactForm.astro';
 import Testimonials from '../components/Testimonials.astro';
 import PianoStrip from '../components/PianoStrip.astro';
-import Icon from '../components/Icon.astro';
-import { useT, type Lang } from '../i18n';
+import { type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const t = useT(lang);
 
 const copy = {
   en: {
@@ -79,9 +76,6 @@ const copy = {
       { q: 'Do online lessons really work?', a: 'Yes — with a camera pointing at the keys and good audio, online lessons are very effective, especially for adults and returning students.' },
       { q: 'Can you prepare me for exams or auditions?', a: 'Yes, we can plan repertoire and preparation for specific exams, auditions or recitals.' },
     ],
-    formEyebrow: 'Book',
-    formTitle: 'Book your <em>trial lesson</em>',
-    formLead: 'Tell me a little about who the lessons are for — I’ll reply with available times.',
     giftTitle: 'Give the gift of music',
     giftText: 'Lesson packs make a beautiful present. Ask for a gift voucher.',
   },
@@ -147,9 +141,6 @@ const copy = {
       { q: 'As aulas online funcionam mesmo?', a: 'Sim — com uma câmara apontada para as teclas e bom áudio, as aulas online são muito eficazes, sobretudo para adultos e para quem regressa ao piano.' },
       { q: 'Prepara para provas ou audições?', a: 'Sim, podemos planear repertório e preparação para provas, audições ou recitais específicos.' },
     ],
-    formEyebrow: 'Marcar',
-    formTitle: 'Marque a sua <em>aula experimental</em>',
-    formLead: 'Conte-me um pouco sobre quem vai ter aulas — respondo com os horários disponíveis.',
     giftTitle: 'Ofereça música',
     giftText: 'Os packs de aulas são um presente bonito. Peça um vale de oferta.',
   },
@@ -159,7 +150,6 @@ const copy = {
 <Layout lang={lang} route="lessons" title={copy.title} description={copy.description}>
   <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead}>
     <div class="btn-row">
-      <a class="btn btn--gold" href="#book">{t('cta.lessons')} <Icon name="arrow" /></a>
       <a class="btn" href="#plans">{copy.plansEyebrow}</a>
     </div>
   </PageHero>
@@ -238,9 +228,6 @@ const copy = {
                   <li>{it}</li>
                 ))}
               </ul>
-              <a class:list={['btn', { 'btn--gold': p.featured }]} href="#book">
-                {t('cta.lessons')}
-              </a>
             </article>
           ))
         }
@@ -270,14 +257,6 @@ const copy = {
     </div>
   </section>
 
-  <section class="section" id="book">
-    <div class="wrap split">
-      <SectionHead eyebrow={copy.formEyebrow} title={copy.formTitle} lead={copy.formLead} />
-      <div class="card reveal">
-        <ContactForm lang={lang} kind="lesson" />
-      </div>
-    </div>
-  </section>
 </Layout>
 
 <style>

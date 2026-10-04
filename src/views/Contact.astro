@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Icon from '../components/Icon.astro';
-import { path, type Lang } from '../i18n';
+import { type Lang } from '../i18n';
 import { site } from '../config/site';
 
 interface Props {
@@ -18,10 +18,6 @@ const copy = {
     eyebrow: 'Contact',
     h1: 'Let’s <em>talk music</em>',
     lead: 'Lessons, a concert, an event or just a hello — I usually reply within a day or two.',
-    quick: 'Looking for something specific?',
-    lessons: 'Book a trial lesson',
-    events: 'Quote for an event',
-    press: 'Press kit',
     elsewhere: 'Find me on',
   },
   pt: {
@@ -30,10 +26,6 @@ const copy = {
     eyebrow: 'Contacto',
     h1: 'Vamos <em>falar de música</em>',
     lead: 'Aulas, um concerto, um evento ou só um olá — normalmente respondo em um ou dois dias.',
-    quick: 'Procura algo específico?',
-    lessons: 'Marcar aula experimental',
-    events: 'Orçamento para evento',
-    press: 'Kit de imprensa',
     elsewhere: 'Encontre-me no',
   },
 }[lang];
@@ -48,18 +40,10 @@ const names = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', fa
   <section class="section top">
     <div class="wrap split">
       <div class="card reveal">
-        <ContactForm lang={lang} kind="general" />
+        <ContactForm lang={lang} />
       </div>
       <aside class="side">
         <div class="reveal">
-          <p class="eyebrow">{copy.quick}</p>
-          <div class="quick">
-            <a href={path('lessons', lang) + '#book'}>{copy.lessons} <Icon name="arrow" size={18} /></a>
-            <a href={path('events', lang) + '#quote'}>{copy.events} <Icon name="arrow" size={18} /></a>
-            <a href={path('press', lang)}>{copy.press} <Icon name="arrow" size={18} /></a>
-          </div>
-        </div>
-        <div class="reveal" style="--i:1">
           <p class="eyebrow">{copy.elsewhere}</p>
           <div class="socials">
             {
@@ -84,26 +68,6 @@ const names = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', fa
   .side {
     display: grid;
     gap: 3rem;
-  }
-  .quick {
-    display: grid;
-  }
-  .quick a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 0;
-    border-bottom: 1px solid var(--line);
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    transition: color 0.3s, padding 0.5s var(--ease);
-  }
-  .quick a:hover {
-    color: var(--gold-2);
-    padding-left: 0.6rem;
-  }
-  .quick :global(svg) {
-    color: var(--gold);
   }
   .socials {
     display: grid;

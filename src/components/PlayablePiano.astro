@@ -1,6 +1,5 @@
 ---
-import Icon from './Icon.astro';
-import { useT, type Lang } from '../i18n';
+import { asset, useT, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -27,15 +26,9 @@ const whites = keys.filter((k) => !k.black);
 const blacks = keys.filter((k) => k.black);
 ---
 
-<div class="piano" data-piano>
+<div class="piano" data-piano data-samples={asset('/audio/piano/')}>
   <div class="piano__bar">
-    <button class="btn btn--gold play" type="button" data-play data-label-play={t('piano.play')} data-label-stop={t('piano.stop')}>
-      <span class="play__icon" data-icon-play><Icon name="play" size={16} /></span>
-      <span class="play__icon" data-icon-stop hidden><Icon name="stop" size={16} /></span>
-      <span data-play-label>{t('piano.play')}</span>
-    </button>
     <p class="hint">{t('piano.hint')}</p>
-    <p class="now" data-now aria-live="polite"></p>
   </div>
 
   <div class="board">
@@ -71,22 +64,58 @@ const blacks = keys.filter((k) => k.black);
     </div>
     <div class="felt" aria-hidden="true"></div>
   </div>
+  <p class="credit">
+    {t('piano.credit')}{' '}
+    <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noopener">Salamander Grand Piano</a>,
+    Alexander Holm (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>)
+  </p>
 </div>
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-piano]');
   if (root) {
     const sparks = root.querySelector<HTMLElement>('[data-sparks]')!;
-    const playBtn = root.querySelector<HTMLButtonElement>('[data-play]')!;
-    const playLabel = root.querySelector<HTMLElement>('[data-play-label]')!;
-    const nowEl = root.querySelector<HTMLElement>('[data-now]')!;
     const keyEls = new Map<number, HTMLElement>();
     root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => keyEls.set(Number(el.dataset.midi), el));
 
-    // ---------- Synth: a warm, bell-ish piano voice built from sine partials ----------
+    // ---------- Sound: a real grand piano (Salamander Grand Piano, Alexander Holm, CC BY 3.0) ----------
+    // One recording every three semitones; the notes in between are the nearest recording, retuned.
+    // If the recordings cannot load, a small synth stands in so the piano is never silent.
+    const SAMPLES: Record<number, string> = {
+      48: 'C3', 51: 'Ds3', 54: 'Fs3', 57: 'A3', 60: 'C4', 63: 'Ds4', 66: 'Fs4', 69: 'A4', 72: 'C5', 75: 'Ds5',
+    };
     let ctx: AudioContext | undefined;
     let master: GainNode;
     const voices = new Map<number, GainNode>();
+    const buffers = new Map<number, AudioBuffer>();
+
+    // Recordings are decoded ahead of time, so even the very first touch sounds like the real piano.
+    let loading = false;
+    const load = () => {
+      if (loading) return;
+      loading = true;
+      const decoder = new OfflineAudioContext(2, 1, 44100);
+      Promise.all(
+        Object.entries(SAMPLES).map(([m, name]) =>
+          fetch(root.dataset.samples + name + '.mp3')
+            .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+            .then((data) => decoder.decodeAudioData(data))
+            .then((b) => void buffers.set(Number(m), b)),
+        ),
+      ).catch(() => {});
+    };
+
+    // Fetch the recordings as the piano comes into view, so they are ready before the first touch.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          load();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(root);
 
     const audio = () => {
       if (ctx) return ctx;
@@ -107,50 +136,73 @@ const blacks = keys.filter((k) => k.black);
       const verb = ctx.createConvolver();
       verb.buffer = ir;
       const wet = ctx.createGain();
-      wet.gain.value = 0.28;
+      wet.gain.value = 0.16;
 
       master.connect(comp);
       master.connect(verb).connect(wet).connect(comp);
       comp.connect(ctx.destination);
+
+      load();
       return ctx;
     };
 
     const freq = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
+    const nearest = (midi: number) => {
+      let best: number | undefined;
+      for (const m of buffers.keys()) if (best === undefined || Math.abs(m - midi) < Math.abs(best - midi)) best = m;
+      return best;
+    };
+
     const strike = (midi: number, velocity = 0.8) => {
       const ac = audio();
       if (ac.state === 'suspended') ac.resume();
       const now = ac.currentTime;
-      const f = freq(midi);
       const out = ac.createGain();
-      const peak = 0.22 * velocity;
-      out.gain.setValueAtTime(0.0001, now);
-      out.gain.exponentialRampToValueAtTime(peak, now + 0.006);
-      out.gain.exponentialRampToValueAtTime(peak * 0.35, now + 0.4);
-      out.gain.exponentialRampToValueAtTime(0.0001, now + 3.2 - (midi - 48) * 0.03);
+      const base = nearest(midi);
 
-      const lp = ac.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.setValueAtTime(Math.min(f * 9, 12000), now);
-      lp.frequency.exponentialRampToValueAtTime(Math.max(f * 2, 400), now + 1.2);
-      lp.connect(out).connect(master);
+      if (base !== undefined) {
+        const src = ac.createBufferSource();
+        src.buffer = buffers.get(base)!;
+        src.playbackRate.value = Math.pow(2, (midi - base) / 12);
+        // Softer touch: quieter and a little darker, as on a real instrument.
+        const tone = ac.createBiquadFilter();
+        tone.type = 'lowpass';
+        tone.frequency.value = 1800 + velocity * velocity * 14000;
+        out.gain.value = 1.1 * Math.pow(velocity, 1.4);
+        src.connect(tone).connect(out).connect(master);
+        src.start(now);
+      } else {
+        const f = freq(midi);
+        const peak = 0.22 * velocity;
+        out.gain.setValueAtTime(0.0001, now);
+        out.gain.exponentialRampToValueAtTime(peak, now + 0.006);
+        out.gain.exponentialRampToValueAtTime(peak * 0.35, now + 0.4);
+        out.gain.exponentialRampToValueAtTime(0.0001, now + 3.2 - (midi - 48) * 0.03);
 
-      [
-        [1, 1],
-        [2, 0.42],
-        [3, 0.18],
-        [4, 0.09],
-        [5, 0.05],
-      ].forEach(([h, amp], i) => {
-        const o = ac.createOscillator();
-        const g = ac.createGain();
-        o.type = i === 0 ? 'triangle' : 'sine';
-        o.frequency.value = f * h * (1 + (i ? 0.0007 * h : 0));
-        g.gain.value = amp;
-        o.connect(g).connect(lp);
-        o.start(now);
-        o.stop(now + 3.4);
-      });
+        const lp = ac.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(Math.min(f * 9, 12000), now);
+        lp.frequency.exponentialRampToValueAtTime(Math.max(f * 2, 400), now + 1.2);
+        lp.connect(out).connect(master);
+
+        [
+          [1, 1],
+          [2, 0.42],
+          [3, 0.18],
+          [4, 0.09],
+          [5, 0.05],
+        ].forEach(([h, amp], i) => {
+          const o = ac.createOscillator();
+          const g = ac.createGain();
+          o.type = i === 0 ? 'triangle' : 'sine';
+          o.frequency.value = f * h * (1 + (i ? 0.0007 * h : 0));
+          g.gain.value = amp;
+          o.connect(g).connect(lp);
+          o.start(now);
+          o.stop(now + 3.4);
+        });
+      }
 
       voices.get(midi)?.gain.setTargetAtTime(0.0001, now, 0.05);
       voices.set(midi, out);
@@ -206,7 +258,6 @@ const blacks = keys.filter((k) => k.black);
       const midi = Number(el.dataset.midi);
       el.addEventListener('pointerdown', (e) => {
         e.preventDefault();
-        stopMelody();
         pointerDown = true;
         current = midi;
         press(midi, true);
@@ -244,59 +295,11 @@ const blacks = keys.filter((k) => k.black);
       if (midi === undefined) return;
       const r = root.getBoundingClientRect();
       if (r.bottom < 0 || r.top > innerHeight) return; // only while the piano is on screen
-      stopMelody();
       press(midi, true);
     });
     addEventListener('keyup', (e) => {
       const midi = kbMap.get(e.key.toLowerCase());
       if (midi !== undefined) lift(midi);
-    });
-
-    // ---------- Demo melody: Beethoven, "Für Elise" (opening) ----------
-    const N = (n: string) => {
-      const m = n.match(/^([A-G]#?)(\d)$/)!;
-      return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'].indexOf(m[1]) + (Number(m[2]) + 1) * 12;
-    };
-    const score = [
-      'E5 D#5 E5 D#5 E5 B4 D5 C5',
-      'A4 E3 A3 C4 E4 A4',
-      'B4 E3 G#3 E4 G#4 B4',
-      'C5 E3 A3 E4 E5 D#5',
-      'E5 D#5 E5 B4 D5 C5',
-      'A4 E3 A3 C4 E4 A4',
-      'B4 E3 G#3 E4 C5 B4',
-      'A4 E3 A3 - - -',
-    ]
-      .join(' ')
-      .split(' ');
-    const STEP = 175;
-    let timers: number[] = [];
-    let playing = false;
-
-    const setPlaying = (on: boolean) => {
-      playing = on;
-      playBtn.querySelector<HTMLElement>('[data-icon-play]')!.hidden = on;
-      playBtn.querySelector<HTMLElement>('[data-icon-stop]')!.hidden = !on;
-      playLabel.textContent = on ? playBtn.dataset.labelStop! : playBtn.dataset.labelPlay!;
-      nowEl.textContent = on ? '♪ L. van Beethoven — Für Elise' : '';
-      root.classList.toggle('is-playing', on);
-    };
-    function stopMelody() {
-      timers.forEach(clearTimeout);
-      timers = [];
-      if (playing) setPlaying(false);
-    }
-    playBtn.addEventListener('click', () => {
-      if (playing) return stopMelody();
-      setPlaying(true);
-      score.forEach((n, i) => {
-        if (n === '-') return;
-        timers.push(window.setTimeout(() => {
-          strike(N(n), n.endsWith('3') ? 0.55 : 0.85);
-          glow(N(n), STEP * 1.4);
-        }, i * STEP));
-      });
-      timers.push(window.setTimeout(() => setPlaying(false), score.length * STEP + 400));
     });
 
     // ---------- Silent golden glissando when the piano first appears ----------
@@ -326,30 +329,28 @@ const blacks = keys.filter((k) => k.black);
     gap: 0.6rem 1.2rem;
     margin-bottom: 1rem;
   }
-  .play__icon {
-    display: inline-flex;
-  }
-  .play__icon[hidden] {
-    display: none;
-  }
-  .hint,
-  .now:not(:empty) {
+  .hint {
     padding: 0.35rem 0.85rem;
     border-radius: 99px;
     background: rgb(var(--bg-rgb) / 0.72);
     backdrop-filter: blur(8px);
   }
+  .credit {
+    margin: 0.6rem 0 0;
+    font-size: 0.7rem;
+    color: var(--ivory-dim);
+    opacity: 0.75;
+  }
+  .credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+  }
   .hint {
     margin: 0;
     font-size: 0.8rem;
     color: var(--ivory-dim);
-  }
-  .now {
-    margin: 0 0 0 auto;
-    font-family: var(--font-display);
-    font-style: italic;
-    color: var(--gold-2);
-    font-size: 1.05rem;
   }
   .board {
     position: relative;
@@ -360,12 +361,6 @@ const blacks = keys.filter((k) => k.black);
       0 40px 80px -30px rgba(0, 0, 0, 0.9),
       0 0 0 1px rgba(255, 255, 255, 0.06) inset,
       0 0 90px -20px rgb(var(--accent-rgb) / 0.25);
-  }
-  .is-playing .board {
-    box-shadow:
-      0 40px 80px -30px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgb(var(--accent-rgb) / 0.3) inset,
-      0 0 120px -10px rgb(var(--accent-rgb) / 0.45);
   }
   .felt {
     position: absolute;
@@ -518,11 +513,7 @@ const blacks = keys.filter((k) => k.black);
     .low {
       display: none;
     }
-    .now {
-      margin-left: 0;
-      width: 100%;
-    }
-    .hint {
+    .piano__bar {
       display: none;
     }
   }

@@ -4,17 +4,14 @@ import PageHero from '../components/PageHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Steps from '../components/Steps.astro';
 import Faq from '../components/Faq.astro';
-import ContactForm from '../components/ContactForm.astro';
 import Marquee from '../components/Marquee.astro';
 import Testimonials from '../components/Testimonials.astro';
-import Icon from '../components/Icon.astro';
-import { useT, type Lang } from '../i18n';
+import { type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const t = useT(lang);
 
 const copy = {
   en: {
@@ -71,9 +68,6 @@ const copy = {
       { q: 'What do you need at the venue?', a: 'A suitable space, a power outlet if a digital piano is used, and access for set-up before guests arrive. Everything is agreed in advance.' },
       { q: 'Can you play with other musicians or a singer?', a: 'Absolutely — I work regularly as an accompanist and can suggest formations from duo upward.' },
     ],
-    formEyebrow: 'Quote',
-    formTitle: 'Request a <em>quote</em>',
-    formLead: 'Share the essentials — I’ll reply with availability and a tailored proposal.',
   },
   pt: {
     title: 'Eventos',
@@ -129,9 +123,6 @@ const copy = {
       { q: 'O que é preciso no local?', a: 'Um espaço adequado, uma tomada se for usado piano digital, e acesso para montagem antes da chegada dos convidados. Tudo é acordado previamente.' },
       { q: 'Pode tocar com outros músicos ou com um cantor?', a: 'Sem dúvida — trabalho regularmente como acompanhador e posso sugerir formações a partir do duo.' },
     ],
-    formEyebrow: 'Orçamento',
-    formTitle: 'Peça um <em>orçamento</em>',
-    formLead: 'Partilhe o essencial — respondo com disponibilidade e uma proposta à medida.',
   },
 }[lang];
 ---
@@ -139,7 +130,6 @@ const copy = {
 <Layout lang={lang} route="events" title={copy.title} description={copy.description}>
   <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead}>
     <div class="btn-row">
-      <a class="btn btn--gold" href="#quote">{t('cta.events')} <Icon name="arrow" /></a>
       <a class="btn" href="#companies">{copy.corpEyebrow}</a>
     </div>
   </PageHero>
@@ -180,9 +170,6 @@ const copy = {
             ))
           }
         </div>
-        <div class="btn-row reveal">
-          <a class="btn btn--gold" href="#quote">{t('cta.events')} <Icon name="arrow" /></a>
-        </div>
       </div>
     </div>
   </section>
@@ -215,14 +202,6 @@ const copy = {
     </div>
   </section>
 
-  <section class="section" id="quote">
-    <div class="wrap split">
-      <SectionHead eyebrow={copy.formEyebrow} title={copy.formTitle} lead={copy.formLead} />
-      <div class="card reveal">
-        <ContactForm lang={lang} kind="event" />
-      </div>
-    </div>
-  </section>
 </Layout>
 
 <style>

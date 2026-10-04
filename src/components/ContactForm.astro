@@ -1,57 +1,121 @@
 ---
+/**
+ * The one contact form. "Assunto" picks a set of questions (lessons, events or other);
+ * the page can preselect it with ?s=lessons|events|other. Field names are the questions
+ * themselves, so the email João receives reads as plain question → answer.
+ */
 import Icon from './Icon.astro';
 import { site } from '../config/site';
 import { useT, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
-  kind: 'lesson' | 'event' | 'general';
 }
-const { lang, kind } = Astro.props;
+const { lang } = Astro.props;
 const t = useT(lang);
-const pt = lang === 'pt';
 
-const subjects = {
-  lesson: pt ? 'Aulas de piano' : 'Piano lessons',
-  event: pt ? 'Pedido de orçamento — evento' : 'Event quote request',
-  general: pt ? 'Contacto pelo site' : 'Website enquiry',
-};
+const c = {
+  en: {
+    mailSubject: 'Website enquiry',
+    subject: 'Subject',
+    subjects: { lessons: 'Lessons', events: 'Events', other: 'Other' },
+    pick: 'Choose a subject to see the questions.',
+    lessonType: 'Piano lessons, music theory or something else?',
+    lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
+    age: 'Student’s age',
+    agePh: 'e.g. 9',
+    guardian: 'Parent or guardian’s name',
+    experience: 'Experience playing the piano',
+    experiencePh: 'e.g. never played, or two years of lessons as a child…',
+    where: 'Where would the lessons be?',
+    whereOpts: ['At the student’s home', 'At the teacher’s home (Benfica)'],
+    whereHint: 'Tick one or both.',
+    whereRequired: 'Please choose at least one option.',
+    area: 'Area or town',
+    areaPh: 'e.g. Benfica, Amadora, Telheiras…',
+    pianoHome: 'Is there a piano at home? (optional)',
+    pianoHomeOpts: ['Yes, an acoustic piano', 'Yes, a keyboard or digital piano', 'Not yet'],
+    goal: 'Goal (optional)',
+    goalOpts: ['For fun', 'Exams or conservatoire', 'Playing the songs I love', 'Accompanying myself singing', 'Other'],
+    schedule: 'Preferred days and times',
+    schedulePh: 'e.g. weekday evenings after 6pm, Saturday mornings…',
+    more: 'Anything else you’d like to share?',
+    eventType: 'Type of event',
+    eventTypes: ['Wedding', 'Corporate event', 'Private event', 'Other'],
+    eventDate: 'Event date',
+    music: 'Type of music you’re looking for',
+    musicPh: 'e.g. jazz, classical, pop on piano…',
+    duration: 'Approximate duration',
+    durationPh: 'e.g. 2 hours',
+    venue: 'Event location',
+    venuePh: 'e.g. a quinta in Sintra, a hotel in Lisbon…',
+    venuePiano: 'Does the venue have a piano?',
+    venuePianoOpts: ['Yes', 'No', 'I don’t know'],
+    songs: 'Special songs (optional)',
+    songsPh: 'e.g. the bride’s entrance, the first dance…',
+    guests: 'Number of guests',
+    sound: 'Sound system',
+    soundOpts: ['I have my own', 'I need you to bring one'],
+    message: 'Your message',
+    you: 'About you',
+    name: 'Name',
+    prefer: 'Preferred way to reach you',
+    preferOpts: { whatsapp: 'WhatsApp', phone: 'Phone call', email: 'Email' },
+    contact: 'Your contact',
+    contactPh: { none: 'Phone number or email', whatsapp: 'WhatsApp number', phone: 'Phone number', email: 'Email address' },
+  },
+  pt: {
+    mailSubject: 'Contacto pelo site',
+    subject: 'Assunto',
+    subjects: { lessons: 'Aulas', events: 'Eventos', other: 'Outro' },
+    pick: 'Escolha o assunto para ver as perguntas.',
+    lessonType: 'Aulas de piano, formação musical ou outro?',
+    lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
+    age: 'Idade do aluno',
+    agePh: 'Ex.: 9',
+    guardian: 'Nome do encarregado de educação',
+    experience: 'Experiência a tocar piano',
+    experiencePh: 'Ex.: nunca toquei, ou tive dois anos de aulas em criança…',
+    where: 'Onde são as aulas?',
+    whereOpts: ['Em casa do aluno', 'Em casa do professor (Benfica)'],
+    whereHint: 'Pode escolher uma ou as duas.',
+    whereRequired: 'Escolha pelo menos uma opção.',
+    area: 'Zona ou localidade',
+    areaPh: 'Ex.: Benfica, Amadora, Telheiras…',
+    pianoHome: 'Tem piano em casa? (opcional)',
+    pianoHomeOpts: ['Sim, piano acústico', 'Sim, teclado ou piano digital', 'Ainda não'],
+    goal: 'Objetivo (opcional)',
+    goalOpts: ['Lazer', 'Exames ou conservatório', 'Tocar as músicas de que gosto', 'Acompanhar-me a cantar', 'Outro'],
+    schedule: 'Preferências de horário e dias da semana',
+    schedulePh: 'Ex.: dias úteis depois das 18h, sábados de manhã…',
+    more: 'Mais alguma coisa que queira partilhar?',
+    eventType: 'Tipo de evento',
+    eventTypes: ['Casamento', 'Evento corporativo', 'Evento privado', 'Outro'],
+    eventDate: 'Data do evento',
+    music: 'Tipo de música que procura',
+    musicPh: 'Ex.: jazz, clássico, pop ao piano…',
+    duration: 'Duração aproximada do evento',
+    durationPh: 'Ex.: 2 horas',
+    venue: 'Local do evento',
+    venuePh: 'Ex.: quinta em Sintra, hotel em Lisboa…',
+    venuePiano: 'O espaço tem piano?',
+    venuePianoOpts: ['Sim', 'Não', 'Não sei'],
+    songs: 'Músicas especiais (opcional)',
+    songsPh: 'Ex.: entrada da noiva, primeira dança…',
+    guests: 'Número de pessoas',
+    sound: 'Sistema de som',
+    soundOpts: ['Tenho o meu', 'Preciso que leve'],
+    message: 'A sua mensagem',
+    you: 'Sobre si',
+    name: 'Nome',
+    prefer: 'Como prefere que o contacte?',
+    preferOpts: { whatsapp: 'WhatsApp', phone: 'Chamada', email: 'Email' },
+    contact: 'O seu contacto',
+    contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', phone: 'Número de telefone', email: 'Endereço de email' },
+  },
+}[lang];
 
-type Field = { name: string; label: string; options: string[] };
-const selects: Field[] =
-  kind === 'lesson'
-    ? [
-        {
-          name: 'student',
-          label: pt ? 'Para quem são as aulas?' : 'Who are the lessons for?',
-          options: pt
-            ? ['Criança (5–12)', 'Adolescente (13–17)', 'Adulto', 'Sénior']
-            : ['Child (5–12)', 'Teenager (13–17)', 'Adult', 'Senior'],
-        },
-        {
-          name: 'level',
-          label: pt ? 'Nível' : 'Level',
-          options: pt
-            ? ['Nunca toquei', 'Iniciante', 'Intermédio', 'Avançado']
-            : ['Never played', 'Beginner', 'Intermediate', 'Advanced'],
-        },
-        {
-          name: 'format',
-          label: pt ? 'Formato' : 'Format',
-          options: pt ? ['Presencial', 'Online', 'Ao domicílio', 'Ainda não sei'] : ['In person', 'Online', 'At home', 'Not sure yet'],
-        },
-      ]
-    : kind === 'event'
-      ? [
-          {
-            name: 'event_type',
-            label: pt ? 'Tipo de evento' : 'Type of event',
-            options: pt
-              ? ['Casamento', 'Evento corporativo', 'Jantar / festa privada', 'Concerto privado em casa', 'Hotel / restaurante', 'Outro']
-              : ['Wedding', 'Corporate event', 'Private dinner / party', 'House concert', 'Hotel / restaurant', 'Other'],
-          },
-        ]
-      : [];
+const subjectKeys = ['lessons', 'events', 'other'] as const;
 ---
 
 <form
@@ -59,100 +123,225 @@ const selects: Field[] =
   data-form
   data-endpoint={site.formEndpoint}
   data-email={site.email}
-  data-subject={subjects[kind]}
+  data-subject={c.mailSubject}
   data-sending={t('form.sending')}
   data-sent={t('form.sent')}
   data-mailto={t('form.mailto')}
   data-error={t('form.error')}
+  data-ph={JSON.stringify(c.contactPh)}
+  data-where-required={c.whereRequired}
   method="post"
   action={site.formEndpoint || `mailto:${site.email}`}
 >
-  <input type="hidden" name="_subject" value={subjects[kind]} />
-  <div class="row">
-    <label>
-      <span>{t('form.name')}</span>
-      <input name="name" autocomplete="name" required />
-    </label>
-    <label>
-      <span>{t('form.email')}</span>
-      <input name="email" type="email" autocomplete="email" required />
-    </label>
-  </div>
-  <div class="row">
-    <label>
-      <span>{t('form.phone')}</span>
-      <input name="phone" type="tel" autocomplete="tel" />
-    </label>
-    {
-      kind === 'event' && (
-        <label>
-          <span>{pt ? 'Data do evento' : 'Event date'}</span>
-          <input name="event_date" type="date" />
-        </label>
-      )
-    }
-    {
-      selects.slice(0, kind === 'event' ? 0 : 1).map((f) => (
-        <label>
-          <span>{f.label}</span>
-          <select name={f.name}>
-            {f.options.map((o) => (
-              <option>{o}</option>
-            ))}
-          </select>
-        </label>
-      ))
-    }
-  </div>
-  {
-    kind === 'event' && (
-      <div class="row">
-        {selects.map((f) => (
-          <label>
-            <span>{f.label}</span>
-            <select name={f.name}>
-              {f.options.map((o) => (
-                <option>{o}</option>
-              ))}
-            </select>
+  <input type="hidden" name="_subject" value={c.mailSubject} />
+
+  <fieldset class="group">
+    <legend>{c.subject}</legend>
+    <div class="pills">
+      {
+        subjectKeys.map((k) => (
+          <label class="pill">
+            <input type="radio" name={c.subject} value={c.subjects[k]} data-topic={k} required />
+            <span>{c.subjects[k]}</span>
           </label>
-        ))}
+        ))
+      }
+    </div>
+    <p class="hint" data-pick>{c.pick}</p>
+  </fieldset>
+
+  <fieldset class="topic" data-for="lessons" disabled hidden>
+    <fieldset class="group">
+      <legend>{c.lessonType}</legend>
+      <div class="pills">
+        {
+          c.lessonTypes.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.lessonType} value={o} required />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <div class="row">
+      <label>
+        <span>{c.age}</span>
+        <input name={c.age} inputmode="numeric" placeholder={c.agePh} data-age />
+      </label>
+      <fieldset class="sub" data-when="minor" disabled hidden>
         <label>
-          <span>{pt ? 'Local e nº de convidados' : 'Location & number of guests'}</span>
-          <input name="venue" placeholder={pt ? 'Ex.: Sintra, 120 pessoas' : 'e.g. Sintra, 120 guests'} />
+          <span>{c.guardian}</span>
+          <input name={c.guardian} autocomplete="off" required />
         </label>
+      </fieldset>
+    </div>
+    <label>
+      <span>{c.experience}</span>
+      <textarea name={c.experience} rows="3" placeholder={c.experiencePh}></textarea>
+    </label>
+    <fieldset class="group">
+      <legend>{c.pianoHome}</legend>
+      <div class="pills">
+        {
+          c.pianoHomeOpts.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.pianoHome} value={o} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
       </div>
-    )
-  }
-  {
-    kind === 'lesson' && (
-      <div class="row">
-        {selects.slice(1).map((f) => (
-          <label>
-            <span>{f.label}</span>
-            <select name={f.name}>
-              {f.options.map((o) => (
-                <option>{o}</option>
-              ))}
-            </select>
-          </label>
-        ))}
+    </fieldset>
+    <fieldset class="group">
+      <legend>{c.goal}</legend>
+      <div class="checks">
+        {
+          c.goalOpts.map((o) => (
+            <label class="check">
+              <input type="checkbox" name={c.goal} value={o} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
       </div>
-    )
-  }
-  <label>
-    <span>{t('form.message')}</span>
-    <textarea name="message" rows="5" required></textarea>
-  </label>
-  <div class="actions">
+    </fieldset>
+    <fieldset class="group" data-where>
+      <legend>{c.where}</legend>
+      <div class="checks">
+        {
+          c.whereOpts.map((o, i) => (
+            <label class="check">
+              <input type="checkbox" name={c.where} value={o} data-at-home={i === 0 ? '' : undefined} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+      <p class="hint">{c.whereHint}</p>
+    </fieldset>
+    <fieldset class="sub" data-when="home" disabled hidden>
+      <label>
+        <span>{c.area}</span>
+        <input name={c.area} placeholder={c.areaPh} required />
+      </label>
+    </fieldset>
+    <label>
+      <span>{c.schedule}</span>
+      <textarea name={c.schedule} rows="3" placeholder={c.schedulePh}></textarea>
+    </label>
+    <label>
+      <span>{c.more}</span>
+      <textarea name={c.more} rows="3"></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset class="topic" data-for="events" disabled hidden>
+    <div class="row">
+      <label>
+        <span>{c.eventType}</span>
+        <select name={c.eventType} required>
+          <option value="" disabled selected>—</option>
+          {c.eventTypes.map((o) => <option>{o}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>{c.eventDate}</span>
+        <input name={c.eventDate} type="date" />
+      </label>
+    </div>
+    <label>
+      <span>{c.venue}</span>
+      <input name={c.venue} placeholder={c.venuePh} required />
+    </label>
+    <fieldset class="group">
+      <legend>{c.venuePiano}</legend>
+      <div class="pills">
+        {
+          c.venuePianoOpts.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.venuePiano} value={o} required />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <label>
+      <span>{c.music}</span>
+      <input name={c.music} placeholder={c.musicPh} />
+    </label>
+    <div class="row">
+      <label>
+        <span>{c.duration}</span>
+        <input name={c.duration} placeholder={c.durationPh} />
+      </label>
+      <label>
+        <span>{c.guests}</span>
+        <input name={c.guests} type="number" min="1" inputmode="numeric" />
+      </label>
+    </div>
+    <fieldset class="group">
+      <legend>{c.sound}</legend>
+      <div class="pills">
+        {
+          c.soundOpts.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.sound} value={o} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <label>
+      <span>{c.songs}</span>
+      <textarea name={c.songs} rows="3" placeholder={c.songsPh}></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset class="topic" data-for="other" disabled hidden>
+    <label>
+      <span>{c.message}</span>
+      <textarea name={c.message} rows="6" required></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset class="topic you" data-for="any" disabled hidden>
+    <p class="you__title">{c.you}</p>
+    <label>
+      <span>{c.name}</span>
+      <input name={c.name} autocomplete="name" required />
+    </label>
+    <fieldset class="group">
+      <legend>{c.prefer}</legend>
+      <div class="pills">
+        {
+          (['whatsapp', 'phone', 'email'] as const).map((k) => (
+            <label class="pill">
+              <input type="radio" name={c.prefer} value={c.preferOpts[k]} data-via={k} required />
+              <span>{c.preferOpts[k]}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <label>
+      <span>{c.contact}</span>
+      <input name={c.contact} data-contact placeholder={c.contactPh.none} required />
+    </label>
+  </fieldset>
+
+  <div class="actions" data-actions hidden>
     <button class="btn btn--gold" type="submit">
       <span data-label>{t('form.send')}</span>
       <Icon name="arrow" size={18} />
     </button>
     <p class="status" data-status aria-live="polite"></p>
   </div>
+
   <p class="direct">
-    <a href={`mailto:${site.email}?subject=${encodeURIComponent(subjects[kind])}`}><Icon name="mail" size={16} /> {site.email}</a>
+    <a href={`mailto:${site.email}?subject=${encodeURIComponent(c.mailSubject)}`}><Icon name="mail" size={16} /> {site.email}</a>
     {
       site.phone && (
         <a href={`tel:${site.phone.replace(/\s/g, '')}`}>
@@ -174,23 +363,92 @@ const selects: Field[] =
   document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const label = form.querySelector<HTMLElement>('[data-label]')!;
+    const actions = form.querySelector<HTMLElement>('[data-actions]')!;
+    const pick = form.querySelector<HTMLElement>('[data-pick]')!;
+    const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
+    const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
-    const { endpoint, email, subject, sending, sent, mailto, error } = form.dataset;
+    const { endpoint, email, subject, sending, sent, mailto, error, whereRequired } = form.dataset;
+    const ph = JSON.parse(form.dataset.ph!) as Record<string, string>;
+
+    // Show only the questions for the chosen subject; hidden ones are disabled so they are neither required nor sent.
+    const show = (topic: string) => {
+      form.querySelectorAll<HTMLFieldSetElement>('.topic').forEach((f) => {
+        const on = f.dataset.for === topic || f.dataset.for === 'any';
+        f.hidden = !on;
+        f.disabled = !on;
+      });
+      actions.hidden = false;
+      pick.hidden = true;
+    };
+    form.querySelectorAll<HTMLInputElement>('[data-topic]').forEach((r) => {
+      r.addEventListener('change', () => show(r.dataset.topic!));
+    });
+    const wanted = new URLSearchParams(location.search).get('s');
+    const preset = form.querySelector<HTMLInputElement>(`[data-topic="${wanted}"]`);
+    if (preset) {
+      preset.checked = true;
+      show(wanted!);
+    }
+
+    // The contact field follows the preferred channel.
+    form.querySelectorAll<HTMLInputElement>('[data-via]').forEach((r) => {
+      r.addEventListener('change', () => {
+        const via = r.dataset.via!;
+        contact.type = via === 'email' ? 'email' : 'tel';
+        contact.autocomplete = via === 'email' ? 'email' : 'tel';
+        contact.placeholder = ph[via];
+      });
+    });
+
+    // Follow-up questions: the area when lessons are at the student's home, a guardian when the student is a minor.
+    const age = form.querySelector<HTMLInputElement>('[data-age]')!;
+    const atHome = form.querySelector<HTMLInputElement>('[data-at-home]')!;
+    const conditions: Record<string, () => boolean> = {
+      home: () => atHome.checked,
+      minor: () => {
+        const n = parseInt(age.value, 10);
+        return n > 0 && n < 18;
+      },
+    };
+    const sync = () =>
+      form.querySelectorAll<HTMLFieldSetElement>('[data-when]').forEach((f) => {
+        const on = conditions[f.dataset.when!]();
+        f.hidden = !on;
+        f.disabled = !on;
+      });
+    age.addEventListener('input', sync);
+    atHome.addEventListener('change', sync);
+
+    // "Where" accepts one or both boxes, but at least one.
+    const boxes = [...where.querySelectorAll<HTMLInputElement>('input[type=checkbox]')];
+    const checkWhere = () => boxes[0].setCustomValidity(boxes.some((b) => b.checked) ? '' : whereRequired!);
+    boxes.forEach((b) => b.addEventListener('change', checkWhere));
+    checkWhere();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
+      const topic = form.querySelector<HTMLInputElement>('[data-topic]:checked')?.value ?? '';
+      const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
+      const title = [subject, topic, name].filter(Boolean).join(' — ');
 
       if (!endpoint) {
-        // No form backend configured: open the visitor's email app with everything filled in.
-        const lines = [...data.entries()]
-          .filter(([k, v]) => !k.startsWith('_') && k !== 'message' && String(v).trim())
-          .map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`);
-        const body = `${data.get('message')}\n\n—\n${lines.join('\n')}`;
+        // No form backend configured: open the visitor's email app with every answer filled in.
+        const answers = new Map<string, string[]>();
+        for (const [k, v] of data.entries()) {
+          if (k.startsWith('_') || !String(v).trim()) continue;
+          answers.set(k, [...(answers.get(k) ?? []), String(v)]);
+        }
+        const body = [...answers].map(([k, v]) => `${k}: ${v.join(', ')}`).join('\n');
         status.textContent = mailto!;
-        location.href = `mailto:${email}?subject=${encodeURIComponent(`${subject} — ${data.get('name')}`)}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${email}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
         return;
       }
+
+      // Formspree: a clear subject line, and replying goes straight to the visitor when they chose email.
+      data.set('_subject', title);
+      if (contact.type === 'email') data.set('_replyto', contact.value);
 
       label.textContent = sending!;
       form.classList.add('is-busy');
@@ -211,9 +469,22 @@ const selects: Field[] =
 </script>
 
 <style>
-  .form {
+  .form,
+  .topic {
     display: grid;
-    gap: 1.1rem;
+    gap: 1.3rem;
+  }
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .sub[hidden],
+  .topic[hidden],
+  .actions[hidden],
+  .hint[hidden] {
+    display: none;
   }
   .row {
     display: grid;
@@ -224,14 +495,118 @@ const selects: Field[] =
     display: grid;
     gap: 0.45rem;
   }
-  label span {
+  label > span,
+  legend,
+  .you__title {
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
   }
-  input,
+  legend {
+    margin-bottom: 0.6rem;
+    padding: 0;
+  }
+  .you {
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+  .you__title {
+    margin: 0;
+    color: var(--gold);
+  }
+  .hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* Radio choices as pills; checkboxes as a simple list. */
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .pill {
+    position: relative;
+    display: block;
+    cursor: pointer;
+  }
+  .pill input,
+  .check input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .pill span {
+    display: block;
+    padding: 0.7rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    background: var(--field-bg);
+    color: var(--ivory);
+    font-size: 0.95rem;
+    letter-spacing: normal;
+    text-transform: none;
+    font-weight: 500;
+    transition: border-color 0.3s, background 0.3s, color 0.3s;
+  }
+  .pill:hover span {
+    border-color: var(--gold);
+  }
+  .pill input:checked + span {
+    border-color: transparent;
+    background: var(--gold-grad);
+    color: var(--on-accent);
+    font-weight: 600;
+  }
+  .pill input:focus-visible + span,
+  .check input:focus-visible + span::before {
+    outline: 2px solid var(--gold-2);
+    outline-offset: 3px;
+  }
+  .checks {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .check {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .check span {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--ivory);
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+  .check span::before {
+    content: '';
+    flex: none;
+    width: 1.3rem;
+    height: 1.3rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--field-bg) center / 70% no-repeat;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  .check:hover span::before {
+    border-color: var(--gold);
+  }
+  .check input:checked + span::before {
+    border-color: transparent;
+    background-color: var(--gold);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5'/%3E%3C/svg%3E");
+  }
+
+  input:not([type='radio']):not([type='checkbox']),
   select,
   textarea {
     width: 100%;
@@ -257,7 +632,7 @@ const selects: Field[] =
   }
   input::placeholder,
   textarea::placeholder {
-    color: rgb(var(--fg-rgb) / 0.3);
+    color: rgb(var(--fg-rgb) / 0.4);
   }
   input:focus,
   select:focus,

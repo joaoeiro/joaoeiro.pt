@@ -34,12 +34,15 @@ const copy = {
     title: 'João Eiró — Pianist & Piano Teacher',
     description:
       'João Eiró is a Portuguese pianist, piano teacher, accompanist and improviser. Piano lessons for all ages, concerts, and live piano for weddings, private and corporate events.',
-    hello: 'Pianist · Teacher · Improviser',
+    hello: 'From Classical to Jazz',
     roles: ['Pianist & piano teacher', 'Accompanist & soloist', 'Compulsive improviser'],
     photoAlt: 'João Eiró playing keyboard and singing live on stage',
     intro:
-      'From Beethoven to a borrowed groove — music for the stage, for your celebration and for the hands that want to learn it.',
-    marquee: ['Concerts', 'Piano lessons', 'Improvisation', 'Weddings', 'Corporate events', 'Accompaniment', 'House concerts', 'Classical', 'Groove'],
+      'From the discipline of Classical to the freedom of Jazz — music for the stage, for events, or for teaching anyone who has always wanted to learn to play.',
+    marquee: [
+      'Piano lessons', 'House concerts', 'Composer', 'Weddings', 'Keyboardist', 'Music theory lessons',
+      'Corporate events', 'Music producer', 'Improv theatre', 'Accompanist', 'Events',
+    ],
     doorsEyebrow: 'What I do',
     doorsTitle: 'Three ways to <em>share the piano</em>',
     doors: [
@@ -85,12 +88,15 @@ const copy = {
     title: 'João Eiró — Pianista & Professor de Piano',
     description:
       'João Eiró é pianista, professor de piano, músico acompanhador e improvisador. Aulas de piano para todas as idades, concertos e piano ao vivo para casamentos, eventos privados e corporativos.',
-    hello: 'Pianista · Professor · Improvisador',
+    hello: 'Do Clássico ao Jazz',
     roles: ['Pianista e professor de piano', 'Músico acompanhador e solista', 'Improvisador compulsivo'],
     photoAlt: 'João Eiró a tocar teclado e a cantar ao vivo em palco',
     intro:
-      'De Beethoven a um groove emprestado — música para o palco, para a sua celebração e para as mãos que a querem aprender.',
-    marquee: ['Concertos', 'Aulas de piano', 'Improvisação', 'Casamentos', 'Eventos corporativos', 'Acompanhamento', 'Concertos em casa', 'Clássico', 'Groove'],
+      'Da disciplina do Clássico à liberdade do Jazz — música para o palco, para eventos ou para ensinar quem sempre quis aprender a tocar.',
+    marquee: [
+      'Aulas de piano', 'Concertos em casa', 'Compositor', 'Casamentos', 'Teclista', 'Aulas de formação musical',
+      'Eventos corporativos', 'Produtor musical', 'Teatro de improviso', 'Músico acompanhador', 'Eventos',
+    ],
     doorsEyebrow: 'O que faço',
     doorsTitle: 'Três formas de <em>partilhar o piano</em>',
     doors: [
@@ -154,10 +160,6 @@ const hasQuotes = published(testimonials).length > 0;
           {copy.roles.map((r, i) => <span style={`--n:${i}`}>{r}</span>)}
         </div>
         <p class="lead hero__in" style="--d:1.05s">{copy.intro}</p>
-        <div class="btn-row hero__in" style="--d:1.2s">
-          <a class="btn btn--gold" href={path('lessons', lang)}>{t('cta.lessons')} <Icon name="arrow" /></a>
-          <a class="btn" href={path('events', lang)}>{t('cta.events')}</a>
-        </div>
       </div>
       <div class="hero__stage">
         <figure class="portrait hero__in" style="--d:.5s">
@@ -302,17 +304,19 @@ const hasQuotes = published(testimonials).length > 0;
     line-height: 0.86;
     margin-bottom: 1.6rem;
   }
+  /* Extra room inside the clip for accents and descenders (the J, the ó); negative margins keep the spacing. */
   .line {
     display: block;
     overflow: hidden;
-    padding-bottom: 0.08em;
+    padding: 0.12em 0 0.24em;
+    margin: -0.12em 0 -0.16em;
   }
   .line--gold {
     padding-left: 0.6em;
   }
   .ch {
     display: inline-block;
-    transform: translateY(110%) rotate(8deg);
+    transform: translateY(140%) rotate(8deg);
     animation: chIn 1.1s var(--ease) forwards;
     animation-delay: var(--d);
   }
@@ -334,8 +338,9 @@ const hasQuotes = published(testimonials).length > 0;
   }
   .roles {
     position: relative;
-    height: 2.2rem;
-    margin-bottom: 1.4rem;
+    height: 1.6em;
+    line-height: 1.6em;
+    margin-bottom: 1.1rem;
     overflow: hidden;
     font-family: var(--font-display);
     font-style: italic;

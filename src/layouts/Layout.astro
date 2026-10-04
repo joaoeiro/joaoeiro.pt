@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import NoteField from '../components/NoteField.astro';
+import SideTab from '../components/SideTab.astro';
 import { site } from '../config/site';
 import { asset, path, routes, locales, type Lang, type RouteKey } from '../i18n';
 
@@ -85,7 +86,7 @@ const jsonLd = {
 try{t=localStorage.getItem('theme')}catch(e){}
 if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
 d.dataset.theme=t;
-var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#fdf8f1':'#07060a';})();`}
+var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#d7cfc4':'#07060a';})();`}
     />
     {
       lang === 'en' && !noindex && (
@@ -109,6 +110,7 @@ var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light
       <slot />
     </main>
     <Footer lang={lang} route={route} />
+    <SideTab lang={lang} route={route} />
 
     <script>
       // Reveal elements as they scroll into view.
