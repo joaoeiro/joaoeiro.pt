@@ -19,7 +19,7 @@ export const site = {
    * Form endpoint (e.g. https://formspree.io/f/xxxx, Getform, Netlify Forms…).
    * When empty, forms open the visitor's email app with everything pre-filled.
    */
-  formEndpoint: '',
+  formEndpoint: 'https://formspree.io/f/xaeqwkwl',
 
   socials: {
     youtube: 'https://www.youtube.com/@joaoeiropiano',
