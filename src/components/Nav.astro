@@ -114,7 +114,7 @@ const links: { key: RouteKey; label: string }[] = [
   const meta = document.querySelector<HTMLMetaElement>('meta[name=theme-color]');
   const apply = (theme: string) => {
     root.dataset.theme = theme;
-    if (meta) meta.content = theme === 'light' ? '#fdf8f1' : '#07060a';
+    if (meta) meta.content = theme === 'light' ? '#d7cfc4' : '#07060a';
     toggle.setAttribute('aria-label', toggle.dataset[theme === 'light' ? 'labelDark' : 'labelLight']!);
   };
   apply(root.dataset.theme ?? 'dark');
