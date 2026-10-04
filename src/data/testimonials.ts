@@ -32,4 +32,13 @@ export const testimonials: Testimonial[] = [
     role: { en: 'Piano student', pt: 'Aluno de piano' },
     rating: 5,
   },
+  {
+    quote: {
+      pt: 'Comecei as minhas aulas há cerca de 2 meses. Tinha tocado piano em criança e decidi retomar aos 25 anos. Ensino muito versátil e adaptado às necessidades e interesses pessoais do aluno. Criatividade e dedicação que permitiu manter as aulas mesmo durante a quarentena, através de videoconferência de qualidade. Recomendo muito!',
+      en: 'I started my lessons about 2 months ago. I had played the piano as a child and decided to pick it up again at 25. Very versatile teaching, adapted to each student’s needs and personal interests. Creativity and dedication that kept the lessons going even during lockdown, through high-quality video calls. Highly recommended!',
+    },
+    author: 'Rita C.',
+    role: { en: 'Piano student', pt: 'Aluna de piano' },
+    rating: 5,
+  },
 ];

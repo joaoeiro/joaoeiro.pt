@@ -47,10 +47,11 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
     gap: 1.25rem;
-    align-items: start;
   }
+  /* Equal heights, with the author lined up at the bottom. */
   .quote {
     display: grid;
+    grid-template-rows: auto 1fr auto;
     gap: 1.2rem;
     margin: 0;
   }
