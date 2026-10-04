@@ -6,8 +6,9 @@ import VideoGallery from '../components/VideoGallery.astro';
 import GrandPiano from '../components/GrandPiano.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Icon from '../components/Icon.astro';
+import { Image } from 'astro:assets';
+import photo from '../assets/joao-eiro-live.jpg';
 import { asset, path, pick, useT, type Lang } from '../i18n';
-import { site } from '../config/site';
 import { instagram, tiktok } from '../data/media';
 import { repertoire } from '../data/repertoire';
 import { gallery } from '../data/gallery';
@@ -91,7 +92,13 @@ const copy = {
   <section class="section">
     <div class="wrap split">
       <div class="sticky art reveal">
-        {site.portrait ? <img src={asset(site.portrait)} alt={site.name} /> : <GrandPiano />}
+        <Image
+          src={photo}
+          alt={lang === 'pt' ? 'João Eiró ao vivo, ao teclado' : 'João Eiró live at the keyboard'}
+          widths={[480, 760, 1100]}
+          sizes="(max-width: 860px) 90vw, 560px"
+        />
+        <GrandPiano class="art__piano" />
       </div>
       <div>
         <SectionHead eyebrow={copy.bioEyebrow} title={copy.bioTitle} />
@@ -164,11 +171,18 @@ const copy = {
 </Layout>
 
 <style>
-  .art img {
+  .art :global(img) {
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: var(--radius);
+    object-position: 42% 30%;
+    border-radius: 999px 999px var(--radius) var(--radius);
+    box-shadow: 0 40px 90px -40px rgb(0 0 0 / 0.7);
+  }
+  .art :global(.art__piano) {
+    width: 70%;
+    margin: -12% 0 0 auto;
+    position: relative;
   }
   .art {
     padding-top: 4rem;

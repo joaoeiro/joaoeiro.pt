@@ -25,7 +25,8 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 
 | What | Where |
 | --- | --- |
-| Email, phone, social links, form endpoint, portrait | `src/config/site.ts` |
+| Email, phone, social links, form endpoint | `src/config/site.ts` |
+| Main photo (hero & portfolio), optimised automatically | `src/assets/joao-eiro-live.jpg` |
 | Videos (YouTube IDs, TikTok & Instagram URLs) | `src/data/media.ts` |
 | Concerts | `src/data/shows.ts` |
 | Testimonials | `src/data/testimonials.ts` |

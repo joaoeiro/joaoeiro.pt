@@ -21,9 +21,6 @@ export const site = {
    */
   formEndpoint: '',
 
-  /** Optional portrait in /public/images (e.g. '/images/joao.jpg'). Empty = illustrated piano. */
-  portrait: '',
-
   socials: {
     youtube: 'https://www.youtube.com/@joaoeiropiano',
     instagram: 'https://www.instagram.com/piano.joaoeiro',
