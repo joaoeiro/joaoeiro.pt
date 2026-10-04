@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import NoteField from '../components/NoteField.astro';
 import { site } from '../config/site';
-import { routes, locales, type Lang, type RouteKey } from '../i18n';
+import { asset, path, routes, locales, type Lang, type RouteKey } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -17,12 +17,13 @@ interface Props {
 
 const { lang, route, title, description, noindex = false } = Astro.props;
 const pageTitle = route === 'home' ? title : `${title} · ${site.name}`;
-const canonical = new URL(routes[route][lang], site.url).href;
+const origin = Astro.site ?? site.url;
+const canonical = new URL(path(route, lang), origin).href;
 const alternates = (Object.keys(routes[route]) as Lang[]).map((l) => ({
   lang: locales[l],
-  href: new URL(routes[route][l], site.url).href,
+  href: new URL(path(route, l), origin).href,
 }));
-const ogImage = new URL('/og.png', site.url).href;
+const ogImage = new URL(asset('/og.png'), origin).href;
 const sameAs = Object.values(site.socials).filter(Boolean);
 
 const jsonLd = {
@@ -54,12 +55,12 @@ const jsonLd = {
           {alternates.map((a) => (
             <link rel="alternate" hreflang={a.lang} href={a.href} />
           ))}
-          <link rel="alternate" hreflang="x-default" href={new URL(routes[route].en, site.url).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL(path(route, 'en'), origin).href} />
         </>
       )
     }
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={asset('/sitemap-index.xml')} />
     <meta name="theme-color" content="#07060a" />
 
     <meta property="og:type" content="website" />
@@ -86,7 +87,7 @@ const jsonLd = {
           set:html={`(function(){try{
   if (localStorage.getItem('lang')) return;
   var langs = navigator.languages || [navigator.language || ''];
-  if (String(langs[0] || '').toLowerCase().indexOf('pt') === 0) location.replace(${JSON.stringify(routes[route].pt)} + location.hash);
+  if (String(langs[0] || '').toLowerCase().indexOf('pt') === 0) location.replace(${JSON.stringify(path(route, 'pt'))} + location.hash);
 }catch(e){}})();`}
         />
       )

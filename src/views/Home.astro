@@ -9,7 +9,7 @@ import Testimonials from '../components/Testimonials.astro';
 import CtaBand from '../components/CtaBand.astro';
 import GrandPiano from '../components/GrandPiano.astro';
 import Icon from '../components/Icon.astro';
-import { path, useT, type Lang } from '../i18n';
+import { asset, path, useT, type Lang } from '../i18n';
 import { site } from '../config/site';
 import { instagram, tiktok } from '../data/media';
 import { getYouTubeVideos } from '../lib/youtube';
@@ -203,7 +203,7 @@ const hasQuotes = published(testimonials).length > 0;
       <div class="about__art reveal">
         {
           site.portrait ? (
-            <img src={site.portrait} alt={site.name} loading="lazy" />
+            <img src={asset(site.portrait)} alt={site.name} loading="lazy" />
           ) : (
             <GrandPiano />
           )

@@ -14,7 +14,16 @@ export const routes = {
 } as const;
 export type RouteKey = keyof typeof routes;
 
-export const path = (key: RouteKey, lang: Lang) => routes[key][lang];
+/**
+ * Base path the site is served from: '' on a custom domain (joaoeiro.pt),
+ * '/joaoeiro.pt' on <user>.github.io/joaoeiro.pt. Set at build time.
+ */
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+/** Prefix a root-relative URL ('/images/x.jpg') with the base path. */
+export const asset = (url: string) => (url.startsWith('/') ? BASE + url : url);
+
+export const path = (key: RouteKey, lang: Lang) => asset(routes[key][lang]);
 
 /** Locale tags used for <html lang>, hreflang and date formatting. */
 export const locales: Record<Lang, string> = { en: 'en', pt: 'pt-PT' };

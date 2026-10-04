@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Icon from '../components/Icon.astro';
-import { path, useT, type Lang } from '../i18n';
+import { asset, path, useT, type Lang } from '../i18n';
 import { site } from '../config/site';
 import { gallery } from '../data/gallery';
 
@@ -100,8 +100,8 @@ const copy = {
         gallery.length ? (
           <div class="photos">
             {gallery.map((g) => (
-              <a class="reveal" href={g.src} download>
-                <img src={g.src} alt={g.alt} loading="lazy" />
+              <a class="reveal" href={asset(g.src)} download>
+                <img src={asset(g.src)} alt={g.alt} loading="lazy" />
                 <span>
                   <Icon name="download" size={16} /> {g.alt}
                 </span>

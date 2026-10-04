@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import { path } from '../i18n';
 ---
 
 <Layout lang="en" route="home" title="Wrong note — 404" description="This page does not exist." noindex>
@@ -13,8 +14,8 @@ import Icon from '../components/Icon.astro';
         <br /><span class="muted">Esta página não existe — mas a música continua.</span>
       </p>
       <div class="btn-row">
-        <a class="btn btn--gold" href="/">Home <Icon name="arrow" /></a>
-        <a class="btn" href="/pt/">Início</a>
+        <a class="btn btn--gold" href={path('home', 'en')}>Home <Icon name="arrow" /></a>
+        <a class="btn" href={path('home', 'pt')}>Início</a>
       </div>
     </div>
   </section>

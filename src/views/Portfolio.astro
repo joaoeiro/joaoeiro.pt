@@ -6,7 +6,7 @@ import VideoGallery from '../components/VideoGallery.astro';
 import GrandPiano from '../components/GrandPiano.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Icon from '../components/Icon.astro';
-import { path, pick, useT, type Lang } from '../i18n';
+import { asset, path, pick, useT, type Lang } from '../i18n';
 import { site } from '../config/site';
 import { instagram, tiktok } from '../data/media';
 import { repertoire } from '../data/repertoire';
@@ -91,7 +91,7 @@ const copy = {
   <section class="section">
     <div class="wrap split">
       <div class="sticky art reveal">
-        {site.portrait ? <img src={site.portrait} alt={site.name} /> : <GrandPiano />}
+        {site.portrait ? <img src={asset(site.portrait)} alt={site.name} /> : <GrandPiano />}
       </div>
       <div>
         <SectionHead eyebrow={copy.bioEyebrow} title={copy.bioTitle} />
@@ -148,7 +148,7 @@ const copy = {
           <div class="photos">
             {gallery.map((g, i) => (
               <figure class:list={['reveal', { wide: g.wide }]} style={`--i:${i % 4}`}>
-                <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
+                <img src={asset(g.src)} alt={g.alt} loading="lazy" decoding="async" />
               </figure>
             ))}
           </div>

@@ -50,9 +50,19 @@ npm run check    # type check
 
 ## Deploy (GitHub Pages)
 
-1. Repository **Settings → Pages → Source: GitHub Actions**.
-2. Point the `joaoeiro.pt` DNS to GitHub Pages (A records `185.199.108.153`, `.109.153`, `.110.153`, `.111.153`;
-   `www` CNAME → `<user>.github.io`). `public/CNAME` already contains the domain.
-3. Optional: add a `YOUTUBE_API_KEY` repository secret to list every YouTube upload.
+Every push to `main` builds and deploys the site with GitHub Actions
+(`.github/workflows/deploy.yml`); it also rebuilds every Monday to pick up new
+YouTube videos and move finished shows to "Past". Pull requests are built and
+type-checked but not deployed. Run it by hand from **Actions → Deploy to GitHub Pages → Run workflow**.
 
-Any static host (Netlify, Vercel, Cloudflare Pages) also works: build command `npm run build`, output `dist`.
+The build reads the Pages URL, so links work both at `https://neteinstein.github.io/joaoeiro.pt/`
+and on the custom domain. To serve it at **joaoeiro.pt**:
+
+1. **Settings → Pages → Custom domain**: enter `joaoeiro.pt`, save, and tick *Enforce HTTPS* once available.
+2. At the domain registrar, replace the Google Sites records with GitHub Pages:
+   `A` records for `joaoeiro.pt` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`,
+   and `www` as a `CNAME` → `neteinstein.github.io`.
+3. Re-run the workflow so the build switches to the root domain.
+4. Optional: add a `YOUTUBE_API_KEY` repository secret to list *every* YouTube upload (otherwise the latest 15).
+
+Any other static host (Netlify, Vercel, Cloudflare Pages) also works: build command `npm run build`, output `dist`.
