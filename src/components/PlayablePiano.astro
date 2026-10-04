@@ -1,6 +1,6 @@
 ---
 import Icon from './Icon.astro';
-import { useT, type Lang } from '../i18n';
+import { asset, useT, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -27,7 +27,7 @@ const whites = keys.filter((k) => !k.black);
 const blacks = keys.filter((k) => k.black);
 ---
 
-<div class="piano" data-piano>
+<div class="piano" data-piano data-samples={asset('/audio/piano/')}>
   <div class="piano__bar">
     <button class="btn btn--gold play" type="button" data-play data-label-play={t('piano.play')} data-label-stop={t('piano.stop')}>
       <span class="play__icon" data-icon-play><Icon name="play" size={16} /></span>
@@ -83,10 +83,44 @@ const blacks = keys.filter((k) => k.black);
     const keyEls = new Map<number, HTMLElement>();
     root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => keyEls.set(Number(el.dataset.midi), el));
 
-    // ---------- Synth: a warm, bell-ish piano voice built from sine partials ----------
+    // ---------- Sound: a real grand piano (Salamander Grand Piano, Alexander Holm, CC BY 3.0) ----------
+    // One recording every three semitones; the notes in between are the nearest recording, retuned.
+    // If the recordings cannot load, a small synth stands in so the piano is never silent.
+    const SAMPLES: Record<number, string> = {
+      48: 'C3', 51: 'Ds3', 54: 'Fs3', 57: 'A3', 60: 'C4', 63: 'Ds4', 66: 'Fs4', 69: 'A4', 72: 'C5', 75: 'Ds5',
+    };
     let ctx: AudioContext | undefined;
     let master: GainNode;
     const voices = new Map<number, GainNode>();
+    const buffers = new Map<number, AudioBuffer>();
+
+    // Recordings are decoded ahead of time, so even the very first touch sounds like the real piano.
+    let loading = false;
+    const load = () => {
+      if (loading) return;
+      loading = true;
+      const decoder = new OfflineAudioContext(2, 1, 44100);
+      Promise.all(
+        Object.entries(SAMPLES).map(([m, name]) =>
+          fetch(root.dataset.samples + name + '.mp3')
+            .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+            .then((data) => decoder.decodeAudioData(data))
+            .then((b) => void buffers.set(Number(m), b)),
+        ),
+      ).catch(() => {});
+    };
+
+    // Fetch the recordings as the piano comes into view, so they are ready before the first touch.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          load();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    io.observe(root);
 
     const audio = () => {
       if (ctx) return ctx;
@@ -107,50 +141,73 @@ const blacks = keys.filter((k) => k.black);
       const verb = ctx.createConvolver();
       verb.buffer = ir;
       const wet = ctx.createGain();
-      wet.gain.value = 0.28;
+      wet.gain.value = 0.16;
 
       master.connect(comp);
       master.connect(verb).connect(wet).connect(comp);
       comp.connect(ctx.destination);
+
+      load();
       return ctx;
     };
 
     const freq = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
+    const nearest = (midi: number) => {
+      let best: number | undefined;
+      for (const m of buffers.keys()) if (best === undefined || Math.abs(m - midi) < Math.abs(best - midi)) best = m;
+      return best;
+    };
+
     const strike = (midi: number, velocity = 0.8) => {
       const ac = audio();
       if (ac.state === 'suspended') ac.resume();
       const now = ac.currentTime;
-      const f = freq(midi);
       const out = ac.createGain();
-      const peak = 0.22 * velocity;
-      out.gain.setValueAtTime(0.0001, now);
-      out.gain.exponentialRampToValueAtTime(peak, now + 0.006);
-      out.gain.exponentialRampToValueAtTime(peak * 0.35, now + 0.4);
-      out.gain.exponentialRampToValueAtTime(0.0001, now + 3.2 - (midi - 48) * 0.03);
+      const base = nearest(midi);
 
-      const lp = ac.createBiquadFilter();
-      lp.type = 'lowpass';
-      lp.frequency.setValueAtTime(Math.min(f * 9, 12000), now);
-      lp.frequency.exponentialRampToValueAtTime(Math.max(f * 2, 400), now + 1.2);
-      lp.connect(out).connect(master);
+      if (base !== undefined) {
+        const src = ac.createBufferSource();
+        src.buffer = buffers.get(base)!;
+        src.playbackRate.value = Math.pow(2, (midi - base) / 12);
+        // Softer touch: quieter and a little darker, as on a real instrument.
+        const tone = ac.createBiquadFilter();
+        tone.type = 'lowpass';
+        tone.frequency.value = 1800 + velocity * velocity * 14000;
+        out.gain.value = 1.1 * Math.pow(velocity, 1.4);
+        src.connect(tone).connect(out).connect(master);
+        src.start(now);
+      } else {
+        const f = freq(midi);
+        const peak = 0.22 * velocity;
+        out.gain.setValueAtTime(0.0001, now);
+        out.gain.exponentialRampToValueAtTime(peak, now + 0.006);
+        out.gain.exponentialRampToValueAtTime(peak * 0.35, now + 0.4);
+        out.gain.exponentialRampToValueAtTime(0.0001, now + 3.2 - (midi - 48) * 0.03);
 
-      [
-        [1, 1],
-        [2, 0.42],
-        [3, 0.18],
-        [4, 0.09],
-        [5, 0.05],
-      ].forEach(([h, amp], i) => {
-        const o = ac.createOscillator();
-        const g = ac.createGain();
-        o.type = i === 0 ? 'triangle' : 'sine';
-        o.frequency.value = f * h * (1 + (i ? 0.0007 * h : 0));
-        g.gain.value = amp;
-        o.connect(g).connect(lp);
-        o.start(now);
-        o.stop(now + 3.4);
-      });
+        const lp = ac.createBiquadFilter();
+        lp.type = 'lowpass';
+        lp.frequency.setValueAtTime(Math.min(f * 9, 12000), now);
+        lp.frequency.exponentialRampToValueAtTime(Math.max(f * 2, 400), now + 1.2);
+        lp.connect(out).connect(master);
+
+        [
+          [1, 1],
+          [2, 0.42],
+          [3, 0.18],
+          [4, 0.09],
+          [5, 0.05],
+        ].forEach(([h, amp], i) => {
+          const o = ac.createOscillator();
+          const g = ac.createGain();
+          o.type = i === 0 ? 'triangle' : 'sine';
+          o.frequency.value = f * h * (1 + (i ? 0.0007 * h : 0));
+          g.gain.value = amp;
+          o.connect(g).connect(lp);
+          o.start(now);
+          o.stop(now + 3.4);
+        });
+      }
 
       voices.get(midi)?.gain.setTargetAtTime(0.0001, now, 0.05);
       voices.set(midi, out);

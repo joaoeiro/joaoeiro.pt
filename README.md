@@ -71,3 +71,10 @@ and on the custom domain. To serve it at **joaoeiro.pt**:
 4. Optional: add a `YOUTUBE_API_KEY` repository secret to list *every* YouTube upload (otherwise the latest 15).
 
 Any other static host (Netlify, Vercel, Cloudflare Pages) also works: build command `npm run build`, output `dist`.
+
+## Credits
+
+The playable piano on the home page uses recordings from the
+[Salamander Grand Piano V3](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm,
+licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). They were trimmed to 6 seconds and
+re-encoded; they live in `public/audio/piano/`.
