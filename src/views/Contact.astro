@@ -2,9 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import ContactForm from '../components/ContactForm.astro';
-import Icon from '../components/Icon.astro';
 import { type Lang } from '../i18n';
-import { site } from '../config/site';
 
 interface Props {
   lang: Lang;
@@ -16,47 +14,28 @@ const copy = {
     title: 'Contact',
     description: 'Contact João Eiró for piano lessons, concerts, private and corporate events.',
     eyebrow: 'Contact',
-    h1: 'Let’s <em>talk music</em>',
-    lead: 'Lessons, a concert, an event or just a hello — I usually reply within a day or two.',
-    elsewhere: 'Find me on',
+    h1: 'Your message is <em>music to my ears</em>.',
+    lead: 'Lessons, a concert, an event... the sky’s the limit! Fill in the form below so I can give your request the best possible answer. I’ll reply as soon as I can, within 48 working hours at most.',
   },
   pt: {
     title: 'Contacto',
-    description: 'Contacte João Eiró para aulas de piano, concertos, eventos privados e corporativos.',
+    description: 'Contacta o João Eiró para aulas de piano, concertos, eventos privados e corporativos.',
     eyebrow: 'Contacto',
-    h1: 'Vamos <em>falar de música</em>',
-    lead: 'Aulas, um concerto, um evento ou só um olá — normalmente respondo em um ou dois dias.',
-    elsewhere: 'Encontre-me no',
+    h1: 'A tua mensagem é <em>música para os meus ouvidos</em>.',
+    lead: 'Aulas, um concerto, um evento... o céu é o limite! Preenche abaixo o formulário para poder responder da melhor forma ao teu pedido. Respondo assim que conseguir, no máximo até 48h úteis.',
   },
 }[lang];
 
-const socials = (['youtube', 'instagram', 'tiktok', 'facebook', 'spotify'] as const).filter((k) => site.socials[k]);
-const names = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', facebook: 'Facebook', spotify: 'Spotify' };
 ---
 
 <Layout lang={lang} route="contact" title={copy.title} description={copy.description}>
-  <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead} />
+  <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead} staff={false} />
 
   <section class="section top">
-    <div class="wrap split">
-      <div class="card reveal">
+    <div class="wrap">
+      <div class="card form-card reveal">
         <ContactForm lang={lang} />
       </div>
-      <aside class="side">
-        <div class="reveal">
-          <p class="eyebrow">{copy.elsewhere}</p>
-          <div class="socials">
-            {
-              socials.map((k) => (
-                <a href={site.socials[k]} target="_blank" rel="noopener">
-                  <Icon name={k} size={22} />
-                  <span>{names[k]}</span>
-                </a>
-              ))
-            }
-          </div>
-        </div>
-      </aside>
     </div>
   </section>
 </Layout>
@@ -65,30 +44,7 @@ const names = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', fa
   .top {
     padding-top: 0;
   }
-  .side {
-    display: grid;
-    gap: 3rem;
-  }
-  .socials {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
-  .socials a {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 1rem 1.1rem;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    transition: 0.4s var(--ease);
-  }
-  .socials a:hover {
-    border-color: var(--gold);
-    background: rgb(var(--accent-rgb) / 0.08);
-    transform: translateY(-3px);
-  }
-  .socials :global(svg) {
-    color: var(--gold);
+  .form-card {
+    max-width: 760px;
   }
 </style>

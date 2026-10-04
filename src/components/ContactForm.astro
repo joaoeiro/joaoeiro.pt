@@ -68,7 +68,7 @@ const c = {
     mailSubject: 'Contacto pelo site',
     subject: 'Assunto',
     subjects: { lessons: 'Aulas', events: 'Eventos', other: 'Outro' },
-    pick: 'Escolha o assunto para ver as perguntas.',
+    pick: 'Escolhe o assunto para ver as perguntas.',
     lessonType: 'Aulas de piano, formação musical ou outro?',
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
     age: 'Idade do aluno',
@@ -78,21 +78,21 @@ const c = {
     experiencePh: 'Ex.: nunca toquei, ou tive dois anos de aulas em criança…',
     where: 'Onde são as aulas?',
     whereOpts: ['Em casa do aluno', 'Em casa do professor (Benfica)'],
-    whereHint: 'Pode escolher uma ou as duas.',
-    whereRequired: 'Escolha pelo menos uma opção.',
+    whereHint: 'Podes escolher uma ou as duas.',
+    whereRequired: 'Escolhe pelo menos uma opção.',
     area: 'Zona ou localidade',
     areaPh: 'Ex.: Benfica, Amadora, Telheiras…',
-    pianoHome: 'Tem piano em casa? (opcional)',
+    pianoHome: 'Tens piano em casa? (opcional)',
     pianoHomeOpts: ['Sim, piano acústico', 'Sim, teclado ou piano digital', 'Ainda não'],
     goal: 'Objetivo (opcional)',
     goalOpts: ['Lazer', 'Exames ou conservatório', 'Tocar as músicas de que gosto', 'Acompanhar-me a cantar', 'Outro'],
     schedule: 'Preferências de horário e dias da semana',
     schedulePh: 'Ex.: dias úteis depois das 18h, sábados de manhã…',
-    more: 'Mais alguma coisa que queira partilhar?',
+    more: 'Mais alguma coisa que queiras partilhar?',
     eventType: 'Tipo de evento',
     eventTypes: ['Casamento', 'Evento corporativo', 'Evento privado', 'Outro'],
     eventDate: 'Data do evento',
-    music: 'Tipo de música que procura',
+    music: 'Tipo de música que procuras',
     musicPh: 'Ex.: jazz, clássico, pop ao piano…',
     duration: 'Duração aproximada do evento',
     durationPh: 'Ex.: 2 horas',
@@ -105,12 +105,12 @@ const c = {
     guests: 'Número de pessoas',
     sound: 'Sistema de som',
     soundOpts: ['Tenho o meu', 'Preciso que leve'],
-    message: 'A sua mensagem',
-    you: 'Sobre si',
+    message: 'A tua mensagem',
+    you: 'Sobre ti',
     name: 'Nome',
-    prefer: 'Como prefere que o contacte?',
+    prefer: 'Como preferes que te contacte?',
     preferOpts: { whatsapp: 'WhatsApp', phone: 'Chamada', email: 'Email' },
-    contact: 'O seu contacto',
+    contact: 'O teu contacto',
     contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', phone: 'Número de telefone', email: 'Endereço de email' },
   },
 }[lang];
@@ -556,11 +556,21 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
   .pill:hover span {
     border-color: var(--gold);
   }
+  /* Plain brand colours for the chosen option and the send button: maroon, white lettering on choices. */
   .pill input:checked + span {
     border-color: transparent;
-    background: var(--gold-grad);
-    color: var(--on-accent);
+    background: #800000;
+    color: #f6efe6;
     font-weight: 600;
+  }
+  .actions :global(.btn--gold),
+  .actions :global(.btn--gold:hover) {
+    background: #800000;
+    color: #a3b8dc;
+    box-shadow: none;
+  }
+  .actions :global(.btn--gold::after) {
+    display: none;
   }
   .pill input:focus-visible + span,
   .check input:focus-visible + span::before {

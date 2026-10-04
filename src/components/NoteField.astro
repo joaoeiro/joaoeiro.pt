@@ -1,5 +1,5 @@
 ---
-/** Ambient stage: soft spotlights behind everything. */
+/** Ambient stage: soft spotlights behind everything (dark theme only; the light theme is a plain colour). */
 ---
 
 <div class="stage" aria-hidden="true">
@@ -48,6 +48,9 @@
     background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.22), transparent 65%);
     animation-duration: 22s;
     animation-delay: -4s;
+  }
+  :global([data-theme='light']) .spot {
+    display: none;
   }
   @keyframes float {
     to {

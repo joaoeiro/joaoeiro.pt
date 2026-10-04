@@ -5,14 +5,19 @@ export const defaultLang: Lang = 'en';
 /** One entry per page. English lives at the root, Portuguese under /pt. */
 export const routes = {
   home: { en: '/', pt: '/pt/' },
-  lessons: { en: '/piano-lessons/', pt: '/pt/aulas-de-piano/' },
-  portfolio: { en: '/portfolio/', pt: '/pt/portfolio/' },
-  shows: { en: '/shows/', pt: '/pt/concertos/' },
-  events: { en: '/events/', pt: '/pt/eventos/' },
-  press: { en: '/press/', pt: '/pt/imprensa/' },
   contact: { en: '/contact/', pt: '/pt/contacto/' },
 } as const;
 export type RouteKey = keyof typeof routes;
+
+/** Expandable sections of the home page, with their anchor in each language. */
+export const sections = {
+  lessons: { en: 'lessons', pt: 'aulas' },
+  portfolio: { en: 'portfolio', pt: 'portfolio' },
+  shows: { en: 'shows', pt: 'concertos' },
+  events: { en: 'events', pt: 'eventos' },
+  press: { en: 'press', pt: 'imprensa' },
+} as const;
+export type SectionKey = keyof typeof sections;
 
 /**
  * Base path the site is served from: '' on a custom domain (joaoeiro.pt),
@@ -24,6 +29,9 @@ const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const asset = (url: string) => (url.startsWith('/') ? BASE + url : url);
 
 export const path = (key: RouteKey, lang: Lang) => asset(routes[key][lang]);
+
+/** Link to a home-page section; opening it expands that section. */
+export const sectionHref = (key: SectionKey, lang: Lang) => `${path('home', lang)}#${sections[key][lang]}`;
 
 /** Locale tags used for <html lang>, hreflang and date formatting. */
 export const locales: Record<Lang, string> = { en: 'en', pt: 'pt-PT' };
@@ -97,13 +105,13 @@ export const ui = {
     'nav.menu': 'Menu',
     'nav.close': 'Fechar menu',
     'nav.skip': 'Saltar para o conteúdo',
-    'cta.side': 'Contacte-me',
+    'cta.side': 'Contacta-me',
     'cta.shows': 'Ver próximos concertos',
     'cta.watch': 'Ver e ouvir',
     'cta.contact': 'Falar com o João',
     'role': 'Pianista · Professor de Piano',
     'footer.tagline': 'Música para palcos, casas, celebrações e mãos curiosas.',
-    'footer.follow': 'Siga a música',
+    'footer.follow': 'Segue a música',
     'footer.explore': 'Explorar',
     'footer.rights': 'Todos os direitos reservados.',
     'footer.top': 'Voltar ao topo',
@@ -111,7 +119,7 @@ export const ui = {
     'lang.short': 'EN',
     'theme.light': 'Mudar para tema claro',
     'theme.dark': 'Mudar para tema escuro',
-    'piano.hint': 'Clique nas teclas ou toque com o teclado do computador (A – K)',
+    'piano.hint': 'Clica nas teclas ou toca com o teclado do computador (A – K)',
     'piano.sound': 'Som',
     'piano.credit': 'Som de piano:',
     'media.youtube': 'YouTube',
@@ -119,7 +127,7 @@ export const ui = {
     'media.tiktok': 'TikTok',
     'media.follow': 'Seguir no',
     'media.play': 'Ver vídeo',
-    'media.empty': 'Novos vídeos a caminho — acompanhe nas redes sociais.',
+    'media.empty': 'Novos vídeos a caminho — acompanha nas redes sociais.',
     'media.more': 'Ver todos os vídeos',
     'shows.upcoming': 'Próximos',
     'shows.past': 'Concertos anteriores',
@@ -128,7 +136,7 @@ export const ui = {
     'shows.free': 'Entrada livre',
     'shows.calendar': 'Adicionar ao calendário',
     'shows.soldout': 'Esgotado',
-    'shows.none': 'Sem datas anunciadas de momento. Há novos concertos em preparação — siga nas redes sociais ou leve o João à sua sala.',
+    'shows.none': 'Sem datas anunciadas de momento. Há novos concertos em preparação — segue nas redes sociais ou leva o João à tua sala.',
     'shows.nonePast': 'O arquivo está a ser afinado.',
     'form.name': 'Nome',
     'form.email': 'Email',
@@ -136,9 +144,9 @@ export const ui = {
     'form.message': 'Mensagem',
     'form.send': 'Enviar',
     'form.sending': 'A enviar…',
-    'form.sent': 'Obrigado! A sua mensagem foi enviada — o João responde em breve.',
-    'form.error': 'Algo correu mal. Escreva diretamente para:',
-    'form.mailto': 'A sua aplicação de email vai abrir com a mensagem pronta a enviar.',
+    'form.sent': 'Obrigado! A tua mensagem foi enviada — o João responde em breve.',
+    'form.error': 'Algo correu mal. Escreve diretamente para:',
+    'form.mailto': 'A tua aplicação de email vai abrir com a mensagem pronta a enviar.',
     'common.readMore': 'Ler mais',
     'common.learnMore': 'Saber mais',
     'common.allShows': 'Todos os concertos',

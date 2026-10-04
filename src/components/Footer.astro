@@ -1,8 +1,7 @@
 ---
 import Icon from './Icon.astro';
-import PianoStrip from './PianoStrip.astro';
 import { site } from '../config/site';
-import { path, useT, type Lang, type RouteKey } from '../i18n';
+import { path, sectionHref, useT, type Lang, type RouteKey } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -13,21 +12,18 @@ const t = useT(lang);
 const socials = (['youtube', 'instagram', 'tiktok', 'spotify', 'facebook'] as const)
   .filter((k) => site.socials[k])
   .map((k) => ({ key: k, href: site.socials[k] }));
-const explore: RouteKey[] = ['lessons', 'portfolio', 'shows', 'events', 'press', 'contact'];
-const labels: Record<RouteKey, string> = {
-  home: t('nav.home'),
-  lessons: t('nav.lessons'),
-  portfolio: t('nav.portfolio'),
-  shows: t('nav.shows'),
-  events: t('nav.events'),
-  press: t('nav.press'),
-  contact: t('nav.contact'),
-};
+const explore = [
+  { href: sectionHref('lessons', lang), label: t('nav.lessons') },
+  { href: sectionHref('portfolio', lang), label: t('nav.portfolio') },
+  { href: sectionHref('shows', lang), label: t('nav.shows') },
+  { href: sectionHref('events', lang), label: t('nav.events') },
+  { href: sectionHref('press', lang), label: t('nav.press') },
+  { href: path('contact', lang), label: t('nav.contact') },
+];
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <PianoStrip />
   <div class="wrap footer__grid">
     <div>
       <a class="sig" href={path('home', lang)}>João <em>Eiró</em></a>
@@ -38,9 +34,9 @@ const year = new Date().getFullYear();
       <h4>{t('footer.explore')}</h4>
       <ul>
         {
-          explore.map((k) => (
+          explore.map((l) => (
             <li>
-              <a href={path(k, lang)}>{labels[k]}</a>
+              <a href={l.href}>{l.label}</a>
             </li>
           ))
         }

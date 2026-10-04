@@ -11,15 +11,22 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 
 ## Pages
 
-| English | Português | |
+Two pages, in English (`/`, `/contact/`) and Portuguese (`/pt/`, `/pt/contacto/`).
+
+**Home** — playable piano hero, the word ribbon, the three "What I do" cards, and five sections that expand in place:
+
+| Section | Anchor (EN / PT) | Content |
 | --- | --- | --- |
-| `/` | `/pt/` | Home — playable piano hero, services, videos, next shows |
-| `/piano-lessons/` | `/pt/aulas-de-piano/` | Lessons — who it's for, formats, method, plans, FAQ |
-| `/portfolio/` | `/pt/portfolio/` | Bio, all videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
-| `/shows/` | `/pt/concertos/` | Upcoming and past concerts, add-to-calendar |
-| `/events/` | `/pt/eventos/` | Weddings, private & corporate events |
-| `/press/` | `/pt/imprensa/` | Press kit — short/long bio (copy buttons), photos, tech rider |
-| `/contact/` | `/pt/contacto/` | The contact form (subject: lessons, events or other) and socials. `?s=lessons` / `?s=events` preselects the subject |
+| Lessons | `#lessons` / `#aulas` | Who it's for, where, how it works |
+| Portfolio | `#portfolio` | Bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
+| Shows | `#shows` / `#concertos` | Upcoming and past concerts, add-to-calendar |
+| Events | `#events` / `#eventos` | Occasions, how it works, set-up |
+| Press | `#press` / `#imprensa` | Short/long bio (copy buttons), photos, tech rider |
+
+The menu, the cards and any link to an anchor open that section (`src/components/Tab.astro`); the old page
+addresses (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section.
+
+**Contact** — the contact form (subject: lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
 
 ## Editing content — no code needed
 
@@ -32,7 +39,7 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 | Testimonials | `src/data/testimonials.ts` |
 | Repertoire / styles | `src/data/repertoire.ts` |
 | Photos | put files in `public/images/`, list them in `src/data/gallery.ts` |
-| Page texts | top of each file in `src/views/` (`en` and `pt` side by side) |
+| Page texts | top of `src/views/Home.astro`, `src/views/Contact.astro` and each section in `src/components/tabs/` (`en` and `pt` side by side) |
 
 **YouTube is synced automatically.** Every build looks up `@joaoeiropiano` and adds its uploads:
 the latest 15 via the public RSS feed, or *every* video when a `YOUTUBE_API_KEY` secret is set.
@@ -41,7 +48,7 @@ The deploy workflow rebuilds weekly, so new videos appear on their own.
 **Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
-**Contact form:** one form, on the contact page, reached from the "Contacte-me" tab on the right edge of every page.
+**Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.
 With `formEndpoint` empty, it opens the visitor's email app pre-filled with every answer.
 Create a free [Formspree](https://formspree.io) form and paste its URL to receive messages directly.
 

@@ -1,11 +1,12 @@
 ---
-/** Inner-page header: big title over a living music staff. */
+/** Inner-page header: big title, by default over a living music staff (staff={false} for a plain one). */
 interface Props {
   eyebrow: string;
   title: string;
   lead?: string;
+  staff?: boolean;
 }
-const { eyebrow, title, lead } = Astro.props;
+const { eyebrow, title, lead, staff = true } = Astro.props;
 const notes = [
   { x: 8, y: 3, g: '♩' },
   { x: 19, y: 1, g: '♪' },
@@ -19,20 +20,26 @@ const notes = [
 ---
 
 <section class="page-hero">
-  <svg class="staff" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
-    {
-      [0, 1, 2, 3, 4].map((i) => (
-        <path
-          class="line"
-          style={`--i:${i}`}
-          d={`M0 ${30 + i * 20} C 300 ${10 + i * 20}, 600 ${50 + i * 20}, 900 ${30 + i * 20} S 1200 ${20 + i * 20}, 1200 ${30 + i * 20}`}
-        />
-      ))
-    }
-  </svg>
-  <div class="staff-notes" aria-hidden="true">
-    {notes.map((n, i) => <span style={`--x:${n.x}%;--y:${n.y};--i:${i}`}>{n.g}</span>)}
-  </div>
+  {
+    staff && (
+      <>
+        <svg class="staff" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
+          {
+            [0, 1, 2, 3, 4].map((i) => (
+              <path
+                class="line"
+                style={`--i:${i}`}
+                d={`M0 ${30 + i * 20} C 300 ${10 + i * 20}, 600 ${50 + i * 20}, 900 ${30 + i * 20} S 1200 ${20 + i * 20}, 1200 ${30 + i * 20}`}
+              />
+            ))
+          }
+        </svg>
+        <div class="staff-notes" aria-hidden="true">
+          {notes.map((n, i) => <span style={`--x:${n.x}%;--y:${n.y};--i:${i}`}>{n.g}</span>)}
+        </div>
+      </>
+    )
+  }
   <div class="wrap">
     <p class="eyebrow reveal">{eyebrow}</p>
     <h1 class="reveal" style="--i:1" set:html={title} />
