@@ -19,8 +19,8 @@ export const groups: Group[] = [
   {
     name: 'Instantâneos',
     summary: {
-      pt: 'Companhia profissional de teatro de improviso: os atores criam histórias, situações e personagens a partir das sugestões do público. São também quem produz o Espontâneo – Festival Internacional de Teatro de Improviso e o Campeonato Mundial de Improviso, com o Coliseu de Lisboa.',
-      en: 'A professional improv theatre company: the actors create stories, situations and characters from the audience’s suggestions. They also produce Espontâneo – International Improv Theatre Festival and the Improv World Championship, with Coliseu de Lisboa.',
+      pt: 'Companhia profissional de teatro de improviso, em que os atores criam histórias a partir das sugestões do público, com a minha ajuda atrás de um teclado, a criar ambientes musicais e canções, no momento. São também quem produz o Espontâneo (festival internacional) e o Campeonato Mundial de Improviso.',
+      en: 'A professional improv theatre company where the actors create stories from the audience’s suggestions, with my help behind a keyboard, creating musical atmospheres and songs on the spot. They also produce Espontâneo (an international festival) and the Improv World Championship.',
     },
     url: 'https://instantaneos.pt/',
     featured: true,
