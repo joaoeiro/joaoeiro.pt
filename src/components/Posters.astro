@@ -1,6 +1,6 @@
 ---
 /**
- * Past shows as a wall of posters, newest first — images only, each at its own shape.
+ * Past shows as a wall of posters, newest first — images only, all the same size.
  * The show's details stay in the image's alt text. Shows without a poster are left out.
  */
 import { asset, parseLocalDate, pick, useT, type Lang } from '../i18n';
@@ -26,7 +26,14 @@ const alt = (s: Show) =>
   past.length ? (
     <div class="posters">
       {past.map((s) => (
-        <img src={asset(s.image!)} alt={alt(s)} loading="lazy" decoding="async" />
+        <img
+          src={asset(s.image!)}
+          alt={alt(s)}
+          loading="lazy"
+          decoding="async"
+          class:list={{ whole: s.posterBg }}
+          style={s.posterBg && `background: ${s.posterBg}`}
+        />
       ))}
     </div>
   ) : (
@@ -35,16 +42,19 @@ const alt = (s: Show) =>
 }
 
 <style>
-  /* Masonry-style columns, so square and tall posters sit together without cropping. */
+  /* Every poster in the same 3:4 frame (close to most posters, so little is trimmed). */
   .posters {
-    columns: 4 220px;
-    column-gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
   }
   .posters img {
     width: 100%;
-    height: auto;
-    margin-bottom: clamp(1rem, 0.8rem + 1vw, 1.5rem);
-    break-inside: avoid;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
     border-radius: 14px;
+  }
+  .posters img.whole {
+    object-fit: contain;
   }
 </style>

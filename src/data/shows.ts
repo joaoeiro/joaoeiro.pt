@@ -19,8 +19,10 @@ export interface Show {
   infoUrl?: string;
   free?: boolean;
   soldOut?: boolean;
-  /** Poster in /public/images/shows, shown in "Em arquivo". */
+  /** Poster in /public/images/shows, shown in "Em arquivo" in a 3:4 frame. */
   image?: string;
+  /** For a poster far from 3:4 (e.g. square): show it whole on this background instead of trimming it. */
+  posterBg?: string;
   /** Who João played with, e.g. 'Lisbon Film Orchestra'. */
   with?: string;
   draft?: boolean;
@@ -92,6 +94,7 @@ export const shows: Show[] = [
     venue: 'MEO Arena',
     city: 'Lisboa',
     image: '/images/shows/lisbon-film-orchestra-our-stories.jpg',
+    posterBg: 'linear-gradient(#031236, #071f55)',
   },
   {
     date: '2025-12-13T21:30',
