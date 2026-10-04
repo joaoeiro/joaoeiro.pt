@@ -3,7 +3,7 @@
  * Past shows as a wall of posters, newest first — images only, each at its own shape.
  * The show's details stay in the image's alt text. Shows without a poster are left out.
  */
-import { asset, formatDate, parseLocalDate, pick, useT, type Lang } from '../i18n';
+import { asset, parseLocalDate, pick, useT, type Lang } from '../i18n';
 import { shows, type Show } from '../data/shows';
 import { published } from '../lib/drafts';
 
@@ -19,9 +19,7 @@ const past = published(shows)
   .filter((s) => s.image && endOfDay(s) <= now)
   .sort((a, b) => b.date.localeCompare(a.date));
 const alt = (s: Show) =>
-  [pick(s.title, lang), s.with, formatDate(parseLocalDate(s.date.slice(0, 10)), lang, { day: 'numeric', month: 'long', year: 'numeric' }), `${s.venue}, ${s.city}`]
-    .filter(Boolean)
-    .join(' · ');
+  [pick(s.title, lang), s.with, [s.venue, s.city].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
 ---
 
 {

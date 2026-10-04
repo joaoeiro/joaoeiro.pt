@@ -27,6 +27,64 @@ export interface Show {
 }
 
 export const shows: Show[] = [
+  // Instantâneos posters, from instantaneos.pt. Dates marked "approx." only order the archive:
+  // they come from the poster, or from when the poster was published; fix them when known.
+  {
+    date: '2026-04-11T21:30',
+    title: { en: 'Duelo Improvisado', pt: 'Duelo Improvisado' },
+    with: 'Instantâneos',
+    venue: 'Centro Cultural Olga Cadaval',
+    city: 'Sintra',
+    image: '/images/shows/instantaneos-duelo-improvisado.jpg',
+  },
+  {
+    date: '2025-11-28T21:30',
+    title: { en: 'A Bebedeira de Kant', pt: 'A Bebedeira de Kant' },
+    with: 'Instantâneos',
+    venue: 'Centro Cultural Olga Cadaval',
+    city: 'Sintra',
+    image: '/images/shows/instantaneos-bebedeira-de-kant.jpg',
+  },
+  {
+    date: '2025-07-04T21:30', // approx.
+    title: { en: 'Retrovisor', pt: 'Retrovisor' },
+    with: 'Instantâneos',
+    venue: 'Parque da Liberdade',
+    city: 'Sintra',
+    image: '/images/shows/instantaneos-retrovisor.jpg',
+  },
+  {
+    date: '2025-06-01T21:30', // approx.
+    title: { en: 'Labirinto', pt: 'Labirinto' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-labirinto.jpg',
+  },
+  {
+    date: '2024-11-01T21:30', // approx.
+    title: { en: 'Campeonato Mundial de Improviso 2024', pt: 'Campeonato Mundial de Improviso 2024' },
+    with: 'Instantâneos',
+    venue: 'Coliseu de Lisboa',
+    city: 'Lisboa',
+    image: '/images/shows/instantaneos-campeonato-mundial-2024.jpg',
+  },
+  {
+    date: '2021-12-01T21:30', // approx.
+    title: { en: 'Ser ou Não Ser Shakespeare', pt: 'Ser ou Não Ser Shakespeare' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-ser-ou-nao-ser-shakespeare.jpg',
+  },
+  {
+    date: '2021-11-01T21:30', // approx.
+    title: { en: 'Amor', pt: 'Amor' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-amor.jpg',
+  },
   {
     date: '2026-01-10T21:00',
     title: { en: 'Our Stories — Music from Movies & Series', pt: 'Our Stories — Music from Movies & Series' },
