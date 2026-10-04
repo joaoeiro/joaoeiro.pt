@@ -13,7 +13,7 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 
 Two pages, in English (`/`, `/contact/`) and Portuguese (`/pt/`, `/pt/contacto/`).
 
-**Home** — playable piano hero, the word ribbon, the three "What I do" cards, and five sections that expand in place:
+**Home** — playable piano hero, the word ribbon, and five sections that expand in place:
 
 | Section | Anchor (EN / PT) | Content |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ Two pages, in English (`/`, `/contact/`) and Portuguese (`/pt/`, `/pt/contacto/`
 | Events | `#events` / `#eventos` | Occasions, how it works, set-up |
 | Press | `#press` / `#imprensa` | Short/long bio (copy buttons), photos, tech rider |
 
-The menu, the cards and any link to an anchor open that section (`src/components/Tab.astro`); the old page
+The menu and any link to an anchor open that section (`src/components/Tab.astro`); the old page
 addresses (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section.
 
 **Contact** — the contact form (subject: lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.

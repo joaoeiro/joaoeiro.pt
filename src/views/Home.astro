@@ -4,7 +4,6 @@ import PlayablePiano from '../components/PlayablePiano.astro';
 import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Testimonials from '../components/Testimonials.astro';
-import Icon from '../components/Icon.astro';
 import LessonsTab from '../components/tabs/LessonsTab.astro';
 import PortfolioTab from '../components/tabs/PortfolioTab.astro';
 import ShowsTab from '../components/tabs/ShowsTab.astro';
@@ -12,7 +11,7 @@ import EventsTab from '../components/tabs/EventsTab.astro';
 import PressTab from '../components/tabs/PressTab.astro';
 import { Image } from 'astro:assets';
 import photo from '../assets/joao-eiro-live.jpg';
-import { sectionHref, type Lang } from '../i18n';
+import { type Lang } from '../i18n';
 import { site } from '../config/site';
 import { testimonials } from '../data/testimonials';
 import { published } from '../lib/drafts';
@@ -36,31 +35,6 @@ const copy = {
       'Piano lessons', 'House concerts', 'Composer', 'Weddings', 'Keyboardist', 'Music theory lessons',
       'Corporate events', 'Music producer', 'Improv theatre', 'Accompanist', 'Events',
     ],
-    doorsEyebrow: 'What I do',
-    doorsTitle: 'Three ways to <em>share the piano</em>',
-    doors: [
-      {
-        glyph: '𝄞',
-        key: 'lessons',
-        title: 'Piano lessons',
-        text: 'Personalised lessons for children, teens and adults — from the very first note to advanced repertoire and improvisation.',
-        cta: 'Start learning',
-      },
-      {
-        glyph: '♫',
-        key: 'shows',
-        title: 'Shows',
-        text: 'Solo recitals and collaborations as accompanist and soloist. See where the piano is playing next.',
-        cta: 'See dates',
-      },
-      {
-        glyph: '♬',
-        key: 'events',
-        title: 'Events',
-        text: 'Live piano for weddings, private dinners, house concerts and corporate events — tailored to the moment.',
-        cta: 'Plan your event',
-      },
-    ] as const,
     quotesEyebrow: 'Kind words',
     quotesTitle: 'From students <em>& clients</em>',
   },
@@ -77,31 +51,6 @@ const copy = {
       'Aulas de piano', 'Concertos em casa', 'Compositor', 'Casamentos', 'Teclista', 'Aulas de formação musical',
       'Eventos corporativos', 'Produtor musical', 'Teatro de improviso', 'Músico acompanhador', 'Eventos',
     ],
-    doorsEyebrow: 'O que faço',
-    doorsTitle: 'Três formas de <em>partilhar o piano</em>',
-    doors: [
-      {
-        glyph: '𝄞',
-        key: 'lessons',
-        title: 'Aulas de piano',
-        text: 'Aulas personalizadas para crianças, jovens e adultos — da primeira nota ao repertório avançado e à improvisação.',
-        cta: 'Começar a aprender',
-      },
-      {
-        glyph: '♫',
-        key: 'shows',
-        title: 'Espetáculos',
-        text: 'Recitais a solo e colaborações como acompanhador e solista. Vê onde o piano toca a seguir.',
-        cta: 'Ver datas',
-      },
-      {
-        glyph: '♬',
-        key: 'events',
-        title: 'Eventos',
-        text: 'Piano ao vivo para casamentos, jantares privados, concertos em casa e eventos corporativos — à medida do momento.',
-        cta: 'Planear o teu evento',
-      },
-    ] as const,
     quotesEyebrow: 'Palavras simpáticas',
     quotesTitle: 'De alunos <em>& clientes</em>',
   },
@@ -150,39 +99,7 @@ const hasQuotes = published(testimonials).length > 0;
 
   <Marquee items={copy.marquee} />
 
-  <section class="section" id="doors">
-    <div class="wrap">
-      <SectionHead eyebrow={copy.doorsEyebrow} title={copy.doorsTitle} />
-      <div class="doors">
-        {
-          copy.doors.map((d, i) => (
-            <a class="door reveal" href={sectionHref(d.key, lang)} style={`--i:${i}`}>
-              <span class="door__keys" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-              <span class="door__glyph" aria-hidden="true">
-                {d.glyph}
-              </span>
-              <span class="door__num">0{i + 1}</span>
-              <h3>{d.title}</h3>
-              <p>{d.text}</p>
-              <span class="door__cta">
-                {d.cta} <Icon name="arrow" size={18} />
-              </span>
-            </a>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="section tabs-section">
+  <section class="section">
     <div class="wrap tabs">
       <LessonsTab lang={lang} num={1} />
       <PortfolioTab lang={lang} num={2} />
@@ -372,118 +289,6 @@ const hasQuotes = published(testimonials).length > 0;
     }
   }
 
-  .doors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: 1.25rem;
-  }
-  .door {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-height: 430px;
-    padding: 2rem;
-    overflow: hidden;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: linear-gradient(170deg, rgb(var(--surface-rgb) / calc(0.05 * var(--surface-k))), rgb(var(--surface-rgb) / calc(0.005 * var(--surface-k))));
-    transition: border-color 0.5s, transform 0.7s var(--ease);
-    isolation: isolate;
-  }
-  .door:hover {
-    border-color: rgb(var(--accent-rgb) / 0.6);
-    transform: translateY(-8px);
-  }
-  .door__keys {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    display: flex;
-    gap: 2px;
-    opacity: 0;
-    transition: opacity 0.6s;
-  }
-  .door__keys i {
-    flex: 1;
-    background: linear-gradient(180deg, rgb(var(--accent-2-rgb) / 0.12), transparent 75%);
-    transform: scaleY(0);
-    transform-origin: top;
-    transition: transform 0.7s var(--ease);
-  }
-  .door__keys i:nth-child(odd) {
-    background: linear-gradient(180deg, rgb(var(--wine-rgb) / 0.35), transparent 60%);
-  }
-  .door:hover .door__keys {
-    opacity: 1;
-  }
-  .door:hover .door__keys i {
-    transform: scaleY(1);
-  }
-  .door__keys i:nth-child(2) {
-    transition-delay: 0.05s;
-  }
-  .door__keys i:nth-child(3) {
-    transition-delay: 0.1s;
-  }
-  .door__keys i:nth-child(4) {
-    transition-delay: 0.15s;
-  }
-  .door__keys i:nth-child(5) {
-    transition-delay: 0.2s;
-  }
-  .door__keys i:nth-child(6) {
-    transition-delay: 0.25s;
-  }
-  .door__keys i:nth-child(7) {
-    transition-delay: 0.3s;
-  }
-  .door__glyph {
-    position: absolute;
-    right: -0.5rem;
-    top: -1.5rem;
-    font-size: 11rem;
-    line-height: 1;
-    color: var(--gold);
-    opacity: 0.12;
-    transition: transform 1s var(--ease), opacity 0.5s;
-  }
-  .door:hover .door__glyph {
-    opacity: 0.35;
-    transform: rotate(-12deg) scale(1.08);
-  }
-  .door__num {
-    font-size: 0.8rem;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    margin-bottom: auto;
-  }
-  .door h3 {
-    font-size: clamp(2rem, 1.6rem + 1.2vw, 2.6rem);
-    margin-top: 6rem;
-  }
-  .door p {
-    color: var(--ivory-dim);
-  }
-  .door__cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--gold-2);
-  }
-  .door__cta :global(svg) {
-    transition: transform 0.4s var(--ease);
-  }
-  .door:hover .door__cta :global(svg) {
-    transform: translateX(6px);
-  }
-
-  /* The expandable sections follow the "What I do" cards closely. */
-  .tabs-section {
-    padding-top: 0;
-  }
   .tabs {
     border-top: 1px solid var(--line);
   }
