@@ -28,8 +28,8 @@ export const groups: Group[] = [
   {
     name: 'Teatroàespada',
     summary: {
-      pt: 'O irmão mais novo do teatroàfaca, um projeto da Upside Down – Associação Cultural que junta teatro e jogos narrativos: campanhas ao vivo como Normalville, sessões de Drama & Dados e dois podcasts.',
-      en: 'The younger sibling of teatroàfaca, a project by Upside Down – Associação Cultural bringing theatre and narrative games together: live campaigns such as Normalville, Drama & Dados sessions and two podcasts.',
+      pt: 'O irmão mais novo do teatroàfaca, da Upside Down – Associação Cultural. Junta teatro e jogos narrativos: as campanhas Sopro de Tiriath, Lamento de Syrenia e Corrupção de Alora, entre outras, contam com a minha música tocada ao vivo.',
+      en: 'The younger sibling of teatroàfaca, by Upside Down – Associação Cultural. It brings theatre and narrative games together: the campaigns Sopro de Tiriath, Lamento de Syrenia and Corrupção de Alora, among others, feature my music played live.',
     },
     url: 'https://teatroafaca.com/teatroaespada',
     featured: true,
