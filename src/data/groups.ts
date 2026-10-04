@@ -12,6 +12,8 @@ export interface Group {
   /** Link label when it isn't the group's website (e.g. Instagram). */
   via?: string;
   logo?: string;
+  /** Background behind a logo that doesn't fill its box (e.g. a wide one). */
+  logoBg?: string;
   featured?: boolean;
 }
 
@@ -33,6 +35,8 @@ export const groups: Group[] = [
       en: 'The younger sibling of teatroàfaca, by Upside Down – Associação Cultural. It brings theatre and narrative games together: the campaigns Sopro de Tiriath, Lamento de Syrenia and Corrupção de Alora, among others, feature my music played live.',
     },
     url: 'https://teatroafaca.com/teatroaespada',
+    logo: '/images/groups/teatroaespada.jpg',
+    logoBg: '#763fa9',
     featured: true,
   },
   {

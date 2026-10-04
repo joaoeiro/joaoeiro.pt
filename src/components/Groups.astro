@@ -16,7 +16,14 @@ const siteLabel = lang === 'pt' ? 'site' : 'website';
   {
     groups.map((g) => (
       <article class:list={['group', { featured: g.featured }]}>
-        <a class:list={['logo', { 'has-img': g.logo }]} href={g.url} target="_blank" rel="noopener" aria-label={g.name}>
+        <a
+          class:list={['logo', { 'has-img': g.logo }]}
+          href={g.url}
+          target="_blank"
+          rel="noopener"
+          aria-label={g.name}
+          style={g.logoBg && `background: ${g.logoBg}`}
+        >
           {g.logo ? <img src={asset(g.logo)} alt={g.name} loading="lazy" /> : <span>{g.name}</span>}
         </a>
         <div class="text">
