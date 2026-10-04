@@ -32,6 +32,15 @@ export const shows: Show[] = [
   // Instantâneos posters, from instantaneos.pt. Dates marked "approx." only order the archive:
   // they come from the poster, or from when the poster was published; fix them when known.
   {
+    date: '2024-12-07T22:00',
+    title: { en: 'A Última Ceia', pt: 'A Última Ceia' },
+    with: 'Instantâneos',
+    venue: 'Forno Espaço Cultural',
+    city: '',
+    image: '/images/shows/instantaneos-a-ultima-ceia.jpg',
+    posterBg: '#fbfbfb',
+  },
+  {
     date: '2026-04-11T21:30',
     title: { en: 'Duelo Improvisado', pt: 'Duelo Improvisado' },
     with: 'Instantâneos',
