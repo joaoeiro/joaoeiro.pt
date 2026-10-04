@@ -71,6 +71,11 @@ const blacks = keys.filter((k) => k.black);
     </div>
     <div class="felt" aria-hidden="true"></div>
   </div>
+  <p class="credit">
+    {t('piano.credit')}{' '}
+    <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noopener">Salamander Grand Piano</a>,
+    Alexander Holm (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a>)
+  </p>
 </div>
 
 <script>
@@ -395,6 +400,18 @@ const blacks = keys.filter((k) => k.black);
     border-radius: 99px;
     background: rgb(var(--bg-rgb) / 0.72);
     backdrop-filter: blur(8px);
+  }
+  .credit {
+    margin: 0.6rem 0 0;
+    font-size: 0.7rem;
+    color: var(--ivory-dim);
+    opacity: 0.75;
+  }
+  .credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
   }
   .hint {
     margin: 0;
