@@ -41,6 +41,15 @@ export const shows: Show[] = [
     posterBg: '#6ac1b3',
   },
   {
+    date: '2024-06-01T21:30', // approx.
+    title: { en: 'Evaristo', pt: 'Evaristo' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-evaristo.jpg',
+    posterBg: 'linear-gradient(#1d2023, #323033)',
+  },
+  {
     date: '2024-12-07T22:00',
     title: { en: 'A Última Ceia', pt: 'A Última Ceia' },
     with: 'Instantâneos',
