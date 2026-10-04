@@ -1,0 +1,35 @@
+# One-off: copies the header image of the old Google Sites page into the repo.
+name: Import old site image
+
+on:
+  push:
+    branches: [ccr-af5c933e-vi0hi6]
+    paths: [.github/workflows/import-old-site-image.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Download header image
+        run: |
+          set -euo pipefail
+          URL='https://sites.google.com/sitesv-images-rt/AMxu72tZaezPugxZdoOHJVdj1oQEg4G6qdb6Gerip6Lm5eQAd19paBlOaGdY7veixUSo0ZSBusLrse7pTaBx0kOB3zgl5JPFteiXPuwc_6KyJSleV5C2iHt-PvWwBgnj0Jo_PEdNJOO32EJthY8wT5CrcmzZxdyvy9O3d2YfG6SP1iWmCa0caCJhaRYrI4YfNdI=w2400'
+          mkdir -p src/assets
+          curl -fsSL -A 'Mozilla/5.0' -D headers.txt -o img.bin "$URL"
+          TYPE=$(grep -i '^content-type:' headers.txt | tail -1 | tr -d '\r' | awk '{print $2}')
+          case "$TYPE" in
+            image/jpeg) EXT=jpg ;; image/png) EXT=png ;; image/webp) EXT=webp ;; *) echo "Unexpected type: $TYPE"; exit 1 ;;
+          esac
+          mv img.bin "src/assets/hero-old-site.$EXT"
+          file "src/assets/hero-old-site.$EXT"
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/assets
+          git commit -m 'Import header image from the old joaoeiro.pt'
+          git push
