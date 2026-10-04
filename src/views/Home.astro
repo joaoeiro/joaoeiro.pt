@@ -302,17 +302,19 @@ const hasQuotes = published(testimonials).length > 0;
     line-height: 0.86;
     margin-bottom: 1.6rem;
   }
+  /* Extra room inside the clip for accents and descenders (the J, the ó); negative margins keep the spacing. */
   .line {
     display: block;
     overflow: hidden;
-    padding-bottom: 0.08em;
+    padding: 0.12em 0 0.24em;
+    margin: -0.12em 0 -0.16em;
   }
   .line--gold {
     padding-left: 0.6em;
   }
   .ch {
     display: inline-block;
-    transform: translateY(110%) rotate(8deg);
+    transform: translateY(140%) rotate(8deg);
     animation: chIn 1.1s var(--ease) forwards;
     animation-delay: var(--d);
   }
@@ -334,8 +336,9 @@ const hasQuotes = published(testimonials).length > 0;
   }
   .roles {
     position: relative;
-    height: 2.2rem;
-    margin-bottom: 1.4rem;
+    height: 1.6em;
+    line-height: 1.6em;
+    margin-bottom: 1.1rem;
     overflow: hidden;
     font-family: var(--font-display);
     font-style: italic;
