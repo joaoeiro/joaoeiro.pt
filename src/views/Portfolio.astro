@@ -165,7 +165,7 @@ const copy = {
   }
 
   <CtaBand title={copy.ctaTitle} text={copy.ctaText}>
-    <a class="btn btn--gold" href={path('events', lang)}>{t('cta.events')} <Icon name="arrow" /></a>
+    <a class="btn btn--gold" href={path('contact', lang) + '?s=events'}>{t('cta.contact')} <Icon name="arrow" /></a>
     <a class="btn" href={path('press', lang)}>{copy.press}</a>
   </CtaBand>
 </Layout>

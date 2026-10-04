@@ -1,0 +1,75 @@
+---
+/** Contact tab fixed to the right edge of every page; opens the form with the page's subject already chosen. */
+import Icon from './Icon.astro';
+import { path, useT, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+}
+const { lang, route } = Astro.props;
+const t = useT(lang);
+const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=events' : '';
+---
+
+{
+  route !== 'contact' && (
+    <a class="side-tab" href={path('contact', lang) + topic}>
+      <Icon name="mail" size={16} />
+      <span>{t('cta.side')}</span>
+    </a>
+  )
+}
+
+<style>
+  .side-tab {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.1rem 0.6rem;
+    border-radius: 12px 0 0 12px;
+    background: var(--gold-grad);
+    background-size: 200% auto;
+    color: var(--on-accent);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%) rotate(180deg);
+    box-shadow: 0 10px 30px -10px rgb(var(--accent-rgb) / 0.6);
+    transition:
+      padding 0.4s var(--ease),
+      background-position 0.6s var(--ease);
+  }
+  .side-tab:hover,
+  .side-tab:focus-visible {
+    padding-left: 0.9rem;
+    background-position: 100% center;
+  }
+  .side-tab :global(svg) {
+    transform: rotate(90deg);
+  }
+  @media (max-width: 700px) {
+    .side-tab {
+      gap: 0.45rem;
+      padding: 0.8rem 0.3rem;
+      border-radius: 8px 0 0 8px;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+    }
+    .side-tab:hover,
+    .side-tab:focus-visible {
+      padding-left: 0.3rem;
+    }
+  }
+  @media print {
+    .side-tab {
+      display: none;
+    }
+  }
+</style>

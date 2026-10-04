@@ -160,10 +160,6 @@ const hasQuotes = published(testimonials).length > 0;
           {copy.roles.map((r, i) => <span style={`--n:${i}`}>{r}</span>)}
         </div>
         <p class="lead hero__in" style="--d:1.05s">{copy.intro}</p>
-        <div class="btn-row hero__in" style="--d:1.2s">
-          <a class="btn btn--gold" href={path('lessons', lang)}>{t('cta.lessons')} <Icon name="arrow" /></a>
-          <a class="btn" href={path('events', lang)}>{t('cta.events')}</a>
-        </div>
       </div>
       <div class="hero__stage">
         <figure class="portrait hero__in" style="--d:.5s">

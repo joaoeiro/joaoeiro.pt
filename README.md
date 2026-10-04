@@ -14,12 +14,12 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 | English | Português | |
 | --- | --- | --- |
 | `/` | `/pt/` | Home — playable piano hero, services, videos, next shows |
-| `/piano-lessons/` | `/pt/aulas-de-piano/` | Lessons — who it's for, formats, method, plans, FAQ, booking form |
+| `/piano-lessons/` | `/pt/aulas-de-piano/` | Lessons — who it's for, formats, method, plans, FAQ |
 | `/portfolio/` | `/pt/portfolio/` | Bio, all videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
 | `/shows/` | `/pt/concertos/` | Upcoming and past concerts, add-to-calendar |
-| `/events/` | `/pt/eventos/` | Weddings, private & corporate events, quote form |
+| `/events/` | `/pt/eventos/` | Weddings, private & corporate events |
 | `/press/` | `/pt/imprensa/` | Press kit — short/long bio (copy buttons), photos, tech rider |
-| `/contact/` | `/pt/contacto/` | Contact form and socials |
+| `/contact/` | `/pt/contacto/` | The contact form (subject: lessons, events or other) and socials. `?s=lessons` / `?s=events` preselects the subject |
 
 ## Editing content — no code needed
 
@@ -41,7 +41,8 @@ The deploy workflow rebuilds weekly, so new videos appear on their own.
 **Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
-**Forms:** with `formEndpoint` empty, forms open the visitor's email app pre-filled.
+**Contact form:** one form, on the contact page, reached from the "Contacte-me" tab on the right edge of every page.
+With `formEndpoint` empty, it opens the visitor's email app pre-filled with every answer.
 Create a free [Formspree](https://formspree.io) form and paste its URL to receive messages directly.
 
 ## Development
