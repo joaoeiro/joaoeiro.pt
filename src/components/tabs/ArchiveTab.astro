@@ -1,0 +1,31 @@
+---
+/** Home-page section "Em arquivo": shows that have already happened. */
+import Tab from '../Tab.astro';
+import ShowList from '../ShowList.astro';
+import { type Lang } from '../../i18n';
+// Placeholder picture until the section's own photo arrives.
+import image from '../../assets/joao-eiro-live.jpg';
+
+interface Props {
+  lang: Lang;
+  num: number;
+}
+const { lang, num } = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Archive',
+    sub: 'The stages the piano has already played — past recitals, collaborations and concerts.',
+  },
+  pt: {
+    title: 'Em arquivo',
+    sub: 'Os palcos por onde o piano já passou — recitais, colaborações e concertos anteriores.',
+  },
+}[lang];
+---
+
+<Tab lang={lang} section="archive" num={num} title={copy.title} sub={copy.sub} image={image} focus="85% 70%">
+  <div class="tab-block">
+    <ShowList lang={lang} when="past" />
+  </div>
+</Tab>

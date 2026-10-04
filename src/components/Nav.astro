@@ -11,10 +11,10 @@ const t = useT(lang);
 const other: Lang = lang === 'en' ? 'pt' : 'en';
 // Everything but the contact page is a section of the home page.
 const links: { href: string; label: string; current?: boolean }[] = [
+  { href: sectionHref('current', lang), label: t('nav.current') },
+  { href: sectionHref('archive', lang), label: t('nav.archive') },
   { href: sectionHref('lessons', lang), label: t('nav.lessons') },
   { href: sectionHref('portfolio', lang), label: t('nav.portfolio') },
-  { href: sectionHref('shows', lang), label: t('nav.shows') },
-  { href: sectionHref('events', lang), label: t('nav.events') },
   { href: path('contact', lang), label: t('nav.contact'), current: route === 'contact' },
 ];
 ---
@@ -85,7 +85,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
           </a>
         ))
       }
-      <a href={sectionHref('press', lang)} style={`--i:${links.length + 1}`}>{t('nav.press')}</a>
     </nav>
     <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
   </div>

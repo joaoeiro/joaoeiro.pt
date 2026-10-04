@@ -13,11 +13,10 @@ const socials = (['youtube', 'instagram', 'tiktok', 'spotify', 'facebook'] as co
   .filter((k) => site.socials[k])
   .map((k) => ({ key: k, href: site.socials[k] }));
 const explore = [
+  { href: sectionHref('current', lang), label: t('nav.current') },
+  { href: sectionHref('archive', lang), label: t('nav.archive') },
   { href: sectionHref('lessons', lang), label: t('nav.lessons') },
   { href: sectionHref('portfolio', lang), label: t('nav.portfolio') },
-  { href: sectionHref('shows', lang), label: t('nav.shows') },
-  { href: sectionHref('events', lang), label: t('nav.events') },
-  { href: sectionHref('press', lang), label: t('nav.press') },
   { href: path('contact', lang), label: t('nav.contact') },
 ];
 const year = new Date().getFullYear();

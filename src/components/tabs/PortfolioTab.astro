@@ -8,6 +8,8 @@ import { instagram, tiktok } from '../../data/media';
 import { repertoire } from '../../data/repertoire';
 import { gallery } from '../../data/gallery';
 import { getYouTubeVideos } from '../../lib/youtube';
+// Placeholder picture until the section's own photo arrives.
+import image from '../../assets/joao-eiro-live.jpg';
 
 interface Props {
   lang: Lang;
@@ -49,7 +51,7 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="portfolio" num={num} title={copy.title} sub={copy.sub}>
+<Tab lang={lang} section="portfolio" num={num} title={copy.title} sub={copy.sub} image={image} focus="45% 30%">
   <div class="tab-block">
     <p class="eyebrow">{copy.bioLabel}</p>
     <div class="bio">{copy.bio.map((p) => <p class="tab-lead">{p}</p>)}</div>

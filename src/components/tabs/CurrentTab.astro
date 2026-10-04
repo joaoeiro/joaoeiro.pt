@@ -1,0 +1,34 @@
+---
+/** Home-page section "Em cartaz": what is on now and the next dates. */
+import Tab from '../Tab.astro';
+import ShowList from '../ShowList.astro';
+import { type Lang } from '../../i18n';
+// Placeholder picture until the section's own photo arrives.
+import image from '../../assets/joao-eiro-live.jpg';
+
+interface Props {
+  lang: Lang;
+  num: number;
+}
+const { lang, num } = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Now showing',
+    sub: 'The shows on right now and the next dates — solo recitals, collaborations and improvised evenings.',
+    follow: 'New dates are announced first on social media.',
+  },
+  pt: {
+    title: 'Em cartaz',
+    sub: 'Os espetáculos que estão a acontecer e as próximas datas — recitais a solo, colaborações e noites de improvisação.',
+    follow: 'As novas datas são anunciadas primeiro nas redes sociais.',
+  },
+}[lang];
+---
+
+<Tab lang={lang} section="current" num={num} title={copy.title} sub={copy.sub} image={image} focus="60% 35%">
+  <div class="tab-block">
+    <ShowList lang={lang} when="upcoming" />
+    <p class="tab-note">{copy.follow}</p>
+  </div>
+</Tab>

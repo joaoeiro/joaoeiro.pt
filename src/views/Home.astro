@@ -4,11 +4,10 @@ import PlayablePiano from '../components/PlayablePiano.astro';
 import Marquee from '../components/Marquee.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Testimonials from '../components/Testimonials.astro';
+import CurrentTab from '../components/tabs/CurrentTab.astro';
+import ArchiveTab from '../components/tabs/ArchiveTab.astro';
 import LessonsTab from '../components/tabs/LessonsTab.astro';
 import PortfolioTab from '../components/tabs/PortfolioTab.astro';
-import ShowsTab from '../components/tabs/ShowsTab.astro';
-import EventsTab from '../components/tabs/EventsTab.astro';
-import PressTab from '../components/tabs/PressTab.astro';
 import { Image } from 'astro:assets';
 import photo from '../assets/joao-eiro-live.jpg';
 import { type Lang } from '../i18n';
@@ -101,11 +100,10 @@ const hasQuotes = published(testimonials).length > 0;
 
   <section class="section">
     <div class="wrap tabs">
-      <LessonsTab lang={lang} num={1} />
-      <PortfolioTab lang={lang} num={2} />
-      <ShowsTab lang={lang} num={3} />
-      <EventsTab lang={lang} num={4} />
-      <PressTab lang={lang} num={5} />
+      <CurrentTab lang={lang} num={1} />
+      <ArchiveTab lang={lang} num={2} />
+      <LessonsTab lang={lang} num={3} />
+      <PortfolioTab lang={lang} num={4} />
     </div>
   </section>
 

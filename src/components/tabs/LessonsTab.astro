@@ -4,6 +4,8 @@ import Tab from '../Tab.astro';
 import Steps from '../Steps.astro';
 import Icon from '../Icon.astro';
 import { path, type Lang } from '../../i18n';
+// Placeholder picture until the section's own photo arrives.
+import image from '../../assets/joao-eiro-live.jpg';
 
 interface Props {
   lang: Lang;
@@ -71,7 +73,7 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="lessons" num={num} title={copy.title} sub={copy.sub}>
+<Tab lang={lang} section="lessons" num={num} title={copy.title} sub={copy.sub} image={image} focus="30% 20%">
   <p class="tab-lead">{copy.lead}</p>
 
   <div class="tab-block">
