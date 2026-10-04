@@ -23,6 +23,7 @@ export const groups: Group[] = [
       en: 'A professional improv theatre company where the actors create stories from the audience’s suggestions, with my help behind a keyboard, creating musical atmospheres and songs on the spot. They also produce Espontâneo (an international festival) and the Improv World Championship.',
     },
     url: 'https://instantaneos.pt/',
+    logo: '/images/groups/instantaneos.png',
     featured: true,
   },
   {
