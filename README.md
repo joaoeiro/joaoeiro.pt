@@ -20,8 +20,8 @@ short text; clicking it expands the rest:
 | --- | --- | --- |
 | Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Upcoming shows, add-to-calendar |
 | Archive / Em arquivo | `#archive` / `#arquivo` | Past shows |
-| Lessons / Aulas de piano | `#lessons` / `#aulas` | Who it's for, where, how it works |
-| Portfolio | `#portfolio` | Bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
+| Lessons / Aulas de piano | `#lessons` / `#aulas` | Free first lesson; teaching approach |
+| Portfolio | `#portfolio` | Always open: bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
 
 The menu and any link to an anchor open that section (`src/components/Tab.astro`); old page addresses
 (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section, or to the home page for pages that are gone.
