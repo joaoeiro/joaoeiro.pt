@@ -1,0 +1,522 @@
+---
+import Icon from './Icon.astro';
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+
+// C3 … E5: 17 white keys, 12 black keys. MIDI 48 = C3.
+const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const KEYMAP: Record<number, string> = {
+  60: 'a', 61: 'w', 62: 's', 63: 'e', 64: 'd', 65: 'f', 66: 't', 67: 'g',
+  68: 'y', 69: 'h', 70: 'u', 71: 'j', 72: 'k', 73: 'o', 74: 'l', 75: 'p', 76: ';',
+};
+type Key = { midi: number; name: string; black: boolean; wi: number; kb?: string };
+const keys: Key[] = [];
+let wi = -1;
+for (let midi = 48; midi <= 76; midi++) {
+  const name = NAMES[midi % 12] + (Math.floor(midi / 12) - 1);
+  const black = name.includes('#');
+  if (!black) wi++;
+  keys.push({ midi, name, black, wi, kb: KEYMAP[midi] });
+}
+const whites = keys.filter((k) => !k.black);
+const blacks = keys.filter((k) => k.black);
+---
+
+<div class="piano" data-piano>
+  <div class="piano__bar">
+    <button class="btn btn--gold play" type="button" data-play data-label-play={t('piano.play')} data-label-stop={t('piano.stop')}>
+      <span class="play__icon" data-icon-play><Icon name="play" size={16} /></span>
+      <span class="play__icon" data-icon-stop hidden><Icon name="stop" size={16} /></span>
+      <span data-play-label>{t('piano.play')}</span>
+    </button>
+    <p class="hint">{t('piano.hint')}</p>
+    <p class="now" data-now aria-live="polite"></p>
+  </div>
+
+  <div class="board">
+    <div class="sparks" data-sparks aria-hidden="true"></div>
+    <div class="keys" role="group" aria-label="Piano">
+      {
+        whites.map((k) => (
+          <button
+            type="button"
+            class:list={['key', 'white', { low: k.midi < 60 }]}
+            data-midi={k.midi}
+            aria-label={k.name}
+            style={`--wi:${k.wi}`}
+          >
+            {k.kb && <span class="kb">{k.kb.toUpperCase()}</span>}
+          </button>
+        ))
+      }
+      {
+        blacks.map((k) => (
+          <button
+            type="button"
+            class:list={['key', 'black', { low: k.midi < 60 }]}
+            data-midi={k.midi}
+            aria-label={k.name}
+            style={`--wi:${k.wi}`}
+            tabindex="-1"
+          >
+            {k.kb && <span class="kb">{k.kb.toUpperCase()}</span>}
+          </button>
+        ))
+      }
+    </div>
+    <div class="felt" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-piano]');
+  if (root) {
+    const sparks = root.querySelector<HTMLElement>('[data-sparks]')!;
+    const playBtn = root.querySelector<HTMLButtonElement>('[data-play]')!;
+    const playLabel = root.querySelector<HTMLElement>('[data-play-label]')!;
+    const nowEl = root.querySelector<HTMLElement>('[data-now]')!;
+    const keyEls = new Map<number, HTMLElement>();
+    root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => keyEls.set(Number(el.dataset.midi), el));
+
+    // ---------- Synth: a warm, bell-ish piano voice built from sine partials ----------
+    let ctx: AudioContext | undefined;
+    let master: GainNode;
+    const voices = new Map<number, GainNode>();
+
+    const audio = () => {
+      if (ctx) return ctx;
+      ctx = new AudioContext();
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -18;
+      comp.ratio.value = 4;
+      master = ctx.createGain();
+      master.gain.value = 0.9;
+
+      // Small synthetic hall: decaying stereo noise impulse.
+      const len = ctx.sampleRate * 2.4;
+      const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = ir.getChannelData(c);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+      }
+      const verb = ctx.createConvolver();
+      verb.buffer = ir;
+      const wet = ctx.createGain();
+      wet.gain.value = 0.28;
+
+      master.connect(comp);
+      master.connect(verb).connect(wet).connect(comp);
+      comp.connect(ctx.destination);
+      return ctx;
+    };
+
+    const freq = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
+
+    const strike = (midi: number, velocity = 0.8) => {
+      const ac = audio();
+      if (ac.state === 'suspended') ac.resume();
+      const now = ac.currentTime;
+      const f = freq(midi);
+      const out = ac.createGain();
+      const peak = 0.22 * velocity;
+      out.gain.setValueAtTime(0.0001, now);
+      out.gain.exponentialRampToValueAtTime(peak, now + 0.006);
+      out.gain.exponentialRampToValueAtTime(peak * 0.35, now + 0.4);
+      out.gain.exponentialRampToValueAtTime(0.0001, now + 3.2 - (midi - 48) * 0.03);
+
+      const lp = ac.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.setValueAtTime(Math.min(f * 9, 12000), now);
+      lp.frequency.exponentialRampToValueAtTime(Math.max(f * 2, 400), now + 1.2);
+      lp.connect(out).connect(master);
+
+      [
+        [1, 1],
+        [2, 0.42],
+        [3, 0.18],
+        [4, 0.09],
+        [5, 0.05],
+      ].forEach(([h, amp], i) => {
+        const o = ac.createOscillator();
+        const g = ac.createGain();
+        o.type = i === 0 ? 'triangle' : 'sine';
+        o.frequency.value = f * h * (1 + (i ? 0.0007 * h : 0));
+        g.gain.value = amp;
+        o.connect(g).connect(lp);
+        o.start(now);
+        o.stop(now + 3.4);
+      });
+
+      voices.get(midi)?.gain.setTargetAtTime(0.0001, now, 0.05);
+      voices.set(midi, out);
+    };
+
+    const release = (midi: number) => {
+      const v = voices.get(midi);
+      if (!v || !ctx) return;
+      v.gain.cancelScheduledValues(ctx.currentTime);
+      v.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.35);
+      voices.delete(midi);
+    };
+
+    // ---------- Visuals ----------
+    const glyphs = ['♪', '♫', '♩', '♬'];
+    const glow = (midi: number, ms = 260) => {
+      const el = keyEls.get(midi);
+      if (!el) return;
+      el.classList.add('down');
+      if (ms) setTimeout(() => el.classList.remove('down'), ms);
+      if (el.offsetParent === null) return; // hidden on small screens
+      const r = el.getBoundingClientRect();
+      const b = sparks.getBoundingClientRect();
+      const x = r.left + r.width / 2 - b.left;
+      const s = document.createElement('span');
+      s.className = 'spark';
+      s.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+      s.style.left = x + 'px';
+      s.style.setProperty('--dx', (Math.random() * 60 - 30).toFixed(0) + 'px');
+      s.style.setProperty('--hue', String(30 + ((midi * 7) % 30)));
+      const beam = document.createElement('span');
+      beam.className = 'beam';
+      beam.style.left = x + 'px';
+      beam.style.width = r.width + 'px';
+      sparks.append(beam, s);
+      s.addEventListener('animationend', () => s.remove());
+      beam.addEventListener('animationend', () => beam.remove());
+    };
+
+    const press = (midi: number, hold = false) => {
+      strike(midi);
+      glow(midi, hold ? 0 : 260);
+    };
+    const lift = (midi: number) => {
+      release(midi);
+      keyEls.get(midi)?.classList.remove('down');
+    };
+
+    // Pointer: press, glide across keys, release.
+    let pointerDown = false;
+    let current: number | undefined;
+    root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => {
+      const midi = Number(el.dataset.midi);
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        stopMelody();
+        pointerDown = true;
+        current = midi;
+        press(midi, true);
+      });
+      el.addEventListener('pointerenter', () => {
+        if (!pointerDown || current === midi) return;
+        if (current !== undefined) lift(current);
+        current = midi;
+        press(midi, true);
+      });
+      el.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
+          e.preventDefault();
+          press(midi);
+        }
+      });
+    });
+    addEventListener('pointerup', () => {
+      pointerDown = false;
+      if (current !== undefined) lift(current);
+      current = undefined;
+    });
+
+    // Computer keyboard.
+    const kbMap = new Map<string, number>();
+    root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => {
+      const kb = el.querySelector('.kb')?.textContent?.toLowerCase();
+      if (kb) kbMap.set(kb, Number(el.dataset.midi));
+    });
+    const typing = (e: KeyboardEvent) =>
+      e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable]');
+    addEventListener('keydown', (e) => {
+      if (e.repeat || e.metaKey || e.ctrlKey || e.altKey || typing(e)) return;
+      const midi = kbMap.get(e.key.toLowerCase());
+      if (midi === undefined) return;
+      const r = root.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return; // only while the piano is on screen
+      stopMelody();
+      press(midi, true);
+    });
+    addEventListener('keyup', (e) => {
+      const midi = kbMap.get(e.key.toLowerCase());
+      if (midi !== undefined) lift(midi);
+    });
+
+    // ---------- Demo melody: Beethoven, "Für Elise" (opening) ----------
+    const N = (n: string) => {
+      const m = n.match(/^([A-G]#?)(\d)$/)!;
+      return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'].indexOf(m[1]) + (Number(m[2]) + 1) * 12;
+    };
+    const score = [
+      'E5 D#5 E5 D#5 E5 B4 D5 C5',
+      'A4 E3 A3 C4 E4 A4',
+      'B4 E3 G#3 E4 G#4 B4',
+      'C5 E3 A3 E4 E5 D#5',
+      'E5 D#5 E5 B4 D5 C5',
+      'A4 E3 A3 C4 E4 A4',
+      'B4 E3 G#3 E4 C5 B4',
+      'A4 E3 A3 - - -',
+    ]
+      .join(' ')
+      .split(' ');
+    const STEP = 175;
+    let timers: number[] = [];
+    let playing = false;
+
+    const setPlaying = (on: boolean) => {
+      playing = on;
+      playBtn.querySelector<HTMLElement>('[data-icon-play]')!.hidden = on;
+      playBtn.querySelector<HTMLElement>('[data-icon-stop]')!.hidden = !on;
+      playLabel.textContent = on ? playBtn.dataset.labelStop! : playBtn.dataset.labelPlay!;
+      nowEl.textContent = on ? '♪ L. van Beethoven — Für Elise' : '';
+      root.classList.toggle('is-playing', on);
+    };
+    function stopMelody() {
+      timers.forEach(clearTimeout);
+      timers = [];
+      if (playing) setPlaying(false);
+    }
+    playBtn.addEventListener('click', () => {
+      if (playing) return stopMelody();
+      setPlaying(true);
+      score.forEach((n, i) => {
+        if (n === '-') return;
+        timers.push(window.setTimeout(() => {
+          strike(N(n), n.endsWith('3') ? 0.55 : 0.85);
+          glow(N(n), STEP * 1.4);
+        }, i * STEP));
+      });
+      timers.push(window.setTimeout(() => setPlaying(false), score.length * STEP + 400));
+    });
+
+    // ---------- Silent golden glissando when the piano first appears ----------
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        [...keyEls.keys()].forEach((midi, i) => setTimeout(() => keyEls.get(midi)?.classList.add('gliss'), 400 + i * 45));
+        setTimeout(() => keyEls.forEach((el) => el.classList.remove('gliss')), 400 + keyEls.size * 45 + 900);
+      });
+      io.observe(root);
+    }
+  }
+</script>
+
+<style>
+  .piano {
+    --n: 17;
+    --off: 0;
+    position: relative;
+    width: 100%;
+  }
+  .piano__bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .play__icon {
+    display: inline-flex;
+  }
+  .play__icon[hidden] {
+    display: none;
+  }
+  .hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .now {
+    margin: 0 0 0 auto;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--gold-2);
+    font-size: 1.05rem;
+  }
+  .board {
+    position: relative;
+    padding: 14px 14px 0;
+    border-radius: 20px 20px 10px 10px;
+    background: linear-gradient(180deg, #19161f, #08070b);
+    box-shadow:
+      0 40px 80px -30px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+      0 0 90px -20px rgba(217, 178, 106, 0.25);
+  }
+  .is-playing .board {
+    box-shadow:
+      0 40px 80px -30px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(217, 178, 106, 0.3) inset,
+      0 0 120px -10px rgba(217, 178, 106, 0.45);
+  }
+  .felt {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 10px;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--wine), #8c2a46, var(--wine));
+  }
+  .keys {
+    position: relative;
+    display: flex;
+    height: clamp(150px, 12vw + 80px, 230px);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .key {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    font: inherit;
+  }
+  .white {
+    flex: 1;
+    position: relative;
+    margin: 0 1px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(180deg, #d8cfbd 0%, #f6efe1 12%, #fffaf0 85%, #e2d8c4 100%);
+    box-shadow:
+      0 6px 0 #b7ac96,
+      0 8px 12px rgba(0, 0, 0, 0.5);
+    transform-origin: top;
+    transition: transform 0.08s, box-shadow 0.08s, background 0.2s;
+  }
+  .black {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    left: calc((var(--wi) + 1 - var(--off)) * 100% / var(--n));
+    width: calc(100% / var(--n) * 0.62);
+    height: 62%;
+    translate: -50% 0;
+    border-radius: 0 0 6px 6px;
+    background: linear-gradient(180deg, #050407 0%, #26222c 70%, #3a3442 92%, #121016 100%);
+    box-shadow:
+      0 5px 0 #000,
+      0 8px 10px rgba(0, 0, 0, 0.6),
+      inset 0 -3px 2px rgba(255, 255, 255, 0.12);
+    transition: transform 0.08s, box-shadow 0.08s, background 0.2s;
+  }
+  .kb {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    translate: -50% 0;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: rgba(7, 6, 10, 0.32);
+    pointer-events: none;
+  }
+  .black .kb {
+    bottom: 8px;
+    color: rgba(244, 236, 220, 0.35);
+  }
+  .white.down,
+  .white:active {
+    transform: perspective(400px) rotateX(-4deg);
+    background: linear-gradient(180deg, #c9a45e 0%, #f3d79a 30%, #fff1cf 100%);
+    box-shadow:
+      0 2px 0 #9c7535,
+      0 0 30px rgba(243, 215, 154, 0.8);
+  }
+  .black.down,
+  .black:active {
+    transform: perspective(400px) rotateX(-6deg);
+    background: linear-gradient(180deg, #5a4220, #d9b26a);
+    box-shadow:
+      0 2px 0 #000,
+      0 0 24px rgba(243, 215, 154, 0.8);
+  }
+  .white.gliss {
+    background: linear-gradient(180deg, #d8cfbd, #fff1cf 50%, #f3d79a);
+    box-shadow:
+      0 6px 0 #b7ac96,
+      0 0 22px rgba(243, 215, 154, 0.55);
+  }
+  .black.gliss {
+    background: linear-gradient(180deg, #2a2030, #9c7535);
+  }
+  .sparks {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 100%;
+    height: 340px;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .sparks :global(.spark) {
+    position: absolute;
+    bottom: 0;
+    translate: -50% 0;
+    font-size: 1.8rem;
+    color: hsl(var(--hue) 75% 72%);
+    text-shadow:
+      0 0 14px hsl(var(--hue) 90% 65% / 0.9),
+      0 0 40px hsl(var(--hue) 90% 60% / 0.5);
+    animation: sparkUp 1.8s var(--ease) forwards;
+  }
+  .sparks :global(.beam) {
+    position: absolute;
+    bottom: -14px;
+    height: 240px;
+    translate: -50% 0;
+    background: linear-gradient(0deg, rgba(243, 215, 154, 0.5), transparent);
+    filter: blur(6px);
+    animation: beam 0.9s ease-out forwards;
+  }
+  @keyframes sparkUp {
+    from {
+      opacity: 0;
+      transform: translateY(0) scale(0.6);
+    }
+    15% {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      transform: translate(var(--dx), -280px) scale(1.25) rotate(18deg);
+    }
+  }
+  @keyframes beam {
+    from {
+      opacity: 0.9;
+    }
+    to {
+      opacity: 0;
+      transform: scaleY(1.3);
+    }
+  }
+  @media (max-width: 700px) {
+    .piano {
+      --n: 10;
+      --off: 7;
+    }
+    .low {
+      display: none;
+    }
+    .now {
+      margin-left: 0;
+      width: 100%;
+    }
+    .hint {
+      display: none;
+    }
+  }
+</style>

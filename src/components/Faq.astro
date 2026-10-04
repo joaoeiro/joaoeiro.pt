@@ -1,0 +1,77 @@
+---
+interface Props {
+  items: { q: string; a: string }[];
+}
+const { items } = Astro.props;
+---
+
+<div class="faq">
+  {
+    items.map((it, i) => (
+      <details class="reveal" style={`--i:${i % 4}`} name="faq">
+        <summary>
+          <span>{it.q}</span>
+          <i aria-hidden="true"></i>
+        </summary>
+        <p set:html={it.a} />
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq {
+    display: grid;
+    gap: 0.75rem;
+  }
+  details {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  details[open] {
+    border-color: rgba(217, 178, 106, 0.45);
+    background: rgba(217, 178, 106, 0.05);
+  }
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary i {
+    position: relative;
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+  summary i::before,
+  summary i::after {
+    content: '';
+    position: absolute;
+    inset: 6px 0 auto;
+    height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.4s var(--ease);
+  }
+  summary i::after {
+    transform: rotate(90deg);
+  }
+  details[open] summary i::after {
+    transform: rotate(0);
+  }
+  p {
+    margin: 0;
+    padding: 0 1.4rem 1.3rem;
+    color: var(--ivory-dim);
+  }
+</style>

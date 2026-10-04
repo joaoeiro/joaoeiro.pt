@@ -1,0 +1,81 @@
+---
+/** Closing call-to-action with a pulsing sound wave. */
+interface Props {
+  title: string;
+  text?: string;
+}
+const { title, text } = Astro.props;
+const bars = Array.from({ length: 64 }, (_, i) => ({
+  h: (0.25 + Math.abs(Math.sin(i * 0.45) * Math.cos(i * 0.13))).toFixed(2),
+  d: ((i * 37) % 100) / 100,
+}));
+---
+
+<section class="section cta-band">
+  <div class="wrap">
+    <div class="box reveal">
+      <div class="wave" aria-hidden="true">
+        {bars.map((b) => <i style={`--h:${b.h};--d:${b.d}s`}></i>)}
+      </div>
+      <h2 set:html={title} />
+      {text && <p class="lead">{text}</p>}
+      <div class="btn-row"><slot /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .box {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(2.5rem, 2rem + 4vw, 5.5rem) clamp(1.5rem, 1rem + 4vw, 5rem);
+    border-radius: calc(var(--radius) * 1.5);
+    border: 1px solid rgba(217, 178, 106, 0.3);
+    background:
+      radial-gradient(ellipse at 0% 0%, rgba(109, 31, 53, 0.7), transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(59, 42, 107, 0.6), transparent 55%),
+      var(--ink-2);
+    text-align: center;
+  }
+  .box :global(em) {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .box .lead {
+    margin-inline: auto;
+  }
+  .btn-row {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .wave {
+    position: absolute;
+    inset: auto 0 0;
+    height: 55%;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    padding-inline: 1rem;
+    opacity: 0.22;
+    pointer-events: none;
+  }
+  .wave i {
+    flex: 1;
+    height: calc(var(--h) * 100%);
+    border-radius: 3px 3px 0 0;
+    background: linear-gradient(0deg, var(--gold), transparent);
+    transform-origin: bottom;
+    animation: bar 1.6s ease-in-out infinite alternate;
+    animation-delay: calc(var(--d) * -1.6s);
+  }
+  @keyframes bar {
+    from {
+      transform: scaleY(0.25);
+    }
+  }
+  h2,
+  p,
+  .btn-row {
+    position: relative;
+  }
+</style>

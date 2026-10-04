@@ -1,0 +1,107 @@
+---
+/** Ambient stage: soft spotlights and music notes drifting upward behind everything. */
+const glyphs = ['♪', '♫', '♩', '♬', '𝄞', '♭', '♯', '𝄢'];
+let seed = 7;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+const notes = Array.from({ length: 22 }, (_, i) => ({
+  glyph: glyphs[i % glyphs.length],
+  left: (rand() * 100).toFixed(1),
+  size: (14 + rand() * 30).toFixed(0),
+  dur: (18 + rand() * 22).toFixed(1),
+  delay: (-rand() * 40).toFixed(1),
+  sway: (20 + rand() * 60).toFixed(0),
+  opacity: (0.06 + rand() * 0.16).toFixed(2),
+}));
+---
+
+<div class="stage" aria-hidden="true">
+  <div class="spot spot-a"></div>
+  <div class="spot spot-b"></div>
+  <div class="spot spot-c"></div>
+  {
+    notes.map((n) => (
+      <span
+        class="drift"
+        style={`--left:${n.left}%;--size:${n.size}px;--dur:${n.dur}s;--delay:${n.delay}s;--sway:${n.sway}px;--o:${n.opacity}`}
+      >
+        {n.glyph}
+      </span>
+    ))
+  }
+</div>
+
+<style>
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: radial-gradient(ellipse 120% 80% at 50% -10%, #1a1426 0%, var(--ink) 60%);
+  }
+  .spot {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    animation: float 26s ease-in-out infinite alternate;
+  }
+  .spot-a {
+    width: 46vmax;
+    height: 46vmax;
+    left: -12vmax;
+    top: -8vmax;
+    background: radial-gradient(circle, rgba(109, 31, 53, 0.55), transparent 65%);
+  }
+  .spot-b {
+    width: 40vmax;
+    height: 40vmax;
+    right: -14vmax;
+    top: 30vh;
+    background: radial-gradient(circle, rgba(59, 42, 107, 0.55), transparent 65%);
+    animation-duration: 32s;
+    animation-delay: -10s;
+  }
+  .spot-c {
+    width: 30vmax;
+    height: 30vmax;
+    left: 30vw;
+    bottom: -14vmax;
+    background: radial-gradient(circle, rgba(217, 178, 106, 0.22), transparent 65%);
+    animation-duration: 22s;
+    animation-delay: -4s;
+  }
+  @keyframes float {
+    to {
+      transform: translate(6vw, 5vh) scale(1.12);
+    }
+  }
+  .drift {
+    position: absolute;
+    left: var(--left);
+    bottom: -10vh;
+    font-size: var(--size);
+    color: var(--gold);
+    opacity: var(--o);
+    animation: rise var(--dur) linear infinite;
+    animation-delay: var(--delay);
+    will-change: transform;
+  }
+  @keyframes rise {
+    0% {
+      transform: translate(0, 0) rotate(-10deg);
+    }
+    25% {
+      transform: translate(var(--sway), -30vh) rotate(8deg);
+    }
+    50% {
+      transform: translate(0, -60vh) rotate(-6deg);
+    }
+    75% {
+      transform: translate(calc(var(--sway) * -1), -90vh) rotate(10deg);
+    }
+    100% {
+      transform: translate(0, -125vh) rotate(-4deg);
+    }
+  }
+</style>

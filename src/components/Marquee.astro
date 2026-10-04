@@ -1,0 +1,68 @@
+---
+/** Endless ribbon of words, separated by little notes. */
+interface Props {
+  items: string[];
+  reverse?: boolean;
+}
+const { items, reverse = false } = Astro.props;
+const row = [...items, ...items];
+---
+
+<div class:list={['marquee', { reverse }]} aria-hidden="true">
+  <div class="track">
+    {
+      row.map((w, i) => (
+        <span class:list={['word', { outline: i % 2 === 1 }]}>
+          {w}
+          <i>{['♪', '♫', '♩', '♬'][i % 4]}</i>
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 1.4rem;
+    border-block: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.015);
+    mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: slide 40s linear infinite;
+  }
+  .reverse .track {
+    animation-direction: reverse;
+  }
+  .marquee:hover .track {
+    animation-play-state: paused;
+  }
+  .word {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    padding-right: 2rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 1.2rem + 2.5vw, 3.4rem);
+    font-style: italic;
+    white-space: nowrap;
+    color: var(--ivory);
+  }
+  .outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(244, 236, 220, 0.55);
+  }
+  .word i {
+    font-style: normal;
+    font-size: 0.6em;
+    color: var(--gold);
+  }
+  @keyframes slide {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  center?: boolean;
+}
+const { eyebrow, title, lead, center = false } = Astro.props;
+---
+
+<header class:list={['head reveal', { center }]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <h2 set:html={title} />
+  {lead && <p class="lead">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .head {
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .head :global(em) {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .center {
+    text-align: center;
+  }
+  .center .lead {
+    margin-inline: auto;
+  }
+</style>

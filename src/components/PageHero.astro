@@ -1,0 +1,117 @@
+---
+/** Inner-page header: big title over a living music staff. */
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+}
+const { eyebrow, title, lead } = Astro.props;
+const notes = [
+  { x: 8, y: 3, g: '♩' },
+  { x: 19, y: 1, g: '♪' },
+  { x: 31, y: 4, g: '♫' },
+  { x: 45, y: 2, g: '♩' },
+  { x: 58, y: 0, g: '♬' },
+  { x: 71, y: 3, g: '♪' },
+  { x: 84, y: 1, g: '♫' },
+  { x: 94, y: 2, g: '♩' },
+];
+---
+
+<section class="page-hero">
+  <svg class="staff" viewBox="0 0 1200 140" preserveAspectRatio="none" aria-hidden="true">
+    {
+      [0, 1, 2, 3, 4].map((i) => (
+        <path
+          class="line"
+          style={`--i:${i}`}
+          d={`M0 ${30 + i * 20} C 300 ${10 + i * 20}, 600 ${50 + i * 20}, 900 ${30 + i * 20} S 1200 ${20 + i * 20}, 1200 ${30 + i * 20}`}
+        />
+      ))
+    }
+  </svg>
+  <div class="staff-notes" aria-hidden="true">
+    {notes.map((n, i) => <span style={`--x:${n.x}%;--y:${n.y};--i:${i}`}>{n.g}</span>)}
+  </div>
+  <div class="wrap">
+    <p class="eyebrow reveal">{eyebrow}</p>
+    <h1 class="reveal" style="--i:1" set:html={title} />
+    {lead && <p class="lead reveal" style="--i:2">{lead}</p>}
+    <div class="reveal" style="--i:3"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .page-hero h1 :global(em) {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .staff {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 46%;
+    width: 100%;
+    height: 180px;
+    opacity: 0.32;
+    pointer-events: none;
+  }
+  .line {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 2400;
+    stroke-dashoffset: 2400;
+    animation:
+      drawLine 2.5s var(--ease) forwards calc(var(--i) * 0.12s),
+      wave 9s ease-in-out infinite alternate;
+  }
+  @keyframes drawLine {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes wave {
+    to {
+      transform: translateY(8px) scaleY(1.04);
+    }
+  }
+  .staff-notes {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 46%;
+    height: 180px;
+    pointer-events: none;
+  }
+  .staff-notes span {
+    position: absolute;
+    left: var(--x);
+    top: calc(var(--y) * 20px + 8px);
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0;
+    animation:
+      pop 0.8s var(--ease) forwards calc(1s + var(--i) * 0.15s),
+      bob 3.5s ease-in-out infinite calc(var(--i) * 0.3s);
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      scale: 0.3;
+    }
+    to {
+      opacity: 0.55;
+      scale: 1;
+    }
+  }
+  @keyframes bob {
+    50% {
+      translate: 0 -8px;
+    }
+  }
+  .wrap {
+    position: relative;
+  }
+</style>

@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Icon from '../components/Icon.astro';
+import { path, type Lang } from '../i18n';
+import { site } from '../config/site';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const copy = {
+  en: {
+    title: 'Contact',
+    description: 'Contact João Eiró for piano lessons, concerts, private and corporate events.',
+    eyebrow: 'Contact',
+    h1: 'Let’s <em>talk music</em>',
+    lead: 'Lessons, a concert, an event or just a hello — I usually reply within a day or two.',
+    quick: 'Looking for something specific?',
+    lessons: 'Book a trial lesson',
+    events: 'Quote for an event',
+    press: 'Press kit',
+    elsewhere: 'Find me on',
+  },
+  pt: {
+    title: 'Contacto',
+    description: 'Contacte João Eiró para aulas de piano, concertos, eventos privados e corporativos.',
+    eyebrow: 'Contacto',
+    h1: 'Vamos <em>falar de música</em>',
+    lead: 'Aulas, um concerto, um evento ou só um olá — normalmente respondo em um ou dois dias.',
+    quick: 'Procura algo específico?',
+    lessons: 'Marcar aula experimental',
+    events: 'Orçamento para evento',
+    press: 'Kit de imprensa',
+    elsewhere: 'Encontre-me no',
+  },
+}[lang];
+
+const socials = (['youtube', 'instagram', 'tiktok', 'facebook', 'spotify'] as const).filter((k) => site.socials[k]);
+const names = { youtube: 'YouTube', instagram: 'Instagram', tiktok: 'TikTok', facebook: 'Facebook', spotify: 'Spotify' };
+---
+
+<Layout lang={lang} route="contact" title={copy.title} description={copy.description}>
+  <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead} />
+
+  <section class="section top">
+    <div class="wrap split">
+      <div class="card reveal">
+        <ContactForm lang={lang} kind="general" />
+      </div>
+      <aside class="side">
+        <div class="reveal">
+          <p class="eyebrow">{copy.quick}</p>
+          <div class="quick">
+            <a href={path('lessons', lang) + '#book'}>{copy.lessons} <Icon name="arrow" size={18} /></a>
+            <a href={path('events', lang) + '#quote'}>{copy.events} <Icon name="arrow" size={18} /></a>
+            <a href={path('press', lang)}>{copy.press} <Icon name="arrow" size={18} /></a>
+          </div>
+        </div>
+        <div class="reveal" style="--i:1">
+          <p class="eyebrow">{copy.elsewhere}</p>
+          <div class="socials">
+            {
+              socials.map((k) => (
+                <a href={site.socials[k]} target="_blank" rel="noopener">
+                  <Icon name={k} size={22} />
+                  <span>{names[k]}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .top {
+    padding-top: 0;
+  }
+  .side {
+    display: grid;
+    gap: 3rem;
+  }
+  .quick {
+    display: grid;
+  }
+  .quick a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    transition: color 0.3s, padding 0.5s var(--ease);
+  }
+  .quick a:hover {
+    color: var(--gold-2);
+    padding-left: 0.6rem;
+  }
+  .quick :global(svg) {
+    color: var(--gold);
+  }
+  .socials {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .socials a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    transition: 0.4s var(--ease);
+  }
+  .socials a:hover {
+    border-color: var(--gold);
+    background: rgba(217, 178, 106, 0.08);
+    transform: translateY(-3px);
+  }
+  .socials :global(svg) {
+    color: var(--gold);
+  }
+</style>

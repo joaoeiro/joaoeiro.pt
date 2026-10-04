@@ -1,0 +1,315 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  kind: 'lesson' | 'event' | 'general';
+}
+const { lang, kind } = Astro.props;
+const t = useT(lang);
+const pt = lang === 'pt';
+
+const subjects = {
+  lesson: pt ? 'Aulas de piano' : 'Piano lessons',
+  event: pt ? 'Pedido de orçamento — evento' : 'Event quote request',
+  general: pt ? 'Contacto pelo site' : 'Website enquiry',
+};
+
+type Field = { name: string; label: string; options: string[] };
+const selects: Field[] =
+  kind === 'lesson'
+    ? [
+        {
+          name: 'student',
+          label: pt ? 'Para quem são as aulas?' : 'Who are the lessons for?',
+          options: pt
+            ? ['Criança (5–12)', 'Adolescente (13–17)', 'Adulto', 'Sénior']
+            : ['Child (5–12)', 'Teenager (13–17)', 'Adult', 'Senior'],
+        },
+        {
+          name: 'level',
+          label: pt ? 'Nível' : 'Level',
+          options: pt
+            ? ['Nunca toquei', 'Iniciante', 'Intermédio', 'Avançado']
+            : ['Never played', 'Beginner', 'Intermediate', 'Advanced'],
+        },
+        {
+          name: 'format',
+          label: pt ? 'Formato' : 'Format',
+          options: pt ? ['Presencial', 'Online', 'Ao domicílio', 'Ainda não sei'] : ['In person', 'Online', 'At home', 'Not sure yet'],
+        },
+      ]
+    : kind === 'event'
+      ? [
+          {
+            name: 'event_type',
+            label: pt ? 'Tipo de evento' : 'Type of event',
+            options: pt
+              ? ['Casamento', 'Evento corporativo', 'Jantar / festa privada', 'Concerto privado em casa', 'Hotel / restaurante', 'Outro']
+              : ['Wedding', 'Corporate event', 'Private dinner / party', 'House concert', 'Hotel / restaurant', 'Other'],
+          },
+        ]
+      : [];
+---
+
+<form
+  class="form"
+  data-form
+  data-endpoint={site.formEndpoint}
+  data-email={site.email}
+  data-subject={subjects[kind]}
+  data-sending={t('form.sending')}
+  data-sent={t('form.sent')}
+  data-mailto={t('form.mailto')}
+  data-error={t('form.error')}
+  method="post"
+  action={site.formEndpoint || `mailto:${site.email}`}
+>
+  <input type="hidden" name="_subject" value={subjects[kind]} />
+  <div class="row">
+    <label>
+      <span>{t('form.name')}</span>
+      <input name="name" autocomplete="name" required />
+    </label>
+    <label>
+      <span>{t('form.email')}</span>
+      <input name="email" type="email" autocomplete="email" required />
+    </label>
+  </div>
+  <div class="row">
+    <label>
+      <span>{t('form.phone')}</span>
+      <input name="phone" type="tel" autocomplete="tel" />
+    </label>
+    {
+      kind === 'event' && (
+        <label>
+          <span>{pt ? 'Data do evento' : 'Event date'}</span>
+          <input name="event_date" type="date" />
+        </label>
+      )
+    }
+    {
+      selects.slice(0, kind === 'event' ? 0 : 1).map((f) => (
+        <label>
+          <span>{f.label}</span>
+          <select name={f.name}>
+            {f.options.map((o) => (
+              <option>{o}</option>
+            ))}
+          </select>
+        </label>
+      ))
+    }
+  </div>
+  {
+    kind === 'event' && (
+      <div class="row">
+        {selects.map((f) => (
+          <label>
+            <span>{f.label}</span>
+            <select name={f.name}>
+              {f.options.map((o) => (
+                <option>{o}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+        <label>
+          <span>{pt ? 'Local e nº de convidados' : 'Location & number of guests'}</span>
+          <input name="venue" placeholder={pt ? 'Ex.: Sintra, 120 pessoas' : 'e.g. Sintra, 120 guests'} />
+        </label>
+      </div>
+    )
+  }
+  {
+    kind === 'lesson' && (
+      <div class="row">
+        {selects.slice(1).map((f) => (
+          <label>
+            <span>{f.label}</span>
+            <select name={f.name}>
+              {f.options.map((o) => (
+                <option>{o}</option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </div>
+    )
+  }
+  <label>
+    <span>{t('form.message')}</span>
+    <textarea name="message" rows="5" required></textarea>
+  </label>
+  <div class="actions">
+    <button class="btn btn--gold" type="submit">
+      <span data-label>{t('form.send')}</span>
+      <Icon name="arrow" size={18} />
+    </button>
+    <p class="status" data-status aria-live="polite"></p>
+  </div>
+  <p class="direct">
+    <a href={`mailto:${site.email}?subject=${encodeURIComponent(subjects[kind])}`}><Icon name="mail" size={16} /> {site.email}</a>
+    {
+      site.phone && (
+        <a href={`tel:${site.phone.replace(/\s/g, '')}`}>
+          <Icon name="phone" size={16} /> {site.phone}
+        </a>
+      )
+    }
+    {
+      site.whatsapp && (
+        <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
+          <Icon name="whatsapp" size={16} /> WhatsApp
+        </a>
+      )
+    }
+  </p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const label = form.querySelector<HTMLElement>('[data-label]')!;
+    const original = label.textContent;
+    const { endpoint, email, subject, sending, sent, mailto, error } = form.dataset;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      if (!endpoint) {
+        // No form backend configured: open the visitor's email app with everything filled in.
+        const lines = [...data.entries()]
+          .filter(([k, v]) => !k.startsWith('_') && k !== 'message' && String(v).trim())
+          .map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`);
+        const body = `${data.get('message')}\n\n—\n${lines.join('\n')}`;
+        status.textContent = mailto!;
+        location.href = `mailto:${email}?subject=${encodeURIComponent(`${subject} — ${data.get('name')}`)}&body=${encodeURIComponent(body)}`;
+        return;
+      }
+
+      label.textContent = sending!;
+      form.classList.add('is-busy');
+      try {
+        const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        form.classList.add('is-sent');
+        status.textContent = sent!;
+      } catch {
+        status.innerHTML = `${error} <a href="mailto:${email}">${email}</a>`;
+      } finally {
+        label.textContent = original;
+        form.classList.remove('is-busy');
+      }
+    });
+  });
+</script>
+
+<style>
+  .form {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1.1rem;
+  }
+  label {
+    display: grid;
+    gap: 0.45rem;
+  }
+  label span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.95rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--ivory);
+    font: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--gold) 50%), linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) 50%,
+      calc(100% - 15px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+  select option {
+    background: var(--ink-2);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(244, 236, 220, 0.3);
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(217, 178, 106, 0.15);
+  }
+  input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(0.8) sepia(1) saturate(3) hue-rotate(5deg);
+  }
+  textarea {
+    resize: vertical;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .status {
+    margin: 0;
+    color: var(--gold-2);
+    font-size: 0.92rem;
+  }
+  .status :global(a) {
+    text-decoration: underline;
+  }
+  .is-busy button {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .direct {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    margin: 0.5rem 0 0;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.92rem;
+  }
+  .direct a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--ivory-dim);
+    transition: color 0.3s;
+  }
+  .direct a:hover {
+    color: var(--gold-2);
+  }
+  .direct :global(svg) {
+    color: var(--gold);
+  }
+</style>

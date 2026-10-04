@@ -1,0 +1,70 @@
+---
+import { pick, type Lang } from '../i18n';
+import { testimonials } from '../data/testimonials';
+import { published } from '../lib/drafts';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const items = published(testimonials);
+---
+
+{
+  items.length > 0 && (
+    <div class="quotes">
+      {items.map((q, i) => (
+        <figure class="quote card reveal" style={`--i:${i}`}>
+          <span class="mark" aria-hidden="true">
+            “
+          </span>
+          <blockquote>{pick(q.quote, lang)}</blockquote>
+          <figcaption>
+            <strong>{q.author}</strong>
+            <span>{pick(q.role, lang)}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 1.25rem;
+  }
+  .quote {
+    margin: 0;
+    overflow: hidden;
+  }
+  .mark {
+    position: absolute;
+    right: 1rem;
+    top: -1.5rem;
+    font-family: var(--font-display);
+    font-size: 9rem;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.18;
+  }
+  blockquote {
+    margin: 0 0 1.5rem;
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.35;
+  }
+  figcaption {
+    display: grid;
+    gap: 0.15rem;
+    font-size: 0.9rem;
+  }
+  figcaption span {
+    color: var(--gold);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>

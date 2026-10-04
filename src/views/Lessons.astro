@@ -1,0 +1,368 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Testimonials from '../components/Testimonials.astro';
+import PianoStrip from '../components/PianoStrip.astro';
+import Icon from '../components/Icon.astro';
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+
+const copy = {
+  en: {
+    title: 'Piano Lessons',
+    description:
+      'Personalised piano lessons with João Eiró for children, teenagers and adults — beginners to advanced, classical to improvisation. In person or online.',
+    eyebrow: 'Piano lessons',
+    h1: 'Learn the piano with <em>joy</em> and method',
+    lead: 'Personalised lessons for every age and level. We start from the music you love and build the technique, reading and confidence to play it — and to invent your own.',
+    whoEyebrow: 'For whom',
+    whoTitle: 'Every pair of hands is <em>different</em>',
+    who: [
+      { g: '♩', t: 'Children', d: 'Playful first steps from around age 5: rhythm, songs, reading through games and lots of small victories.' },
+      { g: '♫', t: 'Teenagers', d: 'The songs they actually listen to, plus the skills to play them well — chords, grooves and solid technique.' },
+      { g: '♪', t: 'Adults', d: 'It’s never too late. Relaxed, goal-oriented lessons for absolute beginners and for those coming back to the piano.' },
+      { g: '𝄞', t: 'Advanced students', d: 'Repertoire, interpretation and stage preparation for auditions, recitals or conservatory goals.' },
+      { g: '✦', t: 'Improvisation', d: 'Harmony, chord voicings, grooves and the courage to play without sheet music — my favourite subject.' },
+      { g: '𝄢', t: 'Accompaniment', d: 'For pianists who want to accompany singers and other musicians: listening, reading charts and supporting the soloist.' },
+    ],
+    learnEyebrow: 'What you’ll learn',
+    learnTitle: 'A complete <em>musician</em>, not just fingers',
+    learn: [
+      'Reading music — at your own pace, without fear',
+      'Healthy technique: posture, relaxation, sound',
+      'Repertoire from classical to pop and film music',
+      'Chords and harmony to play any song from a lead sheet',
+      'Improvisation and creating your own arrangements',
+      'Ear training: playing what you hear',
+      'Performing with confidence for family, friends or a stage',
+    ],
+    formatsEyebrow: 'Formats',
+    formatsTitle: 'Where the <em>lessons</em> happen',
+    formats: [
+      { g: '♬', t: 'In person', d: 'One-to-one lessons at the studio, on a real piano.' },
+      { g: '◎', t: 'Online', d: 'Live video lessons from anywhere, with shared scores and recordings to practise with.' },
+      { g: '⌂', t: 'At your home', d: 'Lessons at your place, on your own instrument (subject to area).' },
+    ],
+    methodEyebrow: 'How it works',
+    methodTitle: 'From the first note to <em>your first concert</em>',
+    steps: [
+      { title: 'Trial lesson', text: 'We meet, play, talk about your goals and the music you love. No pressure.' },
+      { title: 'Personal plan', text: 'A path designed for you: pieces, skills and a practice routine that fits your week.' },
+      { title: 'Regular lessons', text: 'Weekly or fortnightly lessons with clear goals and recordings to practise between them.' },
+      { title: 'Play for others', text: 'Student recitals and informal concerts to share what you’ve learnt.' },
+    ],
+    plansEyebrow: 'Plans',
+    plansTitle: 'Choose your <em>tempo</em>',
+    plans: [
+      { name: 'Trial', tempo: 'Andante', d: 'One lesson to get to know each other and define goals.', items: ['Level assessment', 'Personal plan', 'No commitment'] },
+      { name: 'Regular', tempo: 'Allegro', d: 'Weekly lessons for steady, visible progress.', items: ['30, 45 or 60 min', 'Practice materials', 'Student recitals'], featured: true },
+      { name: 'Flexible pack', tempo: 'Rubato', d: 'A pack of lessons to use when your schedule allows.', items: ['Book as you go', 'In person or online', 'Great as a gift'] },
+    ],
+    priceNote: 'Prices on request — they depend on lesson length and format.',
+    popular: 'Most popular',
+    faqEyebrow: 'Questions',
+    faqTitle: 'Good <em>questions</em>',
+    faq: [
+      { q: 'Do I need a piano at home?', a: 'You need an instrument to practise on. A digital piano with 88 weighted keys is a great start — I’m happy to advise before you buy.' },
+      { q: 'What age can children start?', a: 'Usually from around 5 or 6. More than age, what matters is curiosity and a little attention span — the trial lesson helps us decide.' },
+      { q: 'I’m an adult and have never played. Is it too late?', a: 'Not at all. Adults learn differently, often faster in understanding. We set realistic goals around the music you want to play.' },
+      { q: 'Do I have to learn to read music?', a: 'I recommend it and teach it gradually, but we can also work by ear, with chords and lead sheets, depending on your goals.' },
+      { q: 'Do online lessons really work?', a: 'Yes — with a camera pointing at the keys and good audio, online lessons are very effective, especially for adults and returning students.' },
+      { q: 'Can you prepare me for exams or auditions?', a: 'Yes, we can plan repertoire and preparation for specific exams, auditions or recitals.' },
+    ],
+    formEyebrow: 'Book',
+    formTitle: 'Book your <em>trial lesson</em>',
+    formLead: 'Tell me a little about who the lessons are for — I’ll reply with available times.',
+    giftTitle: 'Give the gift of music',
+    giftText: 'Lesson packs make a beautiful present. Ask for a gift voucher.',
+  },
+  pt: {
+    title: 'Aulas de Piano',
+    description:
+      'Aulas de piano personalizadas com João Eiró para crianças, jovens e adultos — do iniciante ao avançado, do clássico à improvisação. Presenciais ou online.',
+    eyebrow: 'Aulas de piano',
+    h1: 'Aprenda piano com <em>alegria</em> e método',
+    lead: 'Aulas personalizadas para todas as idades e níveis. Partimos da música de que gosta e construímos a técnica, a leitura e a confiança para a tocar — e para inventar a sua.',
+    whoEyebrow: 'Para quem',
+    whoTitle: 'Cada par de mãos é <em>diferente</em>',
+    who: [
+      { g: '♩', t: 'Crianças', d: 'Primeiros passos lúdicos a partir dos 5 anos: ritmo, canções, leitura através de jogos e muitas pequenas vitórias.' },
+      { g: '♫', t: 'Adolescentes', d: 'As músicas que realmente ouvem e as competências para as tocar bem — acordes, grooves e técnica sólida.' },
+      { g: '♪', t: 'Adultos', d: 'Nunca é tarde. Aulas descontraídas e com objetivos claros, para quem começa do zero e para quem regressa ao piano.' },
+      { g: '𝄞', t: 'Alunos avançados', d: 'Repertório, interpretação e preparação de palco para provas, recitais ou objetivos de conservatório.' },
+      { g: '✦', t: 'Improvisação', d: 'Harmonia, voicings, grooves e a coragem de tocar sem partitura — o meu tema preferido.' },
+      { g: '𝄢', t: 'Acompanhamento', d: 'Para pianistas que querem acompanhar cantores e outros músicos: ouvir, ler cifras e apoiar o solista.' },
+    ],
+    learnEyebrow: 'O que vai aprender',
+    learnTitle: 'Um <em>músico</em> completo, não só dedos',
+    learn: [
+      'Leitura musical — ao seu ritmo, sem medo',
+      'Técnica saudável: postura, relaxamento, som',
+      'Repertório do clássico ao pop e à música de cinema',
+      'Acordes e harmonia para tocar qualquer música a partir de uma cifra',
+      'Improvisação e criação dos seus próprios arranjos',
+      'Treino auditivo: tocar o que ouve',
+      'Tocar com confiança para a família, amigos ou num palco',
+    ],
+    formatsEyebrow: 'Formatos',
+    formatsTitle: 'Onde acontecem as <em>aulas</em>',
+    formats: [
+      { g: '♬', t: 'Presencial', d: 'Aulas individuais no estúdio, num piano a sério.' },
+      { g: '◎', t: 'Online', d: 'Aulas em vídeo, ao vivo, a partir de qualquer lugar, com partituras partilhadas e gravações para praticar.' },
+      { g: '⌂', t: 'Ao domicílio', d: 'Aulas em sua casa, no seu instrumento (consoante a zona).' },
+    ],
+    methodEyebrow: 'Como funciona',
+    methodTitle: 'Da primeira nota ao <em>primeiro concerto</em>',
+    steps: [
+      { title: 'Aula experimental', text: 'Conhecemo-nos, tocamos e falamos dos seus objetivos e da música de que gosta. Sem pressão.' },
+      { title: 'Plano pessoal', text: 'Um percurso desenhado para si: peças, competências e uma rotina de estudo que cabe na sua semana.' },
+      { title: 'Aulas regulares', text: 'Aulas semanais ou quinzenais com objetivos claros e gravações para praticar entre aulas.' },
+      { title: 'Tocar para outros', text: 'Audições de alunos e concertos informais para partilhar o que aprendeu.' },
+    ],
+    plansEyebrow: 'Planos',
+    plansTitle: 'Escolha o seu <em>andamento</em>',
+    plans: [
+      { name: 'Experimental', tempo: 'Andante', d: 'Uma aula para nos conhecermos e definirmos objetivos.', items: ['Avaliação de nível', 'Plano pessoal', 'Sem compromisso'] },
+      { name: 'Regular', tempo: 'Allegro', d: 'Aulas semanais para um progresso constante e visível.', items: ['30, 45 ou 60 min', 'Materiais de estudo', 'Audições de alunos'], featured: true },
+      { name: 'Pack flexível', tempo: 'Rubato', d: 'Um pack de aulas para usar quando a sua agenda permitir.', items: ['Marca quando quiser', 'Presencial ou online', 'Ótimo para oferecer'] },
+    ],
+    priceNote: 'Preços sob consulta — dependem da duração e do formato da aula.',
+    popular: 'Mais escolhido',
+    faqEyebrow: 'Perguntas',
+    faqTitle: 'Boas <em>perguntas</em>',
+    faq: [
+      { q: 'Preciso de ter piano em casa?', a: 'Precisa de um instrumento para praticar. Um piano digital com 88 teclas pesadas é um ótimo começo — posso aconselhar antes de comprar.' },
+      { q: 'Com que idade podem as crianças começar?', a: 'Normalmente a partir dos 5 ou 6 anos. Mais do que a idade, importa a curiosidade e alguma capacidade de atenção — a aula experimental ajuda a decidir.' },
+      { q: 'Sou adulto e nunca toquei. É tarde demais?', a: 'De todo. Os adultos aprendem de forma diferente, muitas vezes compreendem mais depressa. Definimos objetivos realistas à volta da música que quer tocar.' },
+      { q: 'Tenho de aprender a ler partituras?', a: 'Recomendo e ensino gradualmente, mas também podemos trabalhar de ouvido, com acordes e cifras, consoante os seus objetivos.' },
+      { q: 'As aulas online funcionam mesmo?', a: 'Sim — com uma câmara apontada para as teclas e bom áudio, as aulas online são muito eficazes, sobretudo para adultos e para quem regressa ao piano.' },
+      { q: 'Prepara para provas ou audições?', a: 'Sim, podemos planear repertório e preparação para provas, audições ou recitais específicos.' },
+    ],
+    formEyebrow: 'Marcar',
+    formTitle: 'Marque a sua <em>aula experimental</em>',
+    formLead: 'Conte-me um pouco sobre quem vai ter aulas — respondo com os horários disponíveis.',
+    giftTitle: 'Ofereça música',
+    giftText: 'Os packs de aulas são um presente bonito. Peça um vale de oferta.',
+  },
+}[lang];
+---
+
+<Layout lang={lang} route="lessons" title={copy.title} description={copy.description}>
+  <PageHero eyebrow={copy.eyebrow} title={copy.h1} lead={copy.lead}>
+    <div class="btn-row">
+      <a class="btn btn--gold" href="#book">{t('cta.lessons')} <Icon name="arrow" /></a>
+      <a class="btn" href="#plans">{copy.plansEyebrow}</a>
+    </div>
+  </PageHero>
+
+  <PianoStrip />
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={copy.whoEyebrow} title={copy.whoTitle} />
+      <div class="grid grid-3">
+        {
+          copy.who.map((w, i) => (
+            <article class="card feature reveal" style={`--i:${i % 3}`}>
+              <span class="feature__glyph" aria-hidden="true">
+                {w.g}
+              </span>
+              <h3>{w.t}</h3>
+              <p>{w.d}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div class="sticky">
+        <SectionHead eyebrow={copy.learnEyebrow} title={copy.learnTitle} />
+      </div>
+      <ul class="note-list learn">
+        {copy.learn.map((l, i) => <li class="reveal" style={`--i:${i}`}>{l}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={copy.formatsEyebrow} title={copy.formatsTitle} />
+      <div class="grid grid-3">
+        {
+          copy.formats.map((f, i) => (
+            <article class="card feature reveal" style={`--i:${i}`}>
+              <span class="feature__glyph" aria-hidden="true">
+                {f.g}
+              </span>
+              <h3>{f.t}</h3>
+              <p>{f.d}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow={copy.methodEyebrow} title={copy.methodTitle} />
+      <Steps steps={copy.steps} />
+    </div>
+  </section>
+
+  <section class="section" id="plans">
+    <div class="wrap">
+      <SectionHead eyebrow={copy.plansEyebrow} title={copy.plansTitle} lead={copy.priceNote} center />
+      <div class="plans">
+        {
+          copy.plans.map((p, i) => (
+            <article class:list={['plan card reveal', { featured: p.featured }]} style={`--i:${i}`}>
+              {p.featured && <span class="plan__badge">{copy.popular}</span>}
+              <span class="plan__tempo">{p.tempo}</span>
+              <h3>{p.name}</h3>
+              <p>{p.d}</p>
+              <ul class="note-list">
+                {p.items.map((it) => (
+                  <li>{it}</li>
+                ))}
+              </ul>
+              <a class:list={['btn', { 'btn--gold': p.featured }]} href="#book">
+                {t('cta.lessons')}
+              </a>
+            </article>
+          ))
+        }
+      </div>
+      <div class="gift reveal">
+        <span aria-hidden="true">✧</span>
+        <div>
+          <strong>{copy.giftTitle}</strong>
+          <p>{copy.giftText}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <Testimonials lang={lang} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div class="sticky">
+        <SectionHead eyebrow={copy.faqEyebrow} title={copy.faqTitle} />
+      </div>
+      <Faq items={copy.faq} />
+    </div>
+  </section>
+
+  <section class="section" id="book">
+    <div class="wrap split">
+      <SectionHead eyebrow={copy.formEyebrow} title={copy.formTitle} lead={copy.formLead} />
+      <div class="card reveal">
+        <ContactForm lang={lang} kind="lesson" />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .learn li {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.8rem);
+    color: var(--ivory);
+    padding-block: 0.9rem;
+    padding-left: 2.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .learn li::before {
+    top: 0.85rem;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+  .plan {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .plan h3 {
+    font-size: 2.4rem;
+    margin: 0;
+  }
+  .plan p {
+    color: var(--ivory-dim);
+    margin: 0;
+  }
+  .plan .note-list {
+    margin: 0.6rem 0 1.4rem;
+  }
+  .plan .btn {
+    margin-top: auto;
+  }
+  .plan__tempo {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--gold);
+    font-size: 1.15rem;
+  }
+  .plan.featured {
+    border-color: rgba(217, 178, 106, 0.6);
+    background:
+      radial-gradient(circle at 80% 0%, rgba(217, 178, 106, 0.18), transparent 55%),
+      linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+    transform: translateY(-10px);
+  }
+  .plan__badge {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 99px;
+    background: var(--gold-grad);
+    color: var(--ink);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .gift {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    padding: 1.4rem 1.8rem;
+    border: 1px dashed rgba(217, 178, 106, 0.45);
+    border-radius: var(--radius);
+  }
+  .gift > span {
+    font-size: 2rem;
+    color: var(--gold);
+  }
+  .gift strong {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .gift p {
+    margin: 0;
+    color: var(--ivory-dim);
+  }
+</style>

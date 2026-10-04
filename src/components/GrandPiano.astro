@@ -1,0 +1,95 @@
+---
+/** Line-art grand piano that draws itself, with notes escaping from the open lid. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['gp', className]} aria-hidden="true">
+  <svg viewBox="0 0 420 300" fill="none">
+    <defs>
+      <linearGradient id="gpGold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#9c7535" />
+        <stop offset=".45" stop-color="#f3d79a" />
+        <stop offset="1" stop-color="#b78b45" />
+      </linearGradient>
+      <radialGradient id="gpGlow" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#f3d79a" stop-opacity=".35" />
+        <stop offset="1" stop-color="#f3d79a" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    <ellipse cx="210" cy="262" rx="190" ry="14" fill="url(#gpGlow)" />
+    <g stroke="url(#gpGold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- lid -->
+      <path class="draw" style="--d:0s" d="M78 138 L322 52 Q352 44 364 70 L372 92" />
+      <!-- lid prop -->
+      <path class="draw" style="--d:.5s" d="M232 142 L258 88" />
+      <!-- body / rim -->
+      <path
+        class="draw"
+        style="--d:.2s"
+        d="M48 150 H70 V138 H300 Q360 138 382 110 Q396 96 398 118 Q400 160 360 172 H70 V160 H48 Z"
+      />
+      <!-- keyboard -->
+      <path class="draw" style="--d:.8s" d="M48 150 H70 M48 155 H70" />
+      <!-- strings glimpse -->
+      <path class="draw thin" style="--d:1s" d="M90 146 H320 M96 142 H300" />
+      <!-- legs -->
+      <path class="draw" style="--d:1.1s" d="M82 172 L86 252 M332 172 L326 252 M214 172 L212 248" />
+      <!-- pedal lyre -->
+      <path class="draw" style="--d:1.3s" d="M150 172 Q140 210 150 236 H176 Q186 210 176 172 M152 242 H174" />
+      <!-- bench -->
+      <path class="draw" style="--d:1.5s" d="M2 186 H50 M8 186 V246 M44 186 V246" />
+    </g>
+    <g class="notes" fill="url(#gpGold)" font-family="serif">
+      <text x="250" y="70" style="--n:0">♪</text>
+      <text x="290" y="40" style="--n:1">♫</text>
+      <text x="215" y="50" style="--n:2">♩</text>
+      <text x="330" y="25" style="--n:3">♬</text>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .gp svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 0 18px rgba(217, 178, 106, 0.25));
+  }
+  .draw {
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: draw 2.8s var(--ease) forwards;
+    animation-delay: var(--d);
+  }
+  .thin {
+    stroke-width: 0.8;
+    opacity: 0.7;
+  }
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .notes text {
+    font-size: 26px;
+    opacity: 0;
+    animation: noteFloat 4.5s ease-in-out infinite;
+    animation-delay: calc(2s + var(--n) * 0.9s);
+  }
+  @keyframes noteFloat {
+    0% {
+      opacity: 0;
+      transform: translate(0, 20px);
+    }
+    25% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(30px, -50px) rotate(15deg);
+    }
+  }
+</style>

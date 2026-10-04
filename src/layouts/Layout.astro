@@ -1,0 +1,189 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import NoteField from '../components/NoteField.astro';
+import { site } from '../config/site';
+import { routes, locales, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  route: RouteKey;
+  title: string;
+  description: string;
+  /** Error pages: no canonical, no alternates, no language redirect. */
+  noindex?: boolean;
+}
+
+const { lang, route, title, description, noindex = false } = Astro.props;
+const pageTitle = route === 'home' ? title : `${title} · ${site.name}`;
+const canonical = new URL(routes[route][lang], site.url).href;
+const alternates = (Object.keys(routes[route]) as Lang[]).map((l) => ({
+  lang: locales[l],
+  href: new URL(routes[route][l], site.url).href,
+}));
+const ogImage = new URL('/og.png', site.url).href;
+const sameAs = Object.values(site.socials).filter(Boolean);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  jobTitle: lang === 'pt' ? 'Pianista e Professor de Piano' : 'Pianist and Piano Teacher',
+  email: `mailto:${site.email}`,
+  address: { '@type': 'PostalAddress', addressCountry: 'PT' },
+  sameAs,
+  knowsAbout: ['Piano', 'Piano lessons', 'Live music for events'],
+};
+---
+
+<!doctype html>
+<html lang={locales[lang]} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex" />
+      ) : (
+        <>
+          <link rel="canonical" href={canonical} />
+          {alternates.map((a) => (
+            <link rel="alternate" hreflang={a.lang} href={a.href} />
+          ))}
+          <link rel="alternate" hreflang="x-default" href={new URL(routes[route].en, site.url).href} />
+        </>
+      )
+    }
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#07060a" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={lang === 'pt' ? 'pt_PT' : 'en_GB'} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap"
+    />
+
+    <script is:inline set:html={`document.documentElement.classList.remove('no-js')`} />
+    {
+      lang === 'en' && !noindex && (
+        <script
+          is:inline
+          set:html={`(function(){try{
+  if (localStorage.getItem('lang')) return;
+  var langs = navigator.languages || [navigator.language || ''];
+  if (String(langs[0] || '').toLowerCase().indexOf('pt') === 0) location.replace(${JSON.stringify(routes[route].pt)} + location.hash);
+}catch(e){}})();`}
+        />
+      )
+    }
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body data-route={route}>
+    <a class="skip" href="#main">{lang === 'pt' ? 'Saltar para o conteúdo' : 'Skip to content'}</a>
+    <NoteField />
+    <Nav lang={lang} route={route} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} route={route} />
+
+    <script>
+      // Reveal elements as they scroll into view.
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Remember an explicit language choice so auto-detection never overrides it.
+      document.querySelectorAll<HTMLElement>('[data-lang-choice]').forEach((a) =>
+        a.addEventListener('click', () => {
+          try {
+            localStorage.setItem('lang', a.dataset.langChoice!);
+          } catch {}
+        }),
+      );
+
+      // Little notes trail behind the pointer on desktop.
+      const fine = matchMedia('(pointer: fine)').matches;
+      const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (fine && !calm) {
+        const glyphs = ['♪', '♫', '♩', '♬'];
+        let last = 0;
+        addEventListener('pointermove', (e) => {
+          const now = performance.now();
+          if (now - last < 70) return;
+          last = now;
+          const n = document.createElement('span');
+          n.className = 'trail-note';
+          n.textContent = glyphs[(Math.random() * glyphs.length) | 0];
+          n.style.left = e.clientX + 'px';
+          n.style.top = e.clientY + 'px';
+          n.style.setProperty('--dx', (Math.random() * 40 - 20).toFixed(0) + 'px');
+          n.style.setProperty('--r', (Math.random() * 50 - 25).toFixed(0) + 'deg');
+          document.body.appendChild(n);
+          n.addEventListener('animationend', () => n.remove());
+        });
+      }
+    </script>
+
+    <style is:global>
+      .skip {
+        position: fixed;
+        top: -100px;
+        left: 1rem;
+        z-index: 200;
+        background: var(--gold);
+        color: var(--ink);
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .skip:focus {
+        top: 1rem;
+      }
+      .trail-note {
+        position: fixed;
+        z-index: 90;
+        pointer-events: none;
+        color: var(--gold);
+        font-size: 15px;
+        translate: -50% -50%;
+        text-shadow: 0 0 12px rgba(243, 215, 154, 0.8);
+        animation: trail 1.1s var(--ease) forwards;
+      }
+      @keyframes trail {
+        from {
+          opacity: 0.9;
+          transform: translate(0, 0) rotate(0) scale(1);
+        }
+        to {
+          opacity: 0;
+          transform: translate(var(--dx), -46px) rotate(var(--r)) scale(0.6);
+        }
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout lang="en" route="home" title="Wrong note — 404" description="This page does not exist." noindex>
+  <section class="lost">
+    <div class="wrap">
+      <p class="eyebrow">404 · Nota errada</p>
+      <h1>Wrong <em>note</em>.</h1>
+      <p class="lead">
+        Even the best pianists hit one now and then. This page doesn’t exist — but the music goes on.
+        <br /><span class="muted">Esta página não existe — mas a música continua.</span>
+      </p>
+      <div class="btn-row">
+        <a class="btn btn--gold" href="/">Home <Icon name="arrow" /></a>
+        <a class="btn" href="/pt/">Início</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .lost {
+    min-height: 90vh;
+    display: grid;
+    align-items: center;
+    padding-top: var(--nav-h);
+  }
+  h1 em {
+    color: var(--gold);
+  }
+  h1 {
+    animation: wobble 2.6s ease-in-out infinite;
+    transform-origin: left bottom;
+  }
+  @keyframes wobble {
+    0%,
+    70%,
+    100% {
+      transform: none;
+    }
+    75% {
+      transform: rotate(-2deg) translateX(-4px);
+    }
+    85% {
+      transform: rotate(1.5deg) translateX(3px);
+    }
+  }
+</style>
