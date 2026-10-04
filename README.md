@@ -5,6 +5,10 @@ Built with [Astro](https://astro.build), fully static, in **English** (`/`) and 
 Visitors whose browser language is Portuguese are sent to the Portuguese version automatically
 (unless they pick a language with the EN/PT switch, which is remembered).
 
+Two themes: **dark** (noir, gold, ivory) and **light** (cream `#FDF8F1`, rose `#ec8e8e`).
+The site follows the visitor's system setting; the sun/moon button switches and remembers the choice.
+All colours are tokens at the top of `src/styles/global.css` — `:root` for dark, `:root[data-theme='light']` for light.
+
 ## Pages
 
 | English | Português | |

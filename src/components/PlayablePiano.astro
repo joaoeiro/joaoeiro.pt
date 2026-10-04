@@ -180,7 +180,7 @@ const blacks = keys.filter((k) => k.black);
       s.textContent = glyphs[(Math.random() * glyphs.length) | 0];
       s.style.left = x + 'px';
       s.style.setProperty('--dx', (Math.random() * 60 - 30).toFixed(0) + 'px');
-      s.style.setProperty('--hue', String(30 + ((midi * 7) % 30)));
+      s.style.setProperty('--hue', String((midi * 7) % 30));
       const beam = document.createElement('span');
       beam.className = 'beam';
       beam.style.left = x + 'px';
@@ -352,13 +352,13 @@ const blacks = keys.filter((k) => k.black);
     box-shadow:
       0 40px 80px -30px rgba(0, 0, 0, 0.9),
       0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-      0 0 90px -20px rgba(217, 178, 106, 0.25);
+      0 0 90px -20px rgb(var(--accent-rgb) / 0.25);
   }
   .is-playing .board {
     box-shadow:
       0 40px 80px -30px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(217, 178, 106, 0.3) inset,
-      0 0 120px -10px rgba(217, 178, 106, 0.45);
+      0 0 0 1px rgb(var(--accent-rgb) / 0.3) inset,
+      0 0 120px -10px rgb(var(--accent-rgb) / 0.45);
   }
   .felt {
     position: absolute;
@@ -367,7 +367,7 @@ const blacks = keys.filter((k) => k.black);
     top: 10px;
     height: 4px;
     border-radius: 2px;
-    background: linear-gradient(90deg, var(--wine), #8c2a46, var(--wine));
+    background: linear-gradient(90deg, #6d1f35, #8c2a46, #6d1f35);
   }
   .keys {
     position: relative;
@@ -430,27 +430,27 @@ const blacks = keys.filter((k) => k.black);
   .white.down,
   .white:active {
     transform: perspective(400px) rotateX(-4deg);
-    background: linear-gradient(180deg, #c9a45e 0%, #f3d79a 30%, #fff1cf 100%);
+    background: linear-gradient(180deg, var(--key-lit-1) 0%, var(--key-lit-2) 30%, var(--key-lit-3) 100%);
     box-shadow:
-      0 2px 0 #9c7535,
-      0 0 30px rgba(243, 215, 154, 0.8);
+      0 2px 0 var(--key-lit-edge),
+      0 0 30px rgb(var(--accent-2-rgb) / 0.8);
   }
   .black.down,
   .black:active {
     transform: perspective(400px) rotateX(-6deg);
-    background: linear-gradient(180deg, #5a4220, #d9b26a);
+    background: linear-gradient(180deg, var(--key-lit-black), var(--key-lit-1));
     box-shadow:
       0 2px 0 #000,
-      0 0 24px rgba(243, 215, 154, 0.8);
+      0 0 24px rgb(var(--accent-2-rgb) / 0.8);
   }
   .white.gliss {
-    background: linear-gradient(180deg, #d8cfbd, #fff1cf 50%, #f3d79a);
+    background: linear-gradient(180deg, #d8cfbd, var(--key-lit-3) 50%, var(--key-lit-2));
     box-shadow:
       0 6px 0 #b7ac96,
-      0 0 22px rgba(243, 215, 154, 0.55);
+      0 0 22px rgb(var(--accent-2-rgb) / 0.55);
   }
   .black.gliss {
-    background: linear-gradient(180deg, #2a2030, #9c7535);
+    background: linear-gradient(180deg, #2a2030, var(--key-lit-edge));
   }
   .sparks {
     position: absolute;
@@ -466,10 +466,10 @@ const blacks = keys.filter((k) => k.black);
     bottom: 0;
     translate: -50% 0;
     font-size: 1.8rem;
-    color: hsl(var(--hue) 75% 72%);
+    color: hsl(calc(var(--spark-hue) + var(--hue)) 75% var(--spark-l));
     text-shadow:
-      0 0 14px hsl(var(--hue) 90% 65% / 0.9),
-      0 0 40px hsl(var(--hue) 90% 60% / 0.5);
+      0 0 14px hsl(calc(var(--spark-hue) + var(--hue)) 90% 65% / 0.9),
+      0 0 40px hsl(calc(var(--spark-hue) + var(--hue)) 90% 60% / 0.5);
     animation: sparkUp 1.8s var(--ease) forwards;
   }
   .sparks :global(.beam) {
@@ -477,7 +477,7 @@ const blacks = keys.filter((k) => k.black);
     bottom: -14px;
     height: 240px;
     translate: -50% 0;
-    background: linear-gradient(0deg, rgba(243, 215, 154, 0.5), transparent);
+    background: linear-gradient(0deg, rgb(var(--accent-2-rgb) / 0.5), transparent);
     filter: blur(6px);
     animation: beam 0.9s ease-out forwards;
   }

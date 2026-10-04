@@ -27,12 +27,12 @@ const { items } = Astro.props;
   details {
     border: 1px solid var(--line);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgb(var(--surface-rgb) / calc(0.02 * var(--surface-k)));
     transition: border-color 0.3s, background 0.3s;
   }
   details[open] {
-    border-color: rgba(217, 178, 106, 0.45);
-    background: rgba(217, 178, 106, 0.05);
+    border-color: rgb(var(--accent-rgb) / 0.45);
+    background: rgb(var(--accent-rgb) / 0.05);
   }
   summary {
     display: flex;

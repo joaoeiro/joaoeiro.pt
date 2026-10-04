@@ -230,18 +230,18 @@ const copy = {
     position: relative;
     overflow: hidden;
     padding: clamp(2rem, 1.5rem + 4vw, 5rem);
-    border: 1px solid rgba(217, 178, 106, 0.3);
+    border: 1px solid rgb(var(--accent-rgb) / 0.3);
     border-radius: calc(var(--radius) * 1.5);
     background:
-      radial-gradient(ellipse at 100% 0%, rgba(217, 178, 106, 0.16), transparent 50%),
-      radial-gradient(ellipse at 0% 100%, rgba(59, 42, 107, 0.45), transparent 55%),
+      radial-gradient(ellipse at 100% 0%, rgb(var(--accent-rgb) / 0.16), transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgb(var(--violet-rgb) / 0.45), transparent 55%),
       var(--ink-2);
   }
   .corp__box::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 64px);
+    background: repeating-linear-gradient(90deg, rgb(var(--surface-rgb) / calc(0.025 * var(--surface-k))) 0 1px, transparent 1px 64px);
     pointer-events: none;
   }
   .corp__grid {

@@ -71,7 +71,7 @@ const year = new Date().getFullYear();
   .footer {
     position: relative;
     margin-top: 4rem;
-    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.6));
+    background: linear-gradient(180deg, transparent, var(--footer-shade));
   }
   .footer__grid {
     display: grid;
@@ -134,8 +134,8 @@ const year = new Date().getFullYear();
     transition: 0.4s var(--ease);
   }
   .socials a:hover {
-    background: var(--gold);
-    color: var(--ink);
+    background: var(--gold-grad);
+    color: var(--on-accent);
     transform: translateY(-4px) rotate(-8deg);
     border-color: var(--gold);
   }

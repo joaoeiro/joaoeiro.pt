@@ -1,17 +1,57 @@
 :root {
+  /* ---------- Dark theme (stage at night: noir, gold, ivory) ---------- */
   --ink: #07060a;
   --ink-2: #0f0d14;
   --ink-3: #18151f;
-  --line: rgba(244, 236, 220, 0.12);
+  --bg-rgb: 7 6 10;
+  --fg-rgb: 244 236 220;
+  --line: rgb(var(--fg-rgb) / 0.12);
   --ivory: #f4ecdc;
-  --ivory-dim: rgba(244, 236, 220, 0.72);
-  --muted: rgba(244, 236, 220, 0.52);
+  --ivory-dim: rgb(var(--fg-rgb) / 0.72);
+  --muted: rgb(var(--fg-rgb) / 0.52);
+
+  /* Accent: --gold for text and glyphs, --gold-2 for bright text/hover,
+     --accent-rgb / --accent-2-rgb for borders and glows. */
   --gold: #d9b26a;
   --gold-2: #f3d79a;
   --gold-deep: #9c7535;
+  --accent-2: #f3d79a;
+  --accent-rgb: 217 178 106;
+  --accent-2-rgb: 243 215 154;
+  /* Fills (buttons, badges) and large display text. */
+  --gold-grad: linear-gradient(100deg, #9c7535 0%, #f3d79a 35%, #d9b26a 55%, #fff1cf 70%, #b78b45 100%);
+  --gold-text-grad: var(--gold-grad);
+  --on-accent: #07060a;
+
   --wine: #6d1f35;
   --violet: #3b2a6b;
-  --gold-grad: linear-gradient(100deg, #9c7535 0%, #f3d79a 35%, #d9b26a 55%, #fff1cf 70%, #b78b45 100%);
+  --wine-rgb: 109 31 53;
+  --violet-rgb: 59 42 107;
+  --stage-top: #1a1426;
+
+  /* Translucent white surfaces; multiplied up in the light theme. */
+  --surface-rgb: 255 255 255;
+  --surface-k: 1;
+  --card-shadow: none;
+  --field-bg: rgb(0 0 0 / 0.35);
+  --footer-shade: rgb(0 0 0 / 0.6);
+  --picker-filter: invert(0.8) sepia(1) saturate(3) hue-rotate(5deg);
+  --grain: 0.06;
+
+  /* Piano highlights */
+  --key-lit-1: #c9a45e;
+  --key-lit-2: #f3d79a;
+  --key-lit-3: #fff1cf;
+  --key-lit-edge: #9c7535;
+  --key-lit-black: #5a4220;
+  --spark-hue: 30;
+  --spark-l: 72%;
+  --gp-1: #9c7535;
+  --gp-2: #f3d79a;
+  --gp-3: #b78b45;
+  --vinyl-a: #0c0b10;
+  --vinyl-b: #17151d;
+  --vinyl-label: #111;
 
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -24,8 +64,67 @@
   color-scheme: dark;
 }
 
+/* ---------- Light theme (daylight salon: cream #FDF8F1, rose #ec8e8e) ---------- */
+:root[data-theme='light'] {
+  --ink: #fdf8f1;
+  --ink-2: #f8eee3;
+  --ink-3: #f2e3d3;
+  --bg-rgb: 253 248 241;
+  --fg-rgb: 42 30 34;
+  --ivory: #2a1e22;
+  --ivory-dim: rgb(var(--fg-rgb) / 0.76);
+  --muted: rgb(var(--fg-rgb) / 0.62);
+
+  /* #ec8e8e for fills and glows; deeper shades of it for readable text. */
+  --gold: #b94a54;
+  --gold-2: #a63f48;
+  --gold-deep: #c4555f;
+  --accent-2: #ec8e8e;
+  --accent-rgb: 236 142 142;
+  --accent-2-rgb: 236 142 142;
+  --gold-grad: linear-gradient(100deg, #e57f86 0%, #f4b0a6 35%, #ec8e8e 55%, #f9cbc0 70%, #e07a80 100%);
+  --gold-text-grad: linear-gradient(100deg, #a63f48 0%, #d9707a 35%, #b94a54 55%, #e0848a 70%, #9a3a43 100%);
+  --on-accent: #2a1e22;
+
+  --wine: #e07a80;
+  --violet: #f2c4a8;
+  --wine-rgb: 244 186 178;
+  --violet-rgb: 249 215 186;
+  --stage-top: #fbe7e0;
+
+  --surface-k: 12;
+  --card-shadow: 0 18px 40px -28px rgb(150 70 70 / 0.45);
+  --field-bg: #ffffff;
+  --footer-shade: rgb(236 142 142 / 0.14);
+  --picker-filter: none;
+  --grain: 0.035;
+
+  --key-lit-1: #e07a80;
+  --key-lit-2: #f4b0a6;
+  --key-lit-3: #fde4dc;
+  --key-lit-edge: #c4555f;
+  --key-lit-black: #7a2f36;
+  --spark-hue: 350;
+  --spark-l: 62%;
+  --gp-1: #c4555f;
+  --gp-2: #ec8e8e;
+  --gp-3: #b94a54;
+  --vinyl-a: #f1ddd6;
+  --vinyl-b: #f8ebe5;
+  --vinyl-label: #f4c6bd;
+
+  color-scheme: light;
+}
+
 @view-transition {
   navigation: auto;
+}
+
+/* Theme switch: the new theme spreads out in a circle from the toggle. */
+html.theme-switching::view-transition-old(root),
+html.theme-switching::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 *,
@@ -42,6 +141,7 @@ html {
 
 body {
   margin: 0;
+  transition: background-color 0.5s, color 0.5s;
   min-height: 100vh;
   background: var(--ink);
   color: var(--ivory);
@@ -59,7 +159,7 @@ body::before {
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  opacity: 0.06;
+  opacity: var(--grain);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -77,8 +177,8 @@ a {
 }
 
 ::selection {
-  background: var(--gold);
-  color: var(--ink);
+  background: var(--accent-2);
+  color: var(--on-accent);
 }
 
 :focus-visible {
@@ -143,7 +243,7 @@ p {
 }
 
 .gold {
-  background: var(--gold-grad);
+  background: var(--gold-text-grad);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -196,14 +296,14 @@ p {
 }
 .btn--gold {
   border: 0;
-  color: var(--ink);
+  color: var(--on-accent);
   background: var(--gold-grad);
   background-size: 200% auto;
-  box-shadow: 0 10px 40px -12px rgba(217, 178, 106, 0.6);
+  box-shadow: 0 10px 40px -12px rgb(var(--accent-rgb) / 0.6);
 }
 .btn--gold:hover {
   background-position: 100% center;
-  box-shadow: 0 16px 50px -10px rgba(243, 215, 154, 0.75);
+  box-shadow: 0 16px 50px -10px rgb(var(--accent-2-rgb) / 0.75);
 }
 .btn--gold::after {
   content: '';
@@ -232,13 +332,14 @@ p {
   position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(160deg, rgb(var(--surface-rgb) / calc(0.045 * var(--surface-k))), rgb(var(--surface-rgb) / calc(0.01 * var(--surface-k))));
   padding: clamp(1.4rem, 1rem + 1.5vw, 2.2rem);
+  box-shadow: var(--card-shadow);
   backdrop-filter: blur(8px);
   transition: transform 0.6s var(--ease), border-color 0.4s, background 0.4s;
 }
 .card:hover {
-  border-color: rgba(217, 178, 106, 0.45);
+  border-color: rgb(var(--accent-rgb) / 0.45);
 }
 
 .grid {
@@ -342,8 +443,8 @@ p {
   height: 58px;
   margin-bottom: 1.4rem;
   border-radius: 16px;
-  border: 1px solid rgba(217, 178, 106, 0.35);
-  background: radial-gradient(circle at 30% 20%, rgba(217, 178, 106, 0.25), transparent 70%);
+  border: 1px solid rgb(var(--accent-rgb) / 0.35);
+  background: radial-gradient(circle at 30% 20%, rgb(var(--accent-rgb) / 0.25), transparent 70%);
   color: var(--gold-2);
   font-size: 1.8rem;
   line-height: 1;
@@ -368,7 +469,7 @@ p {
   width: 70%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 178, 106, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--accent-rgb) / 0.18), transparent 70%);
   opacity: 0;
   transition: opacity 0.6s;
   pointer-events: none;

@@ -26,7 +26,7 @@ const row = [...items, ...items];
     overflow: hidden;
     padding-block: 1.4rem;
     border-block: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.015);
+    background: rgb(var(--surface-rgb) / calc(0.015 * var(--surface-k)));
     mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
   .track {
@@ -53,7 +53,7 @@ const row = [...items, ...items];
   }
   .outline {
     color: transparent;
-    -webkit-text-stroke: 1px rgba(244, 236, 220, 0.55);
+    -webkit-text-stroke: 1px rgb(var(--fg-rgb) / 0.55);
   }
   .word i {
     font-style: normal;

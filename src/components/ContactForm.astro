@@ -238,7 +238,7 @@ const selects: Field[] =
     padding: 0.95rem 1.1rem;
     border: 1px solid var(--line);
     border-radius: 12px;
-    background: rgba(0, 0, 0, 0.35);
+    background: var(--field-bg);
     color: var(--ivory);
     font: inherit;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -257,17 +257,17 @@ const selects: Field[] =
   }
   input::placeholder,
   textarea::placeholder {
-    color: rgba(244, 236, 220, 0.3);
+    color: rgb(var(--fg-rgb) / 0.3);
   }
   input:focus,
   select:focus,
   textarea:focus {
     outline: none;
     border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(217, 178, 106, 0.15);
+    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.15);
   }
   input[type='date']::-webkit-calendar-picker-indicator {
-    filter: invert(0.8) sepia(1) saturate(3) hue-rotate(5deg);
+    filter: var(--picker-filter);
   }
   textarea {
     resize: vertical;

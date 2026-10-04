@@ -324,10 +324,10 @@ const copy = {
     font-size: 1.15rem;
   }
   .plan.featured {
-    border-color: rgba(217, 178, 106, 0.6);
+    border-color: rgb(var(--accent-rgb) / 0.6);
     background:
-      radial-gradient(circle at 80% 0%, rgba(217, 178, 106, 0.18), transparent 55%),
-      linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+      radial-gradient(circle at 80% 0%, rgb(var(--accent-rgb) / 0.18), transparent 55%),
+      linear-gradient(160deg, rgb(var(--surface-rgb) / calc(0.06 * var(--surface-k))), rgb(var(--surface-rgb) / calc(0.01 * var(--surface-k))));
     transform: translateY(-10px);
   }
   .plan__badge {
@@ -337,7 +337,7 @@ const copy = {
     padding: 0.3rem 0.75rem;
     border-radius: 99px;
     background: var(--gold-grad);
-    color: var(--ink);
+    color: var(--on-accent);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -349,7 +349,7 @@ const copy = {
     gap: 1.2rem;
     margin-top: 2rem;
     padding: 1.4rem 1.8rem;
-    border: 1px dashed rgba(217, 178, 106, 0.45);
+    border: 1px dashed rgb(var(--accent-rgb) / 0.45);
     border-radius: var(--radius);
   }
   .gift > span {

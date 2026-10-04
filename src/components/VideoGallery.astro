@@ -231,7 +231,7 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
     margin-bottom: 2rem;
     border: 1px solid var(--line);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(var(--surface-rgb) / calc(0.03 * var(--surface-k)));
   }
   .tabs button {
     display: inline-flex;
@@ -248,7 +248,7 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
   }
   .tabs button[aria-selected='true'] {
     background: var(--gold-grad);
-    color: var(--ink);
+    color: var(--on-accent);
   }
   .count {
     font-size: 0.7rem;
@@ -270,7 +270,7 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
     background: #000;
     padding: 0;
     cursor: pointer;
-    color: var(--ivory);
+    color: #f4ecdc;
     text-align: left;
   }
   .yt.short {
@@ -308,8 +308,8 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
     translate: -50% -50%;
     border-radius: 50%;
     background: var(--gold-grad);
-    color: var(--ink);
-    box-shadow: 0 0 0 0 rgba(243, 215, 154, 0.6);
+    color: var(--on-accent);
+    box-shadow: 0 0 0 0 rgb(var(--accent-2-rgb) / 0.6);
     animation: pulse 2.4s infinite;
     transition: transform 0.4s var(--ease);
   }
@@ -318,10 +318,10 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
   }
   @keyframes pulse {
     70% {
-      box-shadow: 0 0 0 22px rgba(243, 215, 154, 0);
+      box-shadow: 0 0 0 22px rgb(var(--accent-2-rgb) / 0);
     }
     100% {
-      box-shadow: 0 0 0 0 rgba(243, 215, 154, 0);
+      box-shadow: 0 0 0 0 rgb(var(--accent-2-rgb) / 0);
     }
   }
   .yt__title {
@@ -372,9 +372,9 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
     min-height: 220px;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border: 1px dashed rgba(217, 178, 106, 0.4);
+    border: 1px dashed rgb(var(--accent-rgb) / 0.4);
     border-radius: var(--radius);
-    background: radial-gradient(circle at 30% 20%, rgba(109, 31, 53, 0.4), transparent 60%), rgba(255, 255, 255, 0.02);
+    background: radial-gradient(circle at 30% 20%, rgb(var(--wine-rgb) / 0.4), transparent 60%), rgb(var(--surface-rgb) / calc(0.02 * var(--surface-k)));
     text-align: center;
     transition: border-color 0.4s, transform 0.6s var(--ease);
   }
@@ -410,8 +410,8 @@ const uid = `vg-${Math.random().toString(36).slice(2, 8)}`;
     border-radius: 50%;
     right: -95%;
     background:
-      radial-gradient(circle, var(--gold) 0 6%, #111 6.5% 15%, transparent 15.5%),
-      repeating-radial-gradient(circle, #0c0b10 0 2px, #17151d 3px 5px);
+      radial-gradient(circle, var(--gold) 0 6%, var(--vinyl-label) 6.5% 15%, transparent 15.5%),
+      repeating-radial-gradient(circle, var(--vinyl-a) 0 2px, var(--vinyl-b) 3px 5px);
     opacity: 0.55;
     animation: spin 8s linear infinite;
     transition: right 0.9s var(--ease);

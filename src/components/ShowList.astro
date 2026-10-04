@@ -121,7 +121,7 @@ const gcal = (s: Show) => {
     padding: clamp(1.2rem, 0.8rem + 1.2vw, 1.8rem) clamp(1.2rem, 0.8rem + 1.5vw, 2.2rem);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    background: linear-gradient(100deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(100deg, rgb(var(--surface-rgb) / calc(0.05 * var(--surface-k))), rgb(var(--surface-rgb) / calc(0.01 * var(--surface-k))));
     overflow: hidden;
     transition: border-color 0.4s, transform 0.6s var(--ease);
   }
@@ -136,7 +136,7 @@ const gcal = (s: Show) => {
     transition: transform 0.6s var(--ease);
   }
   .show:hover {
-    border-color: rgba(217, 178, 106, 0.5);
+    border-color: rgb(var(--accent-rgb) / 0.5);
     transform: translateX(6px);
   }
   .show:hover::before {
@@ -147,7 +147,7 @@ const gcal = (s: Show) => {
     justify-items: center;
     min-width: 84px;
     padding-right: clamp(1rem, 0.5rem + 2vw, 2.5rem);
-    border-right: 1px dashed rgba(217, 178, 106, 0.4);
+    border-right: 1px dashed rgb(var(--accent-rgb) / 0.4);
     line-height: 1;
   }
   .day {
@@ -207,15 +207,15 @@ const gcal = (s: Show) => {
     padding: 0.55rem 1rem;
     border-radius: 99px;
     border: 1px solid var(--wine);
-    background: rgba(109, 31, 53, 0.35);
+    background: rgb(var(--wine-rgb) / 0.35);
     font-size: 0.8rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .badge.free {
-    border-color: rgba(217, 178, 106, 0.5);
-    background: rgba(217, 178, 106, 0.12);
+    border-color: rgb(var(--accent-rgb) / 0.5);
+    background: rgb(var(--accent-rgb) / 0.12);
     color: var(--gold-2);
   }
   .past .show {
