@@ -56,6 +56,23 @@ export const shows: Show[] = [
     image: '/images/shows/instantaneos-retrovisor.jpg',
   },
   {
+    date: '2025-06-20T21:30', // approx.
+    title: { en: 'Pente Fino', pt: 'Pente Fino' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-pente-fino.jpg',
+    posterBg: '#0c0c0c',
+  },
+  {
+    date: '2025-06-15T21:30', // approx.
+    title: { en: 'A2', pt: 'A2' },
+    with: 'Instantâneos',
+    venue: '',
+    city: '',
+    image: '/images/shows/instantaneos-a2.jpg',
+  },
+  {
     date: '2025-06-01T21:30', // approx.
     title: { en: 'Labirinto', pt: 'Labirinto' },
     with: 'Instantâneos',
