@@ -17,9 +17,18 @@ jobs:
       - name: Download header image
         run: |
           set -euo pipefail
-          URL='https://sites.google.com/sitesv-images-rt/AMxu72tZaezPugxZdoOHJVdj1oQEg4G6qdb6Gerip6Lm5eQAd19paBlOaGdY7veixUSo0ZSBusLrse7pTaBx0kOB3zgl5JPFteiXPuwc_6KyJSleV5C2iHt-PvWwBgnj0Jo_PEdNJOO32EJthY8wT5CrcmzZxdyvy9O3d2YfG6SP1iWmCa0caCJhaRYrI4YfNdI=w2400'
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36'
+          # Image links on Google Sites are short-lived, so read a fresh one from the live page.
+          for PAGE in https://joaoeiro.pt/ https://sites.google.com/view/joaoeiro/inicio; do
+            curl -fsSL -A "$UA" -o page.html "$PAGE" || continue
+            URL=$(grep -oE 'IFuOkc" style="background-position: center center; background-image: url\(https://sites\.google\.com/sitesv-images-rt/[^)]+\)' page.html \
+              | head -1 | sed -E 's/.*url\((.*)\)/\1/; s/=w[0-9]+$//') || true
+            [ -n "${URL:-}" ] && break
+          done
+          [ -n "${URL:-}" ] || { echo 'Header image not found'; exit 1; }
+          echo "Header image: $URL"
           mkdir -p src/assets
-          curl -fsSL -A 'Mozilla/5.0' -D headers.txt -o img.bin "$URL"
+          curl -fsSL -A "$UA" -e "$PAGE" -D headers.txt -o img.bin "${URL}=w2400"
           TYPE=$(grep -i '^content-type:' headers.txt | tail -1 | tr -d '\r' | awk '{print $2}')
           case "$TYPE" in
             image/jpeg) EXT=jpg ;; image/png) EXT=png ;; image/webp) EXT=webp ;; *) echo "Unexpected type: $TYPE"; exit 1 ;;
