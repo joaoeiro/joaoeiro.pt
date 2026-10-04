@@ -24,14 +24,14 @@ const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=even
 <style>
   .side-tab {
     position: fixed;
-    right: 0;
+    right: 0.75rem;
     top: 50%;
     z-index: 80;
     display: flex;
     align-items: center;
     gap: 0.6rem;
     padding: 1.1rem 0.6rem;
-    border-radius: 12px 0 0 12px;
+    border-radius: 12px;
     /* Fixed brand colours, the same in both themes: the soft blue of the marquee notes, maroon lettering. */
     background: #a3b8dc;
     color: #800000;
@@ -42,13 +42,10 @@ const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=even
     writing-mode: vertical-rl;
     transform: translateY(-50%) rotate(180deg);
     box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45);
-    transition:
-      padding 0.4s var(--ease),
-      background-color 0.3s;
+    transition: background-color 0.3s;
   }
   .side-tab:hover,
   .side-tab:focus-visible {
-    padding-left: 0.9rem;
     background: #b7c9e4;
   }
   .side-tab :global(svg) {
@@ -58,13 +55,10 @@ const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=even
     .side-tab {
       gap: 0.45rem;
       padding: 0.8rem 0.3rem;
-      border-radius: 8px 0 0 8px;
+      right: 0.4rem;
+      border-radius: 8px;
       font-size: 0.62rem;
       letter-spacing: 0.16em;
-    }
-    .side-tab:hover,
-    .side-tab:focus-visible {
-      padding-left: 0.3rem;
     }
   }
   @media print {

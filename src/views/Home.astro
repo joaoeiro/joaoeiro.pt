@@ -385,29 +385,14 @@ const hasQuotes = published(testimonials).length > 0;
     width: min(74%, 500px);
     margin: 0 4% 0 auto;
   }
-  /* Arched "concert hall window" with a second, floating outline. */
-  .portrait::before {
-    content: '';
-    position: absolute;
-    inset: -16px;
-    border: 1px solid rgb(var(--accent-rgb) / 0.45);
-    border-radius: 999px 999px 34px 34px;
-    animation: halo 9s ease-in-out infinite alternate;
-  }
-  @keyframes halo {
-    to {
-      transform: translate(10px, -8px) rotate(1.2deg);
-    }
-  }
+  /* Arched "concert hall window". */
   .portrait__frame {
     position: relative;
     aspect-ratio: 4 / 5;
     overflow: hidden;
     border-radius: 999px 999px 24px 24px;
     background: #111;
-    box-shadow:
-      0 40px 90px -40px rgb(0 0 0 / 0.75),
-      0 0 120px -30px rgb(var(--accent-rgb) / 0.45);
+    box-shadow: 0 40px 90px -40px rgb(0 0 0 / 0.75);
   }
   .portrait__frame::after {
     content: '';
