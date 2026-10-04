@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import PlayablePiano from '../components/PlayablePiano.astro';
 import Marquee from '../components/Marquee.astro';
-import SectionHead from '../components/SectionHead.astro';
 import Testimonials from '../components/Testimonials.astro';
 import CurrentTab from '../components/tabs/CurrentTab.astro';
 import ArchiveTab from '../components/tabs/ArchiveTab.astro';
@@ -34,7 +33,6 @@ const copy = {
       'Piano lessons', 'House concerts', 'Composer', 'Weddings', 'Keyboardist', 'Music theory lessons',
       'Corporate events', 'Music producer', 'Improv theatre', 'Accompanist', 'Events',
     ],
-    quotesEyebrow: 'Reviews',
     quotesTitle: 'What <em>students say</em>',
   },
   pt: {
@@ -50,7 +48,6 @@ const copy = {
       'Aulas de piano', 'Concertos em casa', 'Compositor', 'Casamentos', 'Teclista', 'Aulas de formação musical',
       'Eventos corporativos', 'Produtor musical', 'Teatro de improviso', 'Músico acompanhador', 'Eventos',
     ],
-    quotesEyebrow: 'Avaliações',
     quotesTitle: 'O que dizem <em>os alunos</em>',
   },
 }[lang];
@@ -114,12 +111,7 @@ const hasQuotes = published(testimonials).length > 0;
 
   {
     hasQuotes && (
-      <section class="section">
-        <div class="wrap">
-          <SectionHead eyebrow={copy.quotesEyebrow} title={copy.quotesTitle} center />
-          <Testimonials lang={lang} />
-        </div>
-      </section>
+      <Testimonials lang={lang} title={copy.quotesTitle} />
     )
   }
 </Layout>
