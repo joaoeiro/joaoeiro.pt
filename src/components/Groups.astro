@@ -16,7 +16,7 @@ const siteLabel = lang === 'pt' ? 'site' : 'website';
   {
     groups.map((g) => (
       <article class:list={['group', { featured: g.featured }]}>
-        <a class="logo" href={g.url} target="_blank" rel="noopener" aria-label={g.name}>
+        <a class:list={['logo', { 'has-img': g.logo }]} href={g.url} target="_blank" rel="noopener" aria-label={g.name}>
           {g.logo ? <img src={asset(g.logo)} alt={g.name} loading="lazy" /> : <span>{g.name}</span>}
         </a>
         <div class="text">
@@ -68,6 +68,15 @@ const siteLabel = lang === 'pt' ? 'site' : 'website';
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
+  }
+  /* A real logo carries its own background. */
+  .logo.has-img {
+    padding: 0;
+    background: none;
+  }
+  .logo.has-img img {
+    max-width: 100%;
+    max-height: 100%;
   }
   .logo span {
     font-family: var(--font-display);
