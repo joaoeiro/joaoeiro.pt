@@ -32,24 +32,24 @@ const topic = route === 'lessons' ? '?s=lessons' : route === 'events' ? '?s=even
     gap: 0.6rem;
     padding: 1.1rem 0.6rem;
     border-radius: 12px 0 0 12px;
-    background: var(--gold-grad);
-    background-size: 200% auto;
-    color: var(--on-accent);
+    /* Fixed brand colours, the same in both themes: the soft blue of the marquee notes, maroon lettering. */
+    background: #a3b8dc;
+    color: #800000;
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     writing-mode: vertical-rl;
     transform: translateY(-50%) rotate(180deg);
-    box-shadow: 0 10px 30px -10px rgb(var(--accent-rgb) / 0.6);
+    box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45);
     transition:
       padding 0.4s var(--ease),
-      background-position 0.6s var(--ease);
+      background-color 0.3s;
   }
   .side-tab:hover,
   .side-tab:focus-visible {
     padding-left: 0.9rem;
-    background-position: 100% center;
+    background: #b7c9e4;
   }
   .side-tab :global(svg) {
     transform: rotate(90deg);

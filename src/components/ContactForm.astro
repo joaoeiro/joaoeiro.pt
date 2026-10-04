@@ -24,12 +24,19 @@ const c = {
     lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
     age: 'Student’s age',
     agePh: 'e.g. 9',
+    guardian: 'Parent or guardian’s name',
     experience: 'Experience playing the piano',
     experiencePh: 'e.g. never played, or two years of lessons as a child…',
     where: 'Where would the lessons be?',
     whereOpts: ['At the student’s home', 'At the teacher’s home (Benfica)'],
     whereHint: 'Tick one or both.',
     whereRequired: 'Please choose at least one option.',
+    area: 'Area or town',
+    areaPh: 'e.g. Benfica, Amadora, Telheiras…',
+    pianoHome: 'Is there a piano at home? (optional)',
+    pianoHomeOpts: ['Yes, an acoustic piano', 'Yes, a keyboard or digital piano', 'Not yet'],
+    goal: 'Goal (optional)',
+    goalOpts: ['For fun', 'Exams or conservatoire', 'Playing the songs I love', 'Accompanying myself singing', 'Other'],
     schedule: 'Preferred days and times',
     schedulePh: 'e.g. weekday evenings after 6pm, Saturday mornings…',
     more: 'Anything else you’d like to share?',
@@ -40,6 +47,12 @@ const c = {
     musicPh: 'e.g. jazz, classical, pop on piano…',
     duration: 'Approximate duration',
     durationPh: 'e.g. 2 hours',
+    venue: 'Event location',
+    venuePh: 'e.g. a quinta in Sintra, a hotel in Lisbon…',
+    venuePiano: 'Does the venue have a piano?',
+    venuePianoOpts: ['Yes', 'No', 'I don’t know'],
+    songs: 'Special songs (optional)',
+    songsPh: 'e.g. the bride’s entrance, the first dance…',
     guests: 'Number of guests',
     sound: 'Sound system',
     soundOpts: ['I have my own', 'I need you to bring one'],
@@ -60,12 +73,19 @@ const c = {
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
     age: 'Idade do aluno',
     agePh: 'Ex.: 9',
+    guardian: 'Nome do encarregado de educação',
     experience: 'Experiência a tocar piano',
     experiencePh: 'Ex.: nunca toquei, ou tive dois anos de aulas em criança…',
     where: 'Onde são as aulas?',
     whereOpts: ['Em casa do aluno', 'Em casa do professor (Benfica)'],
     whereHint: 'Pode escolher uma ou as duas.',
     whereRequired: 'Escolha pelo menos uma opção.',
+    area: 'Zona ou localidade',
+    areaPh: 'Ex.: Benfica, Amadora, Telheiras…',
+    pianoHome: 'Tem piano em casa? (opcional)',
+    pianoHomeOpts: ['Sim, piano acústico', 'Sim, teclado ou piano digital', 'Ainda não'],
+    goal: 'Objetivo (opcional)',
+    goalOpts: ['Lazer', 'Exames ou conservatório', 'Tocar as músicas de que gosto', 'Acompanhar-me a cantar', 'Outro'],
     schedule: 'Preferências de horário e dias da semana',
     schedulePh: 'Ex.: dias úteis depois das 18h, sábados de manhã…',
     more: 'Mais alguma coisa que queira partilhar?',
@@ -76,6 +96,12 @@ const c = {
     musicPh: 'Ex.: jazz, clássico, pop ao piano…',
     duration: 'Duração aproximada do evento',
     durationPh: 'Ex.: 2 horas',
+    venue: 'Local do evento',
+    venuePh: 'Ex.: quinta em Sintra, hotel em Lisboa…',
+    venuePiano: 'O espaço tem piano?',
+    venuePianoOpts: ['Sim', 'Não', 'Não sei'],
+    songs: 'Músicas especiais (opcional)',
+    songsPh: 'Ex.: entrada da noiva, primeira dança…',
     guests: 'Número de pessoas',
     sound: 'Sistema de som',
     soundOpts: ['Tenho o meu', 'Preciso que leve'],
@@ -141,26 +167,64 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     <div class="row">
       <label>
         <span>{c.age}</span>
-        <input name={c.age} inputmode="numeric" placeholder={c.agePh} />
+        <input name={c.age} inputmode="numeric" placeholder={c.agePh} data-age />
       </label>
+      <fieldset class="sub" data-when="minor" disabled hidden>
+        <label>
+          <span>{c.guardian}</span>
+          <input name={c.guardian} autocomplete="off" required />
+        </label>
+      </fieldset>
     </div>
     <label>
       <span>{c.experience}</span>
       <textarea name={c.experience} rows="3" placeholder={c.experiencePh}></textarea>
     </label>
+    <fieldset class="group">
+      <legend>{c.pianoHome}</legend>
+      <div class="pills">
+        {
+          c.pianoHomeOpts.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.pianoHome} value={o} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <fieldset class="group">
+      <legend>{c.goal}</legend>
+      <div class="checks">
+        {
+          c.goalOpts.map((o) => (
+            <label class="check">
+              <input type="checkbox" name={c.goal} value={o} />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
     <fieldset class="group" data-where>
       <legend>{c.where}</legend>
       <div class="checks">
         {
-          c.whereOpts.map((o) => (
+          c.whereOpts.map((o, i) => (
             <label class="check">
-              <input type="checkbox" name={c.where} value={o} />
+              <input type="checkbox" name={c.where} value={o} data-at-home={i === 0 ? '' : undefined} />
               <span>{o}</span>
             </label>
           ))
         }
       </div>
       <p class="hint">{c.whereHint}</p>
+    </fieldset>
+    <fieldset class="sub" data-when="home" disabled hidden>
+      <label>
+        <span>{c.area}</span>
+        <input name={c.area} placeholder={c.areaPh} required />
+      </label>
     </fieldset>
     <label>
       <span>{c.schedule}</span>
@@ -186,6 +250,23 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
         <input name={c.eventDate} type="date" />
       </label>
     </div>
+    <label>
+      <span>{c.venue}</span>
+      <input name={c.venue} placeholder={c.venuePh} required />
+    </label>
+    <fieldset class="group">
+      <legend>{c.venuePiano}</legend>
+      <div class="pills">
+        {
+          c.venuePianoOpts.map((o) => (
+            <label class="pill">
+              <input type="radio" name={c.venuePiano} value={o} required />
+              <span>{o}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
     <label>
       <span>{c.music}</span>
       <input name={c.music} placeholder={c.musicPh} />
@@ -213,6 +294,10 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
         }
       </div>
     </fieldset>
+    <label>
+      <span>{c.songs}</span>
+      <textarea name={c.songs} rows="3" placeholder={c.songsPh}></textarea>
+    </label>
   </fieldset>
 
   <fieldset class="topic" data-for="other" disabled hidden>
@@ -316,6 +401,25 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
       });
     });
 
+    // Follow-up questions: the area when lessons are at the student's home, a guardian when the student is a minor.
+    const age = form.querySelector<HTMLInputElement>('[data-age]')!;
+    const atHome = form.querySelector<HTMLInputElement>('[data-at-home]')!;
+    const conditions: Record<string, () => boolean> = {
+      home: () => atHome.checked,
+      minor: () => {
+        const n = parseInt(age.value, 10);
+        return n > 0 && n < 18;
+      },
+    };
+    const sync = () =>
+      form.querySelectorAll<HTMLFieldSetElement>('[data-when]').forEach((f) => {
+        const on = conditions[f.dataset.when!]();
+        f.hidden = !on;
+        f.disabled = !on;
+      });
+    age.addEventListener('input', sync);
+    atHome.addEventListener('change', sync);
+
     // "Where" accepts one or both boxes, but at least one.
     const boxes = [...where.querySelectorAll<HTMLInputElement>('input[type=checkbox]')];
     const checkWhere = () => boxes[0].setCustomValidity(boxes.some((b) => b.checked) ? '' : whereRequired!);
@@ -325,6 +429,9 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = new FormData(form);
+      const topic = form.querySelector<HTMLInputElement>('[data-topic]:checked')?.value ?? '';
+      const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
+      const title = [subject, topic, name].filter(Boolean).join(' — ');
 
       if (!endpoint) {
         // No form backend configured: open the visitor's email app with every answer filled in.
@@ -334,12 +441,14 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
           answers.set(k, [...(answers.get(k) ?? []), String(v)]);
         }
         const body = [...answers].map(([k, v]) => `${k}: ${v.join(', ')}`).join('\n');
-        const topic = form.querySelector<HTMLInputElement>('[data-topic]:checked')?.value ?? '';
-        const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
         status.textContent = mailto!;
-        location.href = `mailto:${email}?subject=${encodeURIComponent([subject, topic, name].filter(Boolean).join(' — '))}&body=${encodeURIComponent(body)}`;
+        location.href = `mailto:${email}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
         return;
       }
+
+      // Formspree: a clear subject line, and replying goes straight to the visitor when they chose email.
+      data.set('_subject', title);
+      if (contact.type === 'email') data.set('_replyto', contact.value);
 
       label.textContent = sending!;
       form.classList.add('is-busy');
@@ -371,6 +480,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     border: 0;
     min-width: 0;
   }
+  .sub[hidden],
   .topic[hidden],
   .actions[hidden],
   .hint[hidden] {
