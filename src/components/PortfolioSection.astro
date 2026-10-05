@@ -1,11 +1,10 @@
 ---
-/** Home-page Portfolio: biography, videos and repertoire. Always open, unlike the expandable sections above it. */
+/** Home-page Portfolio: biography and videos. Always open, unlike the expandable sections above it. */
 import SectionHead from './SectionHead.astro';
 import VideoGallery from './VideoGallery.astro';
-import { asset, pick, sections, useT, type Lang } from '../i18n';
+import { asset, sections, useT, type Lang } from '../i18n';
 import { site } from '../config/site';
 import { instagram, tiktok } from '../data/media';
-import { repertoire } from '../data/repertoire';
 import { gallery } from '../data/gallery';
 import { getYouTubeVideos } from '../lib/youtube';
 
@@ -23,33 +22,29 @@ const featured = <T extends { featured?: boolean }>(list: T[]) => [
 const copy = {
   en: {
     title: 'Portfolio',
-    sub: 'Biography, videos and repertoire.',
     bioLabel: 'Biography',
     bio: [
       'João Eiró is a Portuguese pianist and piano teacher. His playing moves between the classical repertoire — the depth of a Beethoven sonata, the colour of Debussy — and the freedom of improvisation, where a melody can become a groove and a groove can become something nobody has heard before.',
       'As an accompanist he supports singers and instrumentalists; as a soloist he builds programmes that feel like conversations with the audience. As a teacher he believes every student has their own sound, and that technique is simply the way to set it free.',
     ],
     videosLabel: 'Videos',
-    repLabel: 'Repertoire',
     photosLabel: 'Gallery',
   },
   pt: {
     title: 'Portfólio',
-    sub: 'Biografia, vídeos e repertório.',
     bioLabel: 'Biografia',
     bio: [
       'João Eiró é pianista e professor de piano. A sua forma de tocar move-se entre o repertório clássico — a profundidade de uma sonata de Beethoven, a cor de Debussy — e a liberdade da improvisação, onde uma melodia pode tornar-se um groove e um groove pode tornar-se algo que ninguém ouviu antes.',
       'Como acompanhador apoia cantores e instrumentistas; como solista constrói programas que soam a conversas com o público. Como professor acredita que cada aluno tem o seu próprio som, e que a técnica é apenas a forma de o libertar.',
     ],
     videosLabel: 'Vídeos',
-    repLabel: 'Repertório',
     photosLabel: 'Galeria',
   },
 }[lang];
 ---
 
 <div class="portfolio" id={sections.portfolio[lang]}>
-  <SectionHead title={copy.title} lead={copy.sub} />
+  <SectionHead title={copy.title} />
   <div class="tab-block">
     <p class="eyebrow">{copy.bioLabel}</p>
     <div class="bio">{copy.bio.map((p) => <p class="tab-lead">{p}</p>)}</div>
@@ -59,24 +54,6 @@ const copy = {
     <p class="eyebrow">{copy.videosLabel}</p>
     <VideoGallery lang={lang} youtube={featured(youtube)} tiktok={featured(tiktok)} instagram={featured(instagram)} limit={6} />
     <a class="tab-more videos-more" href={site.socials.youtube} target="_blank" rel="noopener">{t('media.more')} →</a>
-  </div>
-
-  <div class="tab-block">
-    <p class="eyebrow">{copy.repLabel}</p>
-    <div class="grid grid-4">
-      {
-        repertoire.map((r) => (
-          <div class="card rep">
-            <h3>{pick(r.style, lang)}</h3>
-            <ul class="chips">
-              {r.items.map((it) => (
-                <li>{pick(it, lang)}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </div>
   </div>
 
   {
@@ -132,9 +109,6 @@ const copy = {
   .videos-more {
     margin-top: 1.6rem;
     display: inline-flex;
-  }
-  .rep h3 {
-    color: var(--gold-2);
   }
   .photos {
     display: grid;
