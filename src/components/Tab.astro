@@ -47,16 +47,23 @@ const { en, pt, legacy = [] } = sections[section];
 
   const find = (hash: string) => tabs.find((t) => t.id === hash || t.dataset.aliases!.split(' ').includes(hash));
 
-  const open = (tab: HTMLDetailsElement) => {
-    tab.open = true;
+  // Bring a section's title to the top of the page (just under the menu). Wait a frame so a
+  // section closing above it has collapsed first, otherwise the page would land off target.
+  const toTop = (tab: HTMLDetailsElement) =>
     requestAnimationFrame(() => tab.scrollIntoView({ behavior: smooth, block: 'start' }));
+
+  const open = (tab: HTMLDetailsElement) => {
+    if (tab.open) toTop(tab);
+    else tab.open = true; // the toggle handler below scrolls it into place
   };
 
-  // Opening one section closes the others; the address and the contact tab follow the open one.
+  // Opening one section closes the others and lines it up at the top; the address and the
+  // contact tab follow the open one.
   tabs.forEach((tab) =>
     tab.addEventListener('toggle', () => {
       if (tab.open) {
         tabs.forEach((t) => t !== tab && (t.open = false));
+        toTop(tab);
         history.replaceState(null, '', `#${tab.id}`);
       } else if (location.hash === `#${tab.id}`) {
         history.replaceState(null, '', location.pathname + location.search);

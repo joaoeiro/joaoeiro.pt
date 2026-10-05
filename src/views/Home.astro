@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import PlayablePiano from '../components/PlayablePiano.astro';
 import Marquee from '../components/Marquee.astro';
-import Testimonials from '../components/Testimonials.astro';
 import CurrentTab from '../components/tabs/CurrentTab.astro';
 import ArchiveTab from '../components/tabs/ArchiveTab.astro';
 import LessonsTab from '../components/tabs/LessonsTab.astro';
@@ -11,8 +10,6 @@ import { Image } from 'astro:assets';
 import photo from '../assets/joao-eiro-live.jpg';
 import { type Lang } from '../i18n';
 import { site } from '../config/site';
-import { testimonials } from '../data/testimonials';
-import { published } from '../lib/drafts';
 
 interface Props {
   lang: Lang;
@@ -33,7 +30,6 @@ const copy = {
       'Piano lessons', 'House concerts', 'Composer', 'Weddings', 'Keyboardist', 'Music theory lessons',
       'Corporate events', 'Music producer', 'Improv theatre', 'Accompanist', 'Events',
     ],
-    quotesTitle: 'What <em>students say</em>',
   },
   pt: {
     title: 'João Eiró — Pianista & Professor de Piano',
@@ -48,11 +44,9 @@ const copy = {
       'Aulas de piano', 'Concertos em casa', 'Compositor', 'Casamentos', 'Teclista', 'Aulas de formação musical',
       'Eventos corporativos', 'Produtor musical', 'Teatro de improviso', 'Músico acompanhador', 'Eventos',
     ],
-    quotesTitle: 'O que dizem <em>os alunos</em>',
   },
 }[lang];
 
-const hasQuotes = published(testimonials).length > 0;
 ---
 
 <Layout lang={lang} route="home" title={copy.title} description={copy.description}>
@@ -109,11 +103,6 @@ const hasQuotes = published(testimonials).length > 0;
     </div>
   </section>
 
-  {
-    hasQuotes && (
-      <Testimonials lang={lang} title={copy.quotesTitle} />
-    )
-  }
 </Layout>
 
 <style>

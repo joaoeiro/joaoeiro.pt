@@ -18,9 +18,9 @@ short text; clicking it expands the rest:
 
 | Section | Anchor (EN / PT) | Content |
 | --- | --- | --- |
-| Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Groups João plays with (`src/data/groups.ts`), upcoming shows |
+| Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Groups João plays with (`src/data/groups.ts`) |
 | Archive / Em arquivo | `#archive` / `#arquivo` | Posters of past shows (`src/data/shows.ts`, images in `public/images/shows/`) |
-| Lessons / Aulas de piano | `#lessons` / `#aulas` | Free first lesson; teaching approach |
+| Lessons / Aulas de piano | `#lessons` / `#aulas` | Free first lesson; teaching approach; student reviews |
 | Portfolio | `#portfolio` | Always open: bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
 
 The menu and any link to an anchor open that section (`src/components/Tab.astro`); old page addresses
