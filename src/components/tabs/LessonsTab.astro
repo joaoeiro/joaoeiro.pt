@@ -2,6 +2,7 @@
 /** Home-page section: piano lessons. */
 import Tab from '../Tab.astro';
 import Icon from '../Icon.astro';
+import Testimonials from '../Testimonials.astro';
 import { path, type Lang } from '../../i18n';
 // Placeholder picture until the section's own photo arrives.
 import image from '../../assets/joao-eiro-live.jpg';
@@ -19,7 +20,9 @@ const copy = {
       'I teach a little of every style, drawing on my experience and training in classical music and jazz, depending on what I find each student needs and on their preferences.',
       'My lessons include recitals with all the students (recommended, but not compulsory).',
       'I like students to choose the music, but I also suggest repertoire I find relevant to each student’s reality, and I teach all the theory they need to understand what they are playing.',
+      'I teach fluently in Portuguese and English, and I can also teach in Spanish and French.',
     ],
+    reviewsTitle: 'What <em>students say</em>',
     more: 'Tell me about the lessons you’re looking for',
   },
   pt: {
@@ -29,7 +32,9 @@ const copy = {
       'Ensino um pouco de todos os estilos, baseado na minha experiência e aulas em música clássica e jazz, consoante as necessidades que encontro no aluno e a sua preferência.',
       'As minhas aulas incluem recitais com todos os alunos (recomendadas mas não obrigatórias).',
       'Gosto que sejam os alunos a escolher as músicas, mas também proponho repertório que acho relevante para a realidade do aluno, e ensino toda a teoria necessária para os alunos perceberem o que estão a tocar.',
+      'Dou aulas em português e em inglês, com fluência, e também posso ensinar em espanhol e em francês.',
     ],
+    reviewsTitle: 'O que dizem <em>os alunos</em>',
     more: 'Fala-me das aulas que procuras',
   },
 }[lang];
@@ -37,6 +42,8 @@ const copy = {
 
 <Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="30% 20%">
   <div class="body">{copy.body.map((p) => <p class="tab-lead">{p}</p>)}</div>
+
+  <Testimonials lang={lang} title={copy.reviewsTitle} />
 
   <a class="tab-more" href={path('contact', lang) + '?s=lessons'}>{copy.more} <Icon name="arrow" size={18} /></a>
 </Tab>
