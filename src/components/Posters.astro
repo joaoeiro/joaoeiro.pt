@@ -32,7 +32,11 @@ const alt = (s: Show) =>
           loading="lazy"
           decoding="async"
           class:list={{ whole: s.posterBg }}
-          style={s.posterBg && `background: ${s.posterBg}`}
+          style={
+            [s.posterBg && `background: ${s.posterBg}`, s.posterFocus && `object-position: ${s.posterFocus}`]
+              .filter(Boolean)
+              .join('; ') || undefined
+          }
         />
       ))}
     </div>

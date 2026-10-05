@@ -23,6 +23,8 @@ export interface Show {
   image?: string;
   /** For a poster far from 3:4 (e.g. square): show it whole on this background instead of trimming it. */
   posterBg?: string;
+  /** CSS object-position for a poster trimmed by the 3:4 frame, e.g. 'center 85%' to show more of the bottom. */
+  posterFocus?: string;
   /** Who João played with, e.g. 'Lisbon Film Orchestra'. */
   with?: string;
   draft?: boolean;
@@ -69,6 +71,7 @@ export const shows: Show[] = [
     venue: '',
     city: '',
     image: '/images/shows/teatroaespada-lamento-de-syrenia.jpg',
+    posterFocus: 'center 85%',
   },
   {
     date: '2026-02-01T21:30',
