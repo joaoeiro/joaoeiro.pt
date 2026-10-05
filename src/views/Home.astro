@@ -89,7 +89,7 @@ const copy = {
 
   <Marquee items={copy.marquee} />
 
-  <section class="section">
+  <section class="section section--tabs">
     <div class="wrap tabs">
       <CurrentTab lang={lang} />
       <ArchiveTab lang={lang} />
@@ -97,7 +97,7 @@ const copy = {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--portfolio">
     <div class="wrap">
       <PortfolioSection lang={lang} />
     </div>
@@ -106,6 +106,13 @@ const copy = {
 </Layout>
 
 <style>
+  /* Portfolio follows the sections right away, about as far as one section is from the next. */
+  .section--tabs {
+    padding-bottom: 0;
+  }
+  .section--portfolio {
+    padding-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
   .hero {
     position: relative;
     min-height: 100svh;
