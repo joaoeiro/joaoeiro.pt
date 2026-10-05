@@ -8,7 +8,7 @@ import LessonsTab from '../components/tabs/LessonsTab.astro';
 import BioTab from '../components/tabs/BioTab.astro';
 import PortfolioSection from '../components/PortfolioSection.astro';
 import { Image } from 'astro:assets';
-import photo from '../assets/joao-eiro-live.jpg';
+import photo from '../assets/joao-eiro-piano.webp';
 import { type Lang } from '../i18n';
 import { site } from '../config/site';
 
@@ -24,7 +24,8 @@ const copy = {
       'João Eiró is a Portuguese pianist, piano teacher, accompanist and improviser. Piano lessons for all ages, concerts, and live piano for weddings, private and corporate events.',
     hello: 'From Classical to Jazz',
     roles: ['Pianist & piano teacher', 'Accompanist & soloist', 'Compulsive improviser'],
-    photoAlt: 'João Eiró playing keyboard and singing live on stage',
+    photoAlt: 'João Eiró smiling as he plays the piano',
+    photoBy: 'Photo',
     intro:
       'From the discipline of Classical to the freedom of Jazz — music for the stage, for events, or for teaching anyone who has always wanted to learn to play.',
     marquee: [
@@ -38,7 +39,8 @@ const copy = {
       'João Eiró é pianista, professor de piano, músico acompanhador e improvisador. Aulas de piano para todas as idades, concertos e piano ao vivo para casamentos, eventos privados e corporativos.',
     hello: 'Do Clássico ao Jazz',
     roles: ['Pianista e professor de piano', 'Músico acompanhador e solista', 'Improvisador compulsivo'],
-    photoAlt: 'João Eiró a tocar teclado e a cantar ao vivo em palco',
+    photoAlt: 'João Eiró a sorrir enquanto toca piano',
+    photoBy: 'Foto',
     intro:
       'Da disciplina do Clássico à liberdade do Jazz — música para o palco, para eventos ou para ensinar quem sempre quis aprender a tocar.',
     marquee: [
@@ -48,6 +50,7 @@ const copy = {
   },
 }[lang];
 
+const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com/_carolgalvao_/' };
 ---
 
 <Layout lang={lang} route="home" title={copy.title} description={copy.description}>
@@ -80,6 +83,9 @@ const copy = {
               fetchpriority="high"
             />
           </div>
+          <figcaption class="portrait__credit">
+            {copy.photoBy}: <a href={photoCredit.href} target="_blank" rel="noopener">{photoCredit.name}</a>
+          </figcaption>
         </figure>
         <div class="hero__piano hero__in" style="--d:1.35s">
           <PlayablePiano lang={lang} />
@@ -227,6 +233,26 @@ const copy = {
     position: relative;
     width: min(74%, 500px);
     margin: 0 4% 0 auto;
+  }
+  /* Credit runs up the portrait's right edge: the piano covers its bottom. */
+  .portrait__credit {
+    position: absolute;
+    bottom: 32%;
+    left: 100%;
+    margin-left: 0.4rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .portrait__credit a {
+    color: inherit;
+    transition: color 0.3s;
+  }
+  .portrait__credit a:hover {
+    color: var(--gold-2);
   }
   /* Arched "concert hall window". */
   .portrait__frame {
