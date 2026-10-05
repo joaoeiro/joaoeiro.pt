@@ -184,6 +184,13 @@ export const shows: Show[] = [
     posterBg: '#8ac5ec',
   },
   {
+    date: '2023-11-10T21:00',
+    title: { en: 'Game Night', pt: 'Game Night' },
+    venue: 'Auditório Vianna da Motta, Escola Superior de Música de Lisboa',
+    city: 'Lisboa',
+    image: '/images/shows/game-night-2023.jpg',
+  },
+  {
     date: '2023-07-15T21:30',
     title: { en: 'Retrovisor', pt: 'Retrovisor' },
     with: 'Instantâneos',
