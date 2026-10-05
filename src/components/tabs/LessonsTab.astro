@@ -1,118 +1,49 @@
 ---
-/** Home-page section: piano lessons, in short. */
+/** Home-page section: piano lessons. */
 import Tab from '../Tab.astro';
-import Steps from '../Steps.astro';
 import Icon from '../Icon.astro';
 import { path, type Lang } from '../../i18n';
+// Placeholder picture until the section's own photo arrives.
+import image from '../../assets/joao-eiro-live.jpg';
 
 interface Props {
   lang: Lang;
-  num: number;
 }
-const { lang, num } = Astro.props;
+const { lang } = Astro.props;
 
 const copy = {
   en: {
     title: 'Piano lessons',
-    sub: 'For children, teenagers and adults — from the first note to improvisation.',
-    lead: 'Personalised lessons for every age and level. We start from the music you love and build the technique, reading and confidence to play it — and to invent your own.',
-    whoLabel: 'For whom',
-    who: [
-      { g: '♩', t: 'Children', d: 'Playful first steps from around age 5: rhythm, songs, reading through games.' },
-      { g: '♫', t: 'Teenagers', d: 'The songs they actually listen to, plus chords, grooves and solid technique.' },
-      { g: '♪', t: 'Adults', d: 'It’s never too late — for beginners and for those coming back to the piano.' },
-      { g: '𝄞', t: 'Advanced students', d: 'Repertoire, interpretation and preparation for exams and recitals.' },
-      { g: '✦', t: 'Improvisation', d: 'Harmony, voicings, grooves and playing without sheet music.' },
-      { g: '𝄢', t: 'Accompaniment', d: 'Accompanying singers and other musicians: listening, charts, support.' },
+    sub: 'The first lesson is always free and with no commitment — perfect for giving it a try!',
+    body: [
+      'I teach a little of every style, drawing on my experience and training in classical music and jazz, depending on what I find each student needs and on their preferences.',
+      'My lessons include recitals with all the students (recommended, but not compulsory).',
+      'I like students to choose the music, but I also suggest repertoire I find relevant to each student’s reality, and I teach all the theory they need to understand what they are playing.',
     ],
-    whereLabel: 'Where',
-    where: [
-      { g: '⌂', t: 'At the teacher’s home', d: 'In Benfica, Lisbon, on a real piano.' },
-      { g: '♬', t: 'At your home', d: 'On your own instrument, depending on the area.' },
-    ],
-    howLabel: 'How it works',
-    steps: [
-      { title: 'Trial lesson', text: 'We meet, play and talk about your goals and the music you love.' },
-      { title: 'Personal plan', text: 'Pieces, skills and a practice routine that fits your week.' },
-      { title: 'Regular lessons', text: 'Weekly or fortnightly, with clear goals and recordings to practise.' },
-      { title: 'Play for others', text: 'Student recitals to share what you’ve learnt.' },
-    ],
-    note: 'Prices on request — they depend on lesson length and format. Lesson packs also make a beautiful gift.',
     more: 'Tell me about the lessons you’re looking for',
   },
   pt: {
     title: 'Aulas de piano',
-    sub: 'Para crianças, jovens e adultos — da primeira nota à improvisação.',
-    lead: 'Aulas personalizadas para todas as idades e níveis. Partimos da música de que gostas e construímos a técnica, a leitura e a confiança para a tocar — e para inventares a tua.',
-    whoLabel: 'Para quem',
-    who: [
-      { g: '♩', t: 'Crianças', d: 'Primeiros passos lúdicos a partir dos 5 anos: ritmo, canções, leitura através de jogos.' },
-      { g: '♫', t: 'Adolescentes', d: 'As músicas que realmente ouvem, com acordes, grooves e técnica sólida.' },
-      { g: '♪', t: 'Adultos', d: 'Nunca é tarde — para quem começa do zero e para quem regressa ao piano.' },
-      { g: '𝄞', t: 'Alunos avançados', d: 'Repertório, interpretação e preparação para provas e recitais.' },
-      { g: '✦', t: 'Improvisação', d: 'Harmonia, voicings, grooves e tocar sem partitura.' },
-      { g: '𝄢', t: 'Acompanhamento', d: 'Acompanhar cantores e outros músicos: ouvir, ler cifras, apoiar.' },
+    sub: 'A primeira aula é sempre grátis e sem compromisso, ideal para experimentar!',
+    body: [
+      'Ensino um pouco de todos os estilos, baseado na minha experiência e aulas em música clássica e jazz, consoante as necessidades que encontro no aluno e a sua preferência.',
+      'As minhas aulas incluem recitais com todos os alunos (recomendadas mas não obrigatórias).',
+      'Gosto que sejam os alunos a escolher as músicas, mas também proponho repertório que acho relevante para a realidade do aluno, e ensino toda a teoria necessária para os alunos perceberem o que estão a tocar.',
     ],
-    whereLabel: 'Onde',
-    where: [
-      { g: '⌂', t: 'Em casa do professor', d: 'Em Benfica, Lisboa, num piano a sério.' },
-      { g: '♬', t: 'Em tua casa', d: 'No teu instrumento, consoante a zona.' },
-    ],
-    howLabel: 'Como funciona',
-    steps: [
-      { title: 'Aula experimental', text: 'Conhecemo-nos, tocamos e falamos dos teus objetivos e da música de que gostas.' },
-      { title: 'Plano pessoal', text: 'Peças, competências e uma rotina de estudo que cabe na tua semana.' },
-      { title: 'Aulas regulares', text: 'Semanais ou quinzenais, com objetivos claros e gravações para praticar.' },
-      { title: 'Tocar para outros', text: 'Audições de alunos para partilhar o que aprendeste.' },
-    ],
-    note: 'Preços sob consulta — dependem da duração e do formato da aula. Os packs de aulas também são um presente bonito.',
     more: 'Fala-me das aulas que procuras',
   },
 }[lang];
 ---
 
-<Tab lang={lang} section="lessons" num={num} title={copy.title} sub={copy.sub}>
-  <p class="tab-lead">{copy.lead}</p>
-
-  <div class="tab-block">
-    <p class="eyebrow">{copy.whoLabel}</p>
-    <div class="grid grid-3">
-      {
-        copy.who.map((w) => (
-          <article class="card feature">
-            <span class="feature__glyph" aria-hidden="true">
-              {w.g}
-            </span>
-            <h3>{w.t}</h3>
-            <p>{w.d}</p>
-          </article>
-        ))
-      }
-    </div>
-  </div>
-
-  <div class="tab-block">
-    <p class="eyebrow">{copy.whereLabel}</p>
-    <div class="grid grid-2">
-      {
-        copy.where.map((w) => (
-          <article class="card feature">
-            <span class="feature__glyph" aria-hidden="true">
-              {w.g}
-            </span>
-            <h3>{w.t}</h3>
-            <p>{w.d}</p>
-          </article>
-        ))
-      }
-    </div>
-  </div>
-
-  <div class="tab-block">
-    <p class="eyebrow">{copy.howLabel}</p>
-    <Steps steps={copy.steps} />
-    <p class="tab-note">{copy.note}</p>
-  </div>
+<Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="30% 20%">
+  <div class="body">{copy.body.map((p) => <p class="tab-lead">{p}</p>)}</div>
 
   <a class="tab-more" href={path('contact', lang) + '?s=lessons'}>{copy.more} <Icon name="arrow" size={18} /></a>
 </Tab>
+
+<style>
+  .body {
+    display: grid;
+    gap: 1.2rem;
+  }
+</style>

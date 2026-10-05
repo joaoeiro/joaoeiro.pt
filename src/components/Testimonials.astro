@@ -1,70 +1,111 @@
 ---
+/**
+ * Student reviews on a full-width maroon band, one after the other:
+ * stars, the review, and who wrote it.
+ */
 import { pick, type Lang } from '../i18n';
 import { testimonials } from '../data/testimonials';
 import { published } from '../lib/drafts';
 
 interface Props {
   lang: Lang;
+  /** Heading; `<em>` marks the highlighted words. */
+  title: string;
 }
-const { lang } = Astro.props;
+const { lang, title } = Astro.props;
 const items = published(testimonials);
+const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
 ---
 
 {
   items.length > 0 && (
-    <div class="quotes">
-      {items.map((q, i) => (
-        <figure class="quote card reveal" style={`--i:${i}`}>
-          <span class="mark" aria-hidden="true">
-            “
-          </span>
-          <blockquote>{pick(q.quote, lang)}</blockquote>
-          <figcaption>
-            <strong>{q.author}</strong>
-            <span>{pick(q.role, lang)}</span>
-          </figcaption>
-        </figure>
-      ))}
-    </div>
+    <section class="reviews">
+      <div class="wrap">
+        <h2 class="reveal" set:html={title} />
+        <div class="list">
+          {items.map((q) => (
+            <figure class="review reveal">
+              {q.rating && (
+                <p class="stars" aria-label={`${q.rating} ${outOf}`}>
+                  {Array.from({ length: 5 }, (_, s) => (
+                    <span aria-hidden="true" class:list={{ off: s >= q.rating! }}>
+                      ★
+                    </span>
+                  ))}
+                </p>
+              )}
+              <blockquote>“{pick(q.quote, lang)}”</blockquote>
+              <figcaption>
+                <strong>{q.author}</strong>
+                <span>{pick(q.role, lang)}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
 <style>
-  .quotes {
+  /* Fixed brand colours, the same in both themes, like the word ribbon. */
+  .reviews {
+    --band: #800000;
+    --band-text: #d7cfc4;
+    --band-accent: #a3b8dc;
+    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+    padding-block: clamp(4rem, 3rem + 5vw, 8rem);
+    background: var(--band);
+    color: var(--band-text);
+  }
+  h2 {
+    margin: 0 0 clamp(2.5rem, 2rem + 2vw, 4rem);
+    color: var(--band-text);
+  }
+  h2 :global(em) {
+    font-style: italic;
+    color: var(--band-accent);
+  }
+  .list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: 1.25rem;
+    gap: clamp(2.5rem, 2rem + 2.5vw, 4.5rem);
+    max-width: 62rem;
   }
-  .quote {
+  .review {
+    display: grid;
+    gap: 1rem;
     margin: 0;
-    overflow: hidden;
   }
-  .mark {
-    position: absolute;
-    right: 1rem;
-    top: -1.5rem;
-    font-family: var(--font-display);
-    font-size: 9rem;
-    line-height: 1;
-    color: var(--gold);
-    opacity: 0.18;
+  .stars {
+    margin: 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.18em;
+    color: var(--band-accent);
+  }
+  .stars .off {
+    opacity: 0.3;
   }
   blockquote {
-    margin: 0 0 1.5rem;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: 1.4rem;
+    font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.9rem);
     font-style: italic;
-    line-height: 1.35;
+    line-height: 1.4;
   }
   figcaption {
-    display: grid;
-    gap: 0.15rem;
-    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.3rem 0.8rem;
+    font-size: 0.95rem;
+  }
+  figcaption strong {
+    font-weight: 600;
   }
   figcaption span {
-    color: var(--gold);
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    opacity: 0.75;
   }
 </style>

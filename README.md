@@ -13,18 +13,19 @@ All colours are tokens at the top of `src/styles/global.css` — `:root` for dar
 
 Two pages, in English (`/`, `/contact/`) and Portuguese (`/pt/`, `/pt/contacto/`).
 
-**Home** — playable piano hero, the word ribbon, the three "What I do" cards, and five sections that expand in place:
+**Home** — playable piano hero, the word ribbon, and four sections. Closed, each shows a picture beside a
+short text; clicking it expands the rest:
 
 | Section | Anchor (EN / PT) | Content |
 | --- | --- | --- |
-| Lessons | `#lessons` / `#aulas` | Who it's for, where, how it works |
-| Portfolio | `#portfolio` | Bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
-| Shows | `#shows` / `#concertos` | Upcoming and past concerts, add-to-calendar |
-| Events | `#events` / `#eventos` | Occasions, how it works, set-up |
-| Press | `#press` / `#imprensa` | Short/long bio (copy buttons), photos, tech rider |
+| Now showing / Em cartaz | `#now-showing` / `#em-cartaz` | Groups João plays with (`src/data/groups.ts`), upcoming shows |
+| Archive / Em arquivo | `#archive` / `#arquivo` | Posters of past shows (`src/data/shows.ts`, images in `public/images/shows/`) |
+| Lessons / Aulas de piano | `#lessons` / `#aulas` | Free first lesson; teaching approach |
+| Portfolio | `#portfolio` | Always open: bio, videos (YouTube / TikTok / Instagram), repertoire, photo gallery |
 
-The menu, the cards and any link to an anchor open that section (`src/components/Tab.astro`); the old page
-addresses (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section.
+The menu and any link to an anchor open that section (`src/components/Tab.astro`); old page addresses
+(`/piano-lessons/`, `/pt/concertos/`…) redirect to their section, or to the home page for pages that are gone.
+Each section's picture is set at the top of its file in `src/components/tabs/`.
 
 **Contact** — the contact form (subject: lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
 
@@ -45,7 +46,7 @@ addresses (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section.
 the latest 15 via the public RSS feed, or *every* video when a `YOUTUBE_API_KEY` secret is set.
 The deploy workflow rebuilds weekly, so new videos appear on their own.
 
-**Drafts:** items with `draft: true` (example shows and testimonials) appear only in `npm run dev`,
+**Drafts:** items with `draft: true` (the example shows) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
 
 **Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.

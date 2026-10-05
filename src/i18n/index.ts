@@ -9,14 +9,16 @@ export const routes = {
 } as const;
 export type RouteKey = keyof typeof routes;
 
-/** Expandable sections of the home page, with their anchor in each language. */
-export const sections = {
+/**
+ * Expandable sections of the home page, with their anchor in each language.
+ * `legacy` anchors (from earlier versions of the site) still open the section.
+ */
+export const sections: Record<'current' | 'archive' | 'lessons' | 'portfolio', { en: string; pt: string; legacy?: string[] }> = {
+  current: { en: 'now-showing', pt: 'em-cartaz', legacy: ['shows', 'concertos'] },
+  archive: { en: 'archive', pt: 'arquivo' },
   lessons: { en: 'lessons', pt: 'aulas' },
   portfolio: { en: 'portfolio', pt: 'portfolio' },
-  shows: { en: 'shows', pt: 'concertos' },
-  events: { en: 'events', pt: 'eventos' },
-  press: { en: 'press', pt: 'imprensa' },
-} as const;
+};
 export type SectionKey = keyof typeof sections;
 
 /**
@@ -41,9 +43,8 @@ export const ui = {
     'nav.home': 'Home',
     'nav.lessons': 'Piano Lessons',
     'nav.portfolio': 'Portfolio',
-    'nav.shows': 'Shows',
-    'nav.events': 'Events',
-    'nav.press': 'Press',
+    'nav.current': 'Now showing',
+    'nav.archive': 'Archive',
     'nav.contact': 'Contact',
     'nav.menu': 'Menu',
     'nav.close': 'Close menu',
@@ -52,10 +53,7 @@ export const ui = {
     'cta.shows': 'See upcoming shows',
     'cta.watch': 'Watch & listen',
     'cta.contact': 'Get in touch',
-    'role': 'Pianist · Piano Teacher',
-    'footer.tagline': 'Music for stages, homes, celebrations and curious hands.',
     'footer.follow': 'Follow the music',
-    'footer.explore': 'Explore',
     'footer.rights': 'All rights reserved.',
     'footer.top': 'Back to top',
     'lang.switch': 'Ler em Português',
@@ -98,9 +96,8 @@ export const ui = {
     'nav.home': 'Início',
     'nav.lessons': 'Aulas de Piano',
     'nav.portfolio': 'Portfólio',
-    'nav.shows': 'Concertos',
-    'nav.events': 'Eventos',
-    'nav.press': 'Imprensa',
+    'nav.current': 'Em cartaz',
+    'nav.archive': 'Em arquivo',
     'nav.contact': 'Contacto',
     'nav.menu': 'Menu',
     'nav.close': 'Fechar menu',
@@ -109,10 +106,7 @@ export const ui = {
     'cta.shows': 'Ver próximos concertos',
     'cta.watch': 'Ver e ouvir',
     'cta.contact': 'Falar com o João',
-    'role': 'Pianista · Professor de Piano',
-    'footer.tagline': 'Música para palcos, casas, celebrações e mãos curiosas.',
     'footer.follow': 'Segue a música',
-    'footer.explore': 'Explorar',
     'footer.rights': 'Todos os direitos reservados.',
     'footer.top': 'Voltar ao topo',
     'lang.switch': 'Read in English',

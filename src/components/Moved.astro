@@ -1,16 +1,16 @@
 ---
 /**
- * Old address of a page that is now a section of the home page:
- * sends visitors (and search engines) straight to that section.
+ * Old address of a page that no longer exists: sends visitors (and search engines)
+ * to the home-page section that took its place, or to the home page.
  */
-import { sectionHref, type Lang, type SectionKey } from '../i18n';
+import { path, sectionHref, type Lang, type SectionKey } from '../i18n';
 
 interface Props {
   lang: Lang;
-  section: SectionKey;
+  section?: SectionKey;
 }
 const { lang, section } = Astro.props;
-const to = sectionHref(section, lang);
+const to = section ? sectionHref(section, lang) : path('home', lang);
 const origin = Astro.site ?? 'https://joaoeiro.pt';
 ---
 
