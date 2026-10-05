@@ -9,7 +9,7 @@ import BioTab from '../components/tabs/BioTab.astro';
 import PortfolioSection from '../components/PortfolioSection.astro';
 import { Image } from 'astro:assets';
 import photo from '../assets/joao-eiro-piano.webp';
-import { type Lang } from '../i18n';
+import { useT, type Lang } from '../i18n';
 import { site } from '../config/site';
 
 interface Props {
@@ -25,7 +25,6 @@ const copy = {
     hello: 'From Classical to Jazz',
     roles: ['Pianist & piano teacher', 'Accompanist & soloist', 'Compulsive improviser'],
     photoAlt: 'João Eiró smiling as he plays the piano',
-    photoBy: 'Photo',
     intro:
       'From the discipline of Classical to the freedom of Jazz — music for the stage, for events, or for teaching anyone who has always wanted to learn to play.',
     marquee: [
@@ -40,7 +39,6 @@ const copy = {
     hello: 'Do Clássico ao Jazz',
     roles: ['Pianista e professor de piano', 'Músico acompanhador e solista', 'Improvisador compulsivo'],
     photoAlt: 'João Eiró a sorrir enquanto toca piano',
-    photoBy: 'Foto',
     intro:
       'Da disciplina do Clássico à liberdade do Jazz — música para o palco, para eventos ou para ensinar quem sempre quis aprender a tocar.',
     marquee: [
@@ -50,6 +48,7 @@ const copy = {
   },
 }[lang];
 
+const t = useT(lang);
 const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com/_carolgalvao_/' };
 ---
 
@@ -84,7 +83,7 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
             />
           </div>
           <figcaption class="portrait__credit">
-            {copy.photoBy}: <a href={photoCredit.href} target="_blank" rel="noopener">{photoCredit.name}</a>
+            {t('photo.by')}: <a href={photoCredit.href} target="_blank" rel="noopener">{photoCredit.name}</a>
           </figcaption>
         </figure>
         <div class="hero__piano hero__in" style="--d:1.35s">

@@ -6,7 +6,7 @@
  */
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { sections, type Lang, type SectionKey } from '../i18n';
+import { sections, useT, type Lang, type SectionKey } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -18,8 +18,11 @@ interface Props {
   focus?: string;
   /** Which side the picture sits on. */
   side?: 'left' | 'right';
+  /** Who took the picture, credited at the end of the open section. */
+  credit?: { name: string; href?: string };
 }
-const { lang, section, title, sub, image, focus = '50% 40%', side = 'left' } = Astro.props;
+const { lang, section, title, sub, image, focus = '50% 40%', side = 'left', credit } = Astro.props;
+const t = useT(lang);
 const { en, pt, legacy = [] } = sections[section];
 ---
 
@@ -36,6 +39,13 @@ const { en, pt, legacy = [] } = sections[section];
   </summary>
   <div class="tab__body">
     <slot />
+    {
+      credit && (
+        <p class="tab__credit">
+          {t('photo.by')}: {credit.href ? <a href={credit.href} target="_blank" rel="noopener">{credit.name}</a> : credit.name}
+        </p>
+      )
+    }
   </div>
 </details>
 
@@ -199,6 +209,20 @@ const { en, pt, legacy = [] } = sections[section];
       opacity: 0;
       transform: translateY(-12px);
     }
+  }
+  .tab__credit {
+    /* Sits closer to the content than the body's gap would put it. */
+    margin: calc(-1 * clamp(1.5rem, 1rem + 1.5vw, 2.5rem)) 0 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .tab__credit a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+  .tab__credit a:hover {
+    color: var(--gold-2);
   }
   /* Shared building blocks for the sections' content. */
   .tab__body :global(.tab-lead) {
