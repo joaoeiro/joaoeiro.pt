@@ -1,6 +1,6 @@
 ---
 /**
- * Student reviews inside the piano-lessons section, one after the other:
+ * Student reviews on a full-width maroon band inside the piano-lessons section:
  * stars, the review, and who wrote it. On the English site the reviews are
  * translations, and a note says so.
  */
@@ -21,6 +21,7 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
 {
   items.length > 0 && (
     <div class="reviews">
+      <div class="inner">
       <h3 set:html={title} />
       <div class="list">
         {items.map((q) => (
@@ -43,12 +44,22 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
         ))}
       </div>
       {lang === 'en' && <p class="note">Reviews translated from Portuguese.</p>}
+      </div>
     </div>
   )
 }
 
 <style>
+  /* A full-width maroon band, breaking out of the section's column; fixed brand colours in both themes. */
   .reviews {
+    --band-text: #d7cfc4;
+    --band-accent: #a3b8dc;
+    margin-inline: calc(50% - 50vw);
+    padding: clamp(3.5rem, 2.5rem + 4vw, 6rem) calc(50vw - 50%);
+    background: #800000;
+    color: var(--band-text);
+  }
+  .inner {
     display: grid;
     gap: clamp(1.5rem, 1.2rem + 1vw, 2.2rem);
     max-width: 62rem;
@@ -56,10 +67,11 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
   h3 {
     margin: 0;
     font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.6rem);
+    color: var(--band-text);
   }
   h3 :global(em) {
     font-style: italic;
-    color: var(--gold);
+    color: var(--band-accent);
   }
   .list {
     display: grid;
@@ -74,7 +86,7 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
     margin: 0;
     font-size: 1rem;
     letter-spacing: 0.18em;
-    color: var(--gold);
+    color: var(--band-accent);
   }
   .stars .off {
     opacity: 0.3;
@@ -85,7 +97,6 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
     font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.6rem);
     font-style: italic;
     line-height: 1.45;
-    color: var(--ivory);
   }
   figcaption {
     display: flex;
@@ -96,17 +107,16 @@ const outOf = lang === 'pt' ? 'de 5 estrelas' : 'out of 5 stars';
   }
   figcaption strong {
     font-weight: 600;
-    color: var(--gold);
   }
   figcaption span {
     font-size: 0.78rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--muted);
+    opacity: 0.75;
   }
   .note {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--muted);
+    opacity: 0.75;
   }
 </style>
