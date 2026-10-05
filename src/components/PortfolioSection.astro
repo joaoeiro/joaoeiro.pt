@@ -1,5 +1,5 @@
 ---
-/** Home-page Portfolio: biography and videos. Always open, unlike the expandable sections above it. */
+/** Home-page Portfolio: videos and photos. Always open, unlike the expandable sections above it. */
 import SectionHead from './SectionHead.astro';
 import VideoGallery from './VideoGallery.astro';
 import { asset, sections, useT, type Lang } from '../i18n';
@@ -22,21 +22,11 @@ const featured = <T extends { featured?: boolean }>(list: T[]) => [
 const copy = {
   en: {
     title: 'Portfolio',
-    bioLabel: 'Biography',
-    bio: [
-      'João Eiró is a Portuguese pianist and piano teacher. His playing moves between the classical repertoire — the depth of a Beethoven sonata, the colour of Debussy — and the freedom of improvisation, where a melody can become a groove and a groove can become something nobody has heard before.',
-      'As an accompanist he supports singers and instrumentalists; as a soloist he builds programmes that feel like conversations with the audience. As a teacher he believes every student has their own sound, and that technique is simply the way to set it free.',
-    ],
     videosLabel: 'Videos',
     photosLabel: 'Gallery',
   },
   pt: {
     title: 'Portfólio',
-    bioLabel: 'Biografia',
-    bio: [
-      'João Eiró é pianista e professor de piano. A sua forma de tocar move-se entre o repertório clássico — a profundidade de uma sonata de Beethoven, a cor de Debussy — e a liberdade da improvisação, onde uma melodia pode tornar-se um groove e um groove pode tornar-se algo que ninguém ouviu antes.',
-      'Como acompanhador apoia cantores e instrumentistas; como solista constrói programas que soam a conversas com o público. Como professor acredita que cada aluno tem o seu próprio som, e que a técnica é apenas a forma de o libertar.',
-    ],
     videosLabel: 'Vídeos',
     photosLabel: 'Galeria',
   },
@@ -45,11 +35,6 @@ const copy = {
 
 <div class="portfolio" id={sections.portfolio[lang]}>
   <SectionHead title={copy.title} />
-  <div class="tab-block">
-    <p class="eyebrow">{copy.bioLabel}</p>
-    <div class="bio">{copy.bio.map((p) => <p class="tab-lead">{p}</p>)}</div>
-  </div>
-
   <div class="tab-block">
     <p class="eyebrow">{copy.videosLabel}</p>
     <VideoGallery lang={lang} youtube={featured(youtube)} tiktok={featured(tiktok)} instagram={featured(instagram)} limit={6} />
@@ -87,12 +72,6 @@ const copy = {
   .tab-block > .eyebrow {
     margin-bottom: 1.4rem;
   }
-  .tab-lead {
-    max-width: 60ch;
-    margin: 0;
-    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
-    color: var(--ivory-dim);
-  }
   .tab-more {
     display: inline-flex;
     align-items: center;
@@ -101,10 +80,6 @@ const copy = {
     font-weight: 600;
     border-bottom: 1px solid currentColor;
     padding-bottom: 0.15rem;
-  }
-  .bio {
-    display: grid;
-    gap: 1.2rem;
   }
   .videos-more {
     margin-top: 1.6rem;

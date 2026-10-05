@@ -13,10 +13,11 @@ export type RouteKey = keyof typeof routes;
  * Expandable sections of the home page, with their anchor in each language.
  * `legacy` anchors (from earlier versions of the site) still open the section.
  */
-export const sections: Record<'current' | 'archive' | 'lessons' | 'portfolio', { en: string; pt: string; legacy?: string[] }> = {
+export const sections: Record<'current' | 'archive' | 'lessons' | 'bio' | 'portfolio', { en: string; pt: string; legacy?: string[] }> = {
   current: { en: 'now-showing', pt: 'em-cartaz', legacy: ['shows', 'concertos'] },
   archive: { en: 'archive', pt: 'arquivo' },
   lessons: { en: 'lessons', pt: 'aulas' },
+  bio: { en: 'biography', pt: 'biografia' },
   portfolio: { en: 'portfolio', pt: 'portfolio' },
 };
 export type SectionKey = keyof typeof sections;
@@ -42,6 +43,7 @@ export const ui = {
   en: {
     'nav.home': 'Home',
     'nav.lessons': 'Piano Lessons',
+    'nav.bio': 'Biography',
     'nav.portfolio': 'Portfolio',
     'nav.current': 'Now showing',
     'nav.archive': 'Archive',
@@ -87,6 +89,7 @@ export const ui = {
   pt: {
     'nav.home': 'Início',
     'nav.lessons': 'Aulas de Piano',
+    'nav.bio': 'Biografia',
     'nav.portfolio': 'Portfólio',
     'nav.current': 'Em cartaz',
     'nav.archive': 'Em arquivo',
