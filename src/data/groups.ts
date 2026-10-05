@@ -40,10 +40,10 @@ export const groups: Group[] = [
     featured: true,
   },
   {
-    name: '4 You Music',
+    name: '4 You',
     summary: {
-      pt: 'Quatro vozes acompanhadas ao piano ou à guitarra, para casamentos, cocktails e eventos. Na cerimónia, temas clássicos adequados ao momento; no cocktail, um repertório pop e divertido — e pedidos de músicas especiais para tornar a festa vossa.',
-      en: 'Four voices with piano or guitar, for weddings, cocktails and events. Classic songs suited to the ceremony, a fun pop repertoire for the cocktail — and special requests to make the party your own.',
+      pt: 'Quatro vozes acompanhadas ao piano, para casamentos, cocktails e eventos. Na cerimónia, temas clássicos adequados ao momento; no cocktail, um repertório pop e divertido — e pedidos de músicas especiais para tornar a festa única.',
+      en: 'Four voices with piano, for weddings, cocktails and events. Classic songs suited to the ceremony, a fun pop repertoire for the cocktail — and special requests to make the party unique.',
     },
     url: 'https://www.instagram.com/4you.music/',
     via: 'Instagram',
