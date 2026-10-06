@@ -75,15 +75,24 @@ const year = new Date().getFullYear();
   .cta__line {
     margin: 0;
   }
-  /* Outlined like the social icons below, and the same flat maroon and tilt on hover. */
+  /* The site's maroon with sand lettering; on hover it lifts, deepens and the arrow nudges on. */
   .cta__btn {
-    transition: 0.4s var(--ease);
+    border-color: #800000;
+    background: #800000;
+    color: #d7cfc4;
+    transition: transform 0.3s var(--ease), background-color 0.3s, box-shadow 0.3s;
+  }
+  .cta__btn :global(svg) {
+    transition: transform 0.3s var(--ease);
   }
   .cta__btn:hover {
-    background: #800000;
-    color: #f4ecdc;
-    border-color: #800000;
-    transform: translateY(-4px) rotate(-3deg);
+    background: #6e0000;
+    border-color: #6e0000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -10px rgb(128 0 0 / 0.6);
+  }
+  .cta__btn:hover :global(svg) {
+    transform: translateX(4px);
   }
   .footer__follow :global(.footer__sig) {
     display: block;
