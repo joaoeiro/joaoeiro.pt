@@ -36,16 +36,12 @@ Each section's picture is set at the top of its file in `src/components/tabs/`.
 | --- | --- |
 | Email, phone, social links, form endpoint | `src/config/site.ts` |
 | Main photo (hero & portfolio), optimised automatically | `src/assets/joao-eiro-live.jpg` |
-| Videos (YouTube IDs, TikTok & Instagram URLs) | `src/data/media.ts` |
+| Portfolio videos (Instagram posts: cover image + video) | `src/data/media.ts` |
 | Concerts | `src/data/shows.ts` |
 | Testimonials | `src/data/testimonials.ts` |
 | Repertoire / styles | `src/data/repertoire.ts` |
 | Photos | put files in `public/images/`, list them in `src/data/gallery.ts` |
 | Page texts | top of `src/views/Home.astro`, `src/views/Contact.astro` and each section in `src/components/tabs/` (`en` and `pt` side by side) |
-
-**YouTube is synced automatically.** Every build looks up `@joaoeiropiano` and adds its uploads:
-the latest 15 via the public RSS feed, or *every* video when a `YOUTUBE_API_KEY` secret is set.
-The deploy workflow rebuilds weekly, so new videos appear on their own.
 
 **Drafts:** items with `draft: true` (the example shows) appear only in `npm run dev`,
 never on the live site. Replace them with real ones.
@@ -66,8 +62,7 @@ npm run check    # type check
 ## Deploy (GitHub Pages)
 
 Every push to `main` builds and deploys the site with GitHub Actions
-(`.github/workflows/deploy.yml`); it also rebuilds every Monday to pick up new
-YouTube videos and move finished shows to "Past". Pull requests are built and
+(`.github/workflows/deploy.yml`); it also rebuilds every Monday to move finished shows to "Past". Pull requests are built and
 type-checked but not deployed. Run it by hand from **Actions → Deploy to GitHub Pages → Run workflow**.
 
 The build reads the Pages URL, so links work both at `https://neteinstein.github.io/joaoeiro.pt/`
@@ -78,7 +73,6 @@ and on the custom domain. To serve it at **joaoeiro.pt**:
    `A` records for `joaoeiro.pt` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`,
    and `www` as a `CNAME` → `neteinstein.github.io`.
 3. Re-run the workflow so the build switches to the root domain.
-4. Optional: add a `YOUTUBE_API_KEY` repository secret to list *every* YouTube upload (otherwise the latest 15).
 
 Any other static host (Netlify, Vercel, Cloudflare Pages) also works: build command `npm run build`, output `dist`.
 

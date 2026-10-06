@@ -1,33 +1,32 @@
 ---
-/** Home-page Portfolio: videos and photos. Always open, unlike the expandable sections above it. */
+/**
+ * Home-page Portfolio: Instagram videos on a full-width maroon band (like the student reviews),
+ * then photos. Each video shows its cover; a click plays it in place. Always open, unlike the
+ * expandable sections above it.
+ */
 import SectionHead from './SectionHead.astro';
-import VideoGallery from './VideoGallery.astro';
+import Icon from './Icon.astro';
 import { asset, sections, useT, type Lang } from '../i18n';
-import { site } from '../config/site';
-import { instagram, tiktok } from '../data/media';
+import { instagram } from '../data/media';
 import { gallery } from '../data/gallery';
-import { getYouTubeVideos } from '../lib/youtube';
+import { published } from '../lib/drafts';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = useT(lang);
-const youtube = await getYouTubeVideos();
-const featured = <T extends { featured?: boolean }>(list: T[]) => [
-  ...list.filter((v) => v.featured),
-  ...list.filter((v) => !v.featured),
-];
+const videos = published(instagram);
+/** Instagram's own player for a post, used when there is no local video file. */
+const embed = (url: string) => url.split('?')[0].replace(/\/?$/, '/') + 'embed/';
 
 const copy = {
   en: {
     title: 'Portfolio',
-    videosLabel: 'Videos',
     photosLabel: 'Gallery',
   },
   pt: {
     title: 'Portfólio',
-    videosLabel: 'Vídeos',
     photosLabel: 'Galeria',
   },
 }[lang];
@@ -35,11 +34,28 @@ const copy = {
 
 <div class="portfolio" id={sections.portfolio[lang]}>
   <SectionHead title={copy.title} />
-  <div class="tab-block">
-    <p class="eyebrow">{copy.videosLabel}</p>
-    <VideoGallery lang={lang} youtube={featured(youtube)} tiktok={featured(tiktok)} instagram={featured(instagram)} limit={6} />
-    <a class="tab-more videos-more" href={site.socials.youtube} target="_blank" rel="noopener">{t('media.more')} →</a>
-  </div>
+  {
+    videos.length > 0 && (
+      <div class="band">
+        <div class="reels">
+          {videos.map((v) => (
+            <button
+              type="button"
+              class="reel"
+              data-video={v.video && asset(v.video)}
+              data-embed={v.video ? undefined : embed(v.url)}
+              aria-label={`${t('media.play')}: ${v.caption}`}
+            >
+              <img src={asset(v.cover)} alt={v.caption} loading="lazy" decoding="async" />
+              <span class="reel__play">
+                <Icon name="play" size={26} />
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   {
     gallery.length > 0 && (
@@ -57,6 +73,34 @@ const copy = {
   }
 </div>
 
+<script>
+  // Cover first; the video (or Instagram's player) only after a click.
+  document.querySelectorAll<HTMLButtonElement>('.reel').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const wrap = document.createElement('div');
+      wrap.className = 'reel is-playing';
+      const { video, embed } = btn.dataset;
+      if (video) {
+        const el = document.createElement('video');
+        el.src = video;
+        el.controls = true;
+        el.autoplay = true;
+        el.playsInline = true;
+        wrap.appendChild(el);
+      } else if (embed) {
+        const el = document.createElement('iframe');
+        el.src = embed;
+        el.title = btn.getAttribute('aria-label') ?? 'Instagram';
+        el.allow = 'autoplay; encrypted-media; picture-in-picture';
+        el.allowFullscreen = true;
+        wrap.appendChild(el);
+      }
+      btn.replaceWith(wrap);
+      wrap.querySelector('video')?.play().catch(() => {});
+    }),
+  );
+</script>
+
 <style>
   .portfolio {
     display: grid;
@@ -72,18 +116,64 @@ const copy = {
   .tab-block > .eyebrow {
     margin-bottom: 1.4rem;
   }
-  .tab-more {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--gold);
-    font-weight: 600;
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 0.15rem;
+  /* A full-width maroon band, breaking out of the section's column; same colour as the reviews band. */
+  .band {
+    margin-inline: calc(50% - 50vw);
+    padding: clamp(3rem, 2rem + 4vw, 5.5rem) calc(50vw - 50%);
+    background: #800000;
   }
-  .videos-more {
-    margin-top: 1.6rem;
-    display: inline-flex;
+  .band :global(.reels) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  }
+  .band :global(.reel) {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: #000;
+    cursor: pointer;
+  }
+  .band :global(.reel) img,
+  .band :global(.reel video),
+  .band :global(.reel iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+  .band :global(.reel) img {
+    transition: transform 1.2s var(--ease);
+  }
+  .band :global(.reel:hover) img {
+    transform: scale(1.06);
+  }
+  .band :global(.reel video) {
+    object-fit: contain;
+  }
+  .band :global(.reel__play) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.55);
+    color: #fff;
+    border: 2px solid rgb(255 255 255 / 0.85);
+    transition: transform 0.4s var(--ease), background 0.4s;
+  }
+  .band :global(.reel:hover) .reel__play,
+  .band :global(.reel:focus-visible) .reel__play {
+    transform: scale(1.1);
+    background: #800000;
   }
   .photos {
     display: grid;

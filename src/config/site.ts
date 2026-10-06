@@ -30,16 +30,6 @@ export const site = {
     spotify: '',
   },
 
-  youtube: {
-    /**
-     * Every build pulls João's uploads from this channel automatically:
-     * all of them when YOUTUBE_API_KEY is set, otherwise the latest 15 from
-     * the public RSS feed. The channel ID ("UC…") is looked up from the
-     * handle; fill `channelId` to skip that lookup.
-     */
-    handle: '@joaoeiropiano',
-    channelId: '',
-  },
 } as const;
 
 export type Site = typeof site;
