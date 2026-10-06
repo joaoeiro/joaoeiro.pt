@@ -4,7 +4,7 @@
  * (on the left or the right, so consecutive sections zigzag); open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
  * place and scroll to it.
  */
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { sections, useT, type Lang, type SectionKey } from '../i18n';
 
@@ -18,7 +18,7 @@ interface Props {
   focus?: string;
   /** Which side the picture sits on. */
   side?: 'left' | 'right';
-  /** Who took the picture, credited at the end of the open section. */
+  /** Who took the picture, credited up the picture's outer edge. */
   credit?: { name: string; href?: string };
 }
 const { lang, section, title, sub, image, focus = '50% 40%', side = 'left', credit } = Astro.props;
@@ -29,7 +29,16 @@ const { en, pt, legacy = [] } = sections[section];
 <details class:list={["tab", `tab--${side}`]} id={sections[section][lang]} name="sections" data-section={section} data-aliases={[en, pt, ...legacy].join(' ')}>
   <summary>
     <span class="tab__media">
-      <Image src={image} alt="" widths={[320, 640]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
+      <span class="tab__frame">
+        <Picture src={image} alt="" formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
+      </span>
+      {
+        credit && (
+          <span class="tab__credit">
+            {t('photo.by')}: {credit.href ? <a href={credit.href} target="_blank" rel="noopener">{credit.name}</a> : credit.name}
+          </span>
+        )
+      }
     </span>
     <span class="tab__head">
       <span class="tab__title">{title}</span>
@@ -39,13 +48,6 @@ const { en, pt, legacy = [] } = sections[section];
   </summary>
   <div class="tab__body">
     <slot />
-    {
-      credit && (
-        <p class="tab__credit">
-          {t('photo.by')}: {credit.href ? <a href={credit.href} target="_blank" rel="noopener">{credit.name}</a> : credit.name}
-        </p>
-      )
-    }
   </div>
 </details>
 
@@ -122,11 +124,17 @@ const { en, pt, legacy = [] } = sections[section];
   }
   .tab__media {
     grid-area: media;
+    position: relative;
+  }
+  .tab__frame {
     display: block;
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border-radius: 14px;
     background: var(--ink-3);
+  }
+  .tab__media :global(picture) {
+    display: contents;
   }
   .tab__media :global(img) {
     width: 100%;
@@ -210,16 +218,30 @@ const { en, pt, legacy = [] } = sections[section];
       transform: translateY(-12px);
     }
   }
+  /* Credit runs up the picture's outer edge, like the portrait's on the home page. */
   .tab__credit {
-    /* Sits closer to the content than the body's gap would put it. */
-    margin: calc(-1 * clamp(1.5rem, 1rem + 1.5vw, 2.5rem)) 0 0;
-    font-size: 0.8rem;
+    position: absolute;
+    bottom: 0;
+    left: 100%;
+    margin-left: 0.4rem;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
     color: var(--muted);
+    white-space: nowrap;
+  }
+  .tab--left .tab__credit {
+    left: auto;
+    right: 100%;
+    margin: 0 0.4rem 0 0;
   }
   .tab__credit a {
-    color: inherit;
+    color: var(--ivory-dim);
     text-decoration: underline;
-    text-underline-offset: 0.15em;
+    text-decoration-color: var(--gold-2);
+    text-underline-offset: 0.2em;
+    transition: color 0.3s;
   }
   .tab__credit a:hover {
     color: var(--gold-2);
@@ -265,6 +287,18 @@ const { en, pt, legacy = [] } = sections[section];
     }
     .tab__sub {
       font-size: 0.9rem;
+    }
+    /* The picture is too short for the credit to run up its edge: it goes underneath. */
+    .tab__credit,
+    .tab--left .tab__credit {
+      top: 100%;
+      bottom: auto;
+      left: 50%;
+      right: auto;
+      margin: 0.3rem 0 0;
+      writing-mode: horizontal-tb;
+      transform: translateX(-50%);
+      font-size: 0.62rem;
     }
   }
 </style>

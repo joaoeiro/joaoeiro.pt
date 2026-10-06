@@ -14,19 +14,16 @@ const copy = {
   en: {
     title: 'Now showing',
     sub: 'The groups I play with most these days.',
-    groupsLabel: 'Who I play with most',
   },
   pt: {
     title: 'Em cartaz',
     sub: 'Os grupos com quem mais toco atualmente.',
-    groupsLabel: 'Com quem mais toco',
   },
 }[lang];
 ---
 
 <Tab lang={lang} section="current" title={copy.title} sub={copy.sub} image={image} side="right" focus="68% 50%" credit={{ name: 'Rodrigo Simas', href: 'https://www.instagram.com/rodrigosimasphoto/' }}>
   <div class="tab-block">
-    <p class="eyebrow">{copy.groupsLabel}</p>
     <Groups lang={lang} />
   </div>
 </Tab>
