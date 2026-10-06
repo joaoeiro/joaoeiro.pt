@@ -65,10 +65,43 @@ const { en, pt, legacy = [] } = sections[section];
   const toTop = (tab: HTMLDetailsElement) =>
     requestAnimationFrame(() => tab.scrollIntoView({ behavior: smooth, block: 'start' }));
 
+  // Open a section. One open further up the page closes at once, and the page is shifted by
+  // what it took up so the chosen section stays where it was on screen; from there it glides
+  // to the top. (Left to the browser, the section would jump up by the closed one's height
+  // and only then start scrolling, towards a target still moving as the old band shrinks.)
+  const show = (tab: HTMLDetailsElement) => {
+    const others = tabs.filter((t) => t !== tab && t.open);
+    if (others.length) {
+      const root = document.documentElement;
+      const before = tab.getBoundingClientRect().top;
+      root.style.overflowAnchor = 'none';
+      others.forEach((t) => {
+        t.classList.add('tab--snap');
+        t.open = false;
+      });
+      scrollBy({ top: tab.getBoundingClientRect().top - before, behavior: 'instant' });
+      requestAnimationFrame(() => {
+        root.style.overflowAnchor = '';
+        others.forEach((t) => t.classList.remove('tab--snap'));
+      });
+    }
+    tab.open = true; // the toggle handler below scrolls it into place
+  };
+
   const open = (tab: HTMLDetailsElement) => {
     if (tab.open) toTop(tab);
-    else tab.open = true; // the toggle handler below scrolls it into place
+    else show(tab);
   };
+
+  // Clicking a closed section's band opens it through show(), before the browser's own
+  // one-open-at-a-time rule (name="sections") would close the other one abruptly.
+  tabs.forEach((tab) =>
+    tab.querySelector('summary')!.addEventListener('click', (e) => {
+      if (tab.open) return;
+      e.preventDefault();
+      show(tab);
+    }),
+  );
 
   // Opening one section closes the others and lines it up at the top; the address and the
   // contact tab follow the open one.
@@ -286,6 +319,11 @@ const { en, pt, legacy = [] } = sections[section];
   }
   .tab__credit a:hover {
     color: var(--gold-2);
+  }
+  /* A section closed to make way for another snaps shut (see show() above). */
+  .tab--snap summary,
+  .tab--snap .tab__media :global(img) {
+    transition: none;
   }
   @media (prefers-reduced-motion: reduce) {
     summary,
