@@ -158,17 +158,14 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
     line-height: 1.6em;
     margin-bottom: 1.1rem;
     overflow: hidden;
-    /* Same type as the "Do Clássico ao Jazz" line above, a touch larger. */
-    font-size: clamp(0.8rem, 0.72rem + 0.3vw, 0.95rem);
-    font-weight: 600;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--gold);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.8rem);
+    color: var(--gold-2);
   }
   .roles span {
     position: absolute;
     inset: 0;
-    white-space: nowrap;
     opacity: 0;
     animation: role 9s infinite;
     animation-delay: calc(var(--n) * 3s);
@@ -190,11 +187,6 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
       opacity: 0;
       transform: translateY(-100%);
       filter: blur(6px);
-    }
-  }
-  @media (max-width: 420px) {
-    .roles {
-      letter-spacing: 0.18em;
     }
   }
   .hero .lead {
