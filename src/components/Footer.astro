@@ -11,7 +11,7 @@ interface Props {
 const { lang, route } = Astro.props;
 const t = useT(lang);
 // Facebook is left out of the footer on purpose.
-const socials = (['youtube', 'instagram', 'tiktok', 'spotify'] as const)
+const socials = (['instagram', 'tiktok', 'youtube', 'spotify'] as const)
   .filter((k) => site.socials[k])
   .map((k) => ({ key: k, href: site.socials[k] }));
 const year = new Date().getFullYear();
@@ -115,11 +115,12 @@ const year = new Date().getFullYear();
     border: 1px solid var(--line);
     transition: 0.4s var(--ease);
   }
+  /* The site's maroon, flat. */
   .socials a:hover {
-    background: var(--gold-grad);
-    color: var(--on-accent);
+    background: #800000;
+    color: #f4ecdc;
     transform: translateY(-4px) rotate(-8deg);
-    border-color: var(--gold);
+    border-color: #800000;
   }
   .contacts {
     display: flex;
