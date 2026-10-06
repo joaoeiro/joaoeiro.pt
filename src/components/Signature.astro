@@ -3,8 +3,8 @@ import { asset } from '../i18n';
 import { signatureStrokes } from '../data/signature';
 
 /**
- * João's handwritten signature, drawn in the text colour of the current theme (the SVG is only
- * used as a mask). It writes itself stroke by stroke, as if by hand: on load, or with `onView`
+ * João's handwritten signature, drawn in the text colour of the current theme (the SVGs are only
+ * used as masks). It writes itself stroke by stroke, as if by hand: on load, or with `onView`
  * once it scrolls into view.
  */
 interface Props {
@@ -15,42 +15,27 @@ interface Props {
   onView?: boolean;
 }
 const { class: className, delay = '0s', onView = false } = Astro.props;
-// Through asset() so it still loads when the site is served from a sub-path.
-const vars = `--sig-delay:${delay};--sig-url:url('${asset('/images/assinatura.svg')}')`;
-// The page can hold more than one signature, so each one's masks get their own ids.
-const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
+// The J and the rest of the letters are separate inks, each written by its own strokes.
+// Through asset() so they still load when the site is served from a sub-path.
+const layers = [
+  { ink: asset('/images/assinatura-j.svg'), strokes: signatureStrokes.slice(0, 1) },
+  { ink: asset('/images/assinatura-letras.svg'), strokes: signatureStrokes.slice(1) },
+];
 ---
 
 <span class:list={['sig', { reveal: onView }, className]} aria-hidden="true">
-  <span class:list={['signature', { 'signature--on-view': onView }]} style={vars}>
-    <svg viewBox="0 0 1400 975">
-      {
-        signatureStrokes.map(
-          (s, i) =>
-            s.core && (
-              // Where later letters touch this stroke (the J's long line), their ink waits for them.
-              <mask id={`${uid}-${i}`} maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="975">
-                <rect width="1400" height="975" fill="#fff" />
-                {signatureStrokes.slice(i + 1).map((l) => (
-                  <path d={l.d} stroke="#000" stroke-width={l.width} />
-                ))}
-                <path d={s.d} stroke="#fff" stroke-width={s.core} />
-              </mask>
-            ),
-        )
-      }
-      {
-        signatureStrokes.map((s, i) => (
-          <path
-            class="stroke"
-            d={s.d}
-            pathLength="1"
-            mask={s.core ? `url(#${uid}-${i})` : undefined}
-            style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}`}
-          />
-        ))
-      }
-    </svg>
+  <span class:list={['signature', { 'signature--on-view': onView }]} style={`--sig-delay:${delay}`}>
+    {
+      layers.map((l) => (
+        <span class="layer" style={`--sig-url:url('${l.ink}')`}>
+          <svg viewBox="0 0 1400 975">
+            {l.strokes.map((s) => (
+              <path d={s.d} pathLength="1" style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}`} />
+            ))}
+          </svg>
+        </span>
+      ))
+    }
   </span>
 </span>
 
@@ -59,10 +44,15 @@ const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
   .sig {
     display: block;
   }
-  /* The real ink is the mask; thick pen strokes along its centre lines fill it in, in writing order. */
   .signature {
+    position: relative;
     display: block;
     aspect-ratio: 1400 / 975;
+  }
+  /* Each ink is a mask; thick pen strokes along its centre lines fill it in, in writing order. */
+  .layer {
+    position: absolute;
+    inset: 0;
     -webkit-mask: var(--sig-url) center / contain no-repeat;
     mask: var(--sig-url) center / contain no-repeat;
   }
@@ -71,12 +61,7 @@ const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
     width: 100%;
     height: 100%;
   }
-  mask path {
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-  .stroke {
+  path {
     fill: none;
     stroke: var(--ivory);
     stroke-width: var(--w);
@@ -86,10 +71,10 @@ const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
     animation: sigStroke var(--t) cubic-bezier(0.4, 0, 0.6, 1) both;
     animation-delay: calc(var(--sig-delay) + var(--d));
   }
-  .signature--on-view .stroke {
+  .signature--on-view path {
     animation-play-state: paused;
   }
-  :global(.is-visible) > .signature--on-view .stroke {
+  :global(.is-visible) > .signature--on-view path {
     animation-play-state: running;
   }
   /* Hidden until the pen lands, so the round cap doesn't leave a dot before its stroke starts. */
@@ -107,14 +92,14 @@ const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
     }
   }
   /* Without the animation, show the whole signature straight from the ink. */
-  :global(.no-js) .signature {
+  :global(.no-js) .layer {
     background: var(--ivory);
   }
   :global(.no-js) .signature svg {
     display: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .signature {
+    .layer {
       background: var(--ivory);
     }
     .signature svg {
