@@ -192,9 +192,12 @@ const { en, pt, legacy = [] } = sections[section];
   .tab--left .tab__head {
     text-align: right;
   }
+  /* Same type as the home page's intro line (the body font), just large. */
   .tab__title {
-    font-family: var(--font-display);
-    font-size: clamp(2.4rem, 1.4rem + 4vw, 5.5rem);
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.2rem, 1.3rem + 3.6vw, 5rem);
     line-height: 1;
     color: #f4ecdc;
     text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
