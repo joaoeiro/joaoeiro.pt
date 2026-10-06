@@ -4,8 +4,7 @@ import Tab from '../Tab.astro';
 import Icon from '../Icon.astro';
 import Testimonials from '../Testimonials.astro';
 import { path, type Lang } from '../../i18n';
-// Placeholder picture until the section's own photo arrives.
-import image from '../../assets/joao-eiro-live.jpg';
+import image from '../../assets/joao-eiro-lesson.jpg';
 
 interface Props {
   lang: Lang;
@@ -40,7 +39,7 @@ const copy = {
 }[lang];
 ---
 
-<Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="30% 20%">
+<Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="50% 45%">
   <div class="body">{copy.body.map((p) => <p class="tab-lead">{p}</p>)}</div>
 
   <Testimonials lang={lang} title={copy.reviewsTitle} />
@@ -52,5 +51,9 @@ const copy = {
   .body {
     display: grid;
     gap: 1.2rem;
+  }
+  .body p {
+    text-align: justify;
+    hyphens: auto;
   }
 </style>
