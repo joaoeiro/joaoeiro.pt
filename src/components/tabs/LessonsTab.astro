@@ -23,6 +23,27 @@ const copy = {
       'If a student is too advanced for me (as has already happened!), I help map out a path and point them to other teachers who can take them even further. What matters is to keep growing.',
       'I teach fluently in Portuguese and English, and I can also teach in Spanish and French.',
     ],
+    expect: {
+      title: 'What to expect from the lessons',
+      note: 'One or more of these — you choose!',
+      items: [
+        'Lessons tailored to you',
+        'Learning to play songs quickly and effectively',
+        'Learning to read sheet music',
+        'Learning theory applied to music you know and love',
+        'Building discipline and musicality',
+      ],
+    },
+    notExpect: {
+      title: 'What <em>not</em> to expect',
+      note: 'None of these will happen!',
+      items: [
+        'Generic, one-size-fits-all teaching',
+        'A passive process where you just do what I say',
+        'Being made to play the repertoire I like',
+        'Playing the way you want right from the first lesson',
+      ],
+    },
     reviewsTitle: 'What <em>students say</em>',
     more: 'Tell me about the lessons you’re looking for',
   },
@@ -37,6 +58,27 @@ const copy = {
       'Se um aluno estiver demasiado avançado para mim (como já aconteceu!), ajudo a definir um caminho e indico outros professores que o levem ainda mais longe. O importante é continuar a evoluir.',
       'Dou aulas em português e em inglês, com fluência, e também posso ensinar em espanhol e em francês.',
     ],
+    expect: {
+      title: 'O que esperar das aulas?',
+      note: 'Uma ou mais destas hipóteses, tu escolhes!',
+      items: [
+        'Aulas adaptadas a ti',
+        'Aprender a tocar músicas de forma rápida e eficaz',
+        'Aprender a ler partituras',
+        'Aprender teoria aplicada a músicas que conheces e de que gostas',
+        'Desenvolver disciplina e musicalidade',
+      ],
+    },
+    notExpect: {
+      title: 'O que <em>não</em> esperar das aulas?',
+      note: 'Nenhuma destas hipóteses vai acontecer!',
+      items: [
+        'Fórmulas de ensino genéricas',
+        'Um processo passivo em que só tens de fazer o que eu digo',
+        'Teres de tocar o repertório de que eu gosto',
+        'Tocar como queres logo na primeira aula',
+      ],
+    },
     reviewsTitle: 'O que dizem <em>os alunos</em>',
     more: 'Fala-me das aulas que procuras',
   },
@@ -45,6 +87,28 @@ const copy = {
 
 <Tab lang={lang} section="lessons" title={copy.title} sub={copy.sub} image={image} side="right" focus="50% 45%">
   <div class="body">{copy.body.map((p) => <p class="tab-lead">{p}</p>)}</div>
+
+  <div class="expect">
+    {
+      [
+        { ...copy.expect, icon: 'check' as const, kind: 'yes' },
+        { ...copy.notExpect, icon: 'cross' as const, kind: 'no' },
+      ].map((col) => (
+        <section class:list={['expect__col', `expect__col--${col.kind}`]}>
+          <h3 set:html={col.title} />
+          <p class="expect__note">{col.note}</p>
+          <ul>
+            {col.items.map((item) => (
+              <li>
+                <Icon name={col.icon} size={20} class="expect__icon" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
 
   <Testimonials lang={lang} title={copy.reviewsTitle} />
 
@@ -59,5 +123,60 @@ const copy = {
   .body p {
     text-align: justify;
     hyphens: auto;
+  }
+  /* What to expect / what not to expect, side by side (stacked on narrow screens). */
+  .expect {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+    max-width: 62rem;
+  }
+  .expect__col {
+    padding: clamp(1.3rem, 1rem + 1vw, 1.8rem);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgb(var(--surface-rgb) / calc(0.03 * var(--surface-k)));
+    box-shadow: var(--card-shadow);
+  }
+  .expect__col--yes {
+    border-color: rgb(var(--accent-rgb) / 0.35);
+  }
+  h3 {
+    margin: 0;
+    font-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.6rem);
+    color: var(--ivory);
+  }
+  h3 :global(em) {
+    color: var(--gold);
+  }
+  .expect__note {
+    margin: 0.35rem 0 1.1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+  ul {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.7rem;
+    align-items: start;
+    color: var(--ivory-dim);
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  }
+  li :global(.expect__icon) {
+    margin-top: 0.15em;
+  }
+  .expect__col--yes li :global(.expect__icon) {
+    color: var(--gold);
+  }
+  .expect__col--no li :global(.expect__icon) {
+    color: var(--muted);
   }
 </style>
