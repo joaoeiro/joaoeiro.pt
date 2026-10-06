@@ -4,7 +4,7 @@
  * (on the left or the right, so consecutive sections zigzag); open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
  * place and scroll to it.
  */
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { sections, useT, type Lang, type SectionKey } from '../i18n';
 
@@ -29,7 +29,7 @@ const { en, pt, legacy = [] } = sections[section];
 <details class:list={["tab", `tab--${side}`]} id={sections[section][lang]} name="sections" data-section={section} data-aliases={[en, pt, ...legacy].join(' ')}>
   <summary>
     <span class="tab__media">
-      <Image src={image} alt="" widths={[320, 640]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
+      <Picture src={image} alt="" formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
     </span>
     <span class="tab__head">
       <span class="tab__title">{title}</span>
@@ -127,6 +127,9 @@ const { en, pt, legacy = [] } = sections[section];
     overflow: hidden;
     border-radius: 14px;
     background: var(--ink-3);
+  }
+  .tab__media :global(picture) {
+    display: contents;
   }
   .tab__media :global(img) {
     width: 100%;
