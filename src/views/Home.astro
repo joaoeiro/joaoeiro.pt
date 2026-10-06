@@ -247,7 +247,10 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
     white-space: nowrap;
   }
   .portrait__credit a {
-    color: inherit;
+    color: var(--ivory-dim);
+    text-decoration: underline;
+    text-decoration-color: var(--gold-2);
+    text-underline-offset: 0.2em;
     transition: color 0.3s;
   }
   .portrait__credit a:hover {
@@ -291,7 +294,7 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
   .hero__piano {
     position: relative;
     z-index: 2;
-    margin-top: -28%;
+    margin-top: -18%;
   }
   @media (max-width: 1080px) {
     .hero__grid {
@@ -302,7 +305,7 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
       margin: 1.5rem auto 0;
     }
     .hero__piano {
-      margin-top: -22%;
+      margin-top: -14%;
     }
   }
 </style>
