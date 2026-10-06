@@ -1,52 +1,56 @@
+import type { L10n } from '../i18n';
+
 /**
- * João's videos across platforms.
+ * Instagram videos for the Portfolio band on the home page, in the order they appear.
+ * Each one shows its cover image; a click plays the video right there.
  *
- * YouTube: if `site.youtube.channelId` is set, uploads are pulled in
- * automatically at build time and merged with the list below (handy for
- * pinning favourites to the top). Otherwise, paste video IDs here.
- *   https://www.youtube.com/watch?v=VIDEO_ID  →  id: 'VIDEO_ID'
- *   https://youtu.be/VIDEO_ID                 →  id: 'VIDEO_ID'
- *   https://www.youtube.com/shorts/VIDEO_ID   →  id: 'VIDEO_ID', short: true
+ *   url:   the post/reel link, e.g. https://www.instagram.com/reel/ABC123/
+ *   cover: an image in /public/images/instagram/ (e.g. a screenshot of the post, cropped
+ *          so Instagram's sound icon in the bottom-right corner doesn't show)
+ *   video: optional .mp4 in /public/videos/ — plays straight away on the site.
+ *          Without it, the click opens Instagram's own player for that post.
  *
- * Instagram: paste the post/reel URL, e.g. https://www.instagram.com/reel/ABC123/
- * TikTok:    paste the video URL, e.g. https://www.tiktok.com/@user/video/7234567890123456789
- *
- * The first `featured` items appear on the home page.
+ * Entries with `draft: true` only appear in `npm run dev`.
  */
-
-export interface YouTubeVideo {
-  id: string;
-  title: string;
-  /** ISO date, optional — used for sorting. */
-  published?: string;
-  /** Vertical YouTube Short. */
-  short?: boolean;
-  featured?: boolean;
-}
-
-export interface SocialPost {
+export interface InstagramVideo {
   url: string;
-  caption?: string;
-  featured?: boolean;
+  cover: string;
+  video?: string;
+  /** Short description, read by screen readers and used as the image's alt text. */
+  caption: L10n;
+  draft?: boolean;
 }
 
-export const youtube: YouTubeVideo[] = [
-  // { id: 'VIDEO_ID', title: 'Moonlight Sonata', featured: true },  (channel: @joaoeiropiano)
-];
-
-export const instagram: SocialPost[] = [
-  // { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/', featured: true },  (account: @piano.joaoeiro)
-];
-
-export const tiktok: SocialPost[] = [
+export const instagram: InstagramVideo[] = [
+  // { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/', cover: '/images/instagram/moonlight.jpg', video: '/videos/moonlight.mp4', caption: { en: 'Moonlight Sonata', pt: 'Sonata ao Luar' } },
   {
-    url: 'https://www.tiktok.com/@joo.eir/video/7603066545488547104',
-    caption: 'Beethoven was a genius. Small but powerful moment in his Moonlight Sonata',
-    featured: true,
+    url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
+    cover: '/images/instagram/piano-em-casa.jpg',
+    caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
   },
   {
-    url: 'https://www.tiktok.com/@joo.eir/video/7604903059440930081',
-    caption: "I stole your beat. Then I gave it back. We're cool now 😌🎹",
-    featured: true,
+    url: 'https://www.instagram.com/p/DaYIXISqaO8/',
+    cover: '/images/instagram/maos-no-piano.jpg',
+    caption: { en: 'João Eiró’s hands on the piano', pt: 'As mãos do João Eiró ao piano' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DRU_7OMCDDK/',
+    cover: '/images/instagram/piano-janela.jpg',
+    caption: { en: 'João Eiró playing the piano by the window', pt: 'João Eiró a tocar piano junto à janela' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DZnjcS9K3fU/',
+    cover: '/images/instagram/piano-microfone.jpg',
+    caption: { en: 'João Eiró recording at the piano', pt: 'João Eiró a gravar ao piano' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DYVPSdtK7uG/',
+    cover: '/images/instagram/piano-caveira.jpg',
+    caption: { en: 'João Eiró’s hands on the Yamaha piano keys', pt: 'As mãos do João Eiró no teclado do piano Yamaha' },
+  },
+  {
+    url: 'https://www.instagram.com/p/Cu4tnO6I_kc/',
+    cover: '/images/instagram/piano-camisola-verde.jpg',
+    caption: { en: 'João Eiró playing the piano', pt: 'João Eiró a tocar piano' },
   },
 ];
