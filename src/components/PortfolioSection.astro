@@ -6,7 +6,7 @@
  */
 import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
-import { asset, sections, useT, type Lang } from '../i18n';
+import { asset, pick, sections, useT, type Lang } from '../i18n';
 import { instagram } from '../data/media';
 import { gallery } from '../data/gallery';
 import { published } from '../lib/drafts';
@@ -44,9 +44,9 @@ const copy = {
               class="reel"
               data-video={v.video && asset(v.video)}
               data-embed={v.video ? undefined : embed(v.url)}
-              aria-label={`${t('media.play')}: ${v.caption}`}
+              aria-label={`${t('media.play')}: ${pick(v.caption, lang)}`}
             >
-              <img src={asset(v.cover)} alt={v.caption} loading="lazy" decoding="async" />
+              <img src={asset(v.cover)} alt={pick(v.caption, lang)} loading="lazy" decoding="async" />
               <span class="reel__play">
                 <Icon name="play" size={26} />
               </span>

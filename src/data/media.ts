@@ -1,3 +1,5 @@
+import type { L10n } from '../i18n';
+
 /**
  * Instagram videos for the Portfolio band on the home page, in the order they appear.
  * Each one shows its cover image; a click plays the video right there.
@@ -14,10 +16,15 @@ export interface InstagramVideo {
   cover: string;
   video?: string;
   /** Short description, read by screen readers and used as the image's alt text. */
-  caption: string;
+  caption: L10n;
   draft?: boolean;
 }
 
 export const instagram: InstagramVideo[] = [
-  // { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/', cover: '/images/instagram/moonlight.jpg', video: '/videos/moonlight.mp4', caption: 'Moonlight Sonata' },
+  // { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/', cover: '/images/instagram/moonlight.jpg', video: '/videos/moonlight.mp4', caption: { en: 'Moonlight Sonata', pt: 'Sonata ao Luar' } },
+  {
+    url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
+    cover: '/images/instagram/piano-em-casa.jpg',
+    caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
+  },
 ];
