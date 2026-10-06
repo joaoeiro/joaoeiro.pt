@@ -175,10 +175,14 @@ const copy = {
   li :global(.expect__icon) {
     margin-top: 0.15em;
   }
-  .expect__col--yes li :global(.expect__icon) {
-    color: var(--gold);
+  /* Ticks and crosses: the site's light blue in the dark theme, maroon in the light one. */
+  .expect {
+    --mark: #a3b8dc;
   }
-  .expect__col--no li :global(.expect__icon) {
-    color: var(--muted);
+  :global(:root[data-theme='light']) .expect {
+    --mark: #800000;
+  }
+  li :global(.expect__icon) {
+    color: var(--mark);
   }
 </style>
