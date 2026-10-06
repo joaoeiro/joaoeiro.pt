@@ -5,7 +5,8 @@ import type { L10n } from '../i18n';
  * Each one shows its cover image; a click plays the video right there.
  *
  *   url:   the post/reel link, e.g. https://www.instagram.com/reel/ABC123/
- *   cover: an image in /public/images/instagram/ (e.g. a screenshot of the post)
+ *   cover: an image in /public/images/instagram/ (e.g. a screenshot of the post, cropped
+ *          so Instagram's sound icon in the bottom-right corner doesn't show)
  *   video: optional .mp4 in /public/videos/ — plays straight away on the site.
  *          Without it, the click opens Instagram's own player for that post.
  *
