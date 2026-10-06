@@ -8,7 +8,7 @@ interface Props {
   lang: Lang;
   route: RouteKey;
 }
-const { lang } = Astro.props;
+const { lang, route } = Astro.props;
 const t = useT(lang);
 // Facebook is left out of the footer on purpose.
 const socials = (['youtube', 'instagram', 'tiktok', 'spotify'] as const)
@@ -20,6 +20,17 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="wrap footer__follow">
     <Signature class="footer__sig" onView />
+    {
+      // Invitation to write; left out on the contact page, which is the form itself.
+      route !== 'contact' && (
+        <div class="cta">
+          <p class="cta__line">{t('footer.ctaLine')}</p>
+          <a class="btn btn--gold" href={path('contact', lang)}>
+            {t('footer.ctaButton')} <Icon name="arrow" />
+          </a>
+        </div>
+      )
+    }
     <h4>{t('footer.follow')}</h4>
     <div class="socials">
       {
@@ -45,15 +56,28 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     position: relative;
-    margin-top: 4rem;
     background: linear-gradient(180deg, transparent, var(--footer-shade));
   }
   .footer__follow {
     display: grid;
     justify-items: center;
     gap: 1.6rem;
-    padding-block: 4.5rem 3.5rem;
+    padding-block: 4rem 3.5rem;
     text-align: center;
+  }
+  .cta {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    margin-bottom: 1.4rem;
+  }
+  .cta__line {
+    margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+    line-height: 1.15;
+    color: var(--ivory);
   }
   .footer__follow :global(.footer__sig) {
     display: block;
