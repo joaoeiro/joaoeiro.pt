@@ -53,4 +53,9 @@ export const instagram: InstagramVideo[] = [
     cover: '/images/instagram/piano-camisola-verde.jpg',
     caption: { en: 'João Eiró playing the piano', pt: 'João Eiró a tocar piano' },
   },
+  {
+    url: 'https://www.instagram.com/p/DXWfQWTKfF0/',
+    cover: '/images/instagram/piano-candeeiro.jpg',
+    caption: { en: 'João Eiró’s hands on the piano, lit by a desk lamp', pt: 'As mãos do João Eiró ao piano, sob um candeeiro' },
+  },
 ];
