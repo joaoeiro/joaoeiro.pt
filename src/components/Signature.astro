@@ -15,12 +15,12 @@ interface Props {
   onView?: boolean;
 }
 const { class: className, delay = '0s', onView = false } = Astro.props;
-// The J and the rest of the letters are separate inks, each written by its own strokes.
-// Through asset() so they still load when the site is served from a sub-path.
-const layers = [
-  { ink: asset('/images/assinatura-j.svg'), strokes: signatureStrokes.slice(0, 1) },
-  { ink: asset('/images/assinatura-letras.svg'), strokes: signatureStrokes.slice(1) },
-];
+// Each ink layer (the J's two halves, then the letters) is written only by its own strokes.
+// Through asset() so the inks still load when the site is served from a sub-path.
+const layers = [...new Set(signatureStrokes.map((s) => s.layer))].map((layer) => ({
+  ink: asset(`/images/assinatura-${layer}.svg`),
+  strokes: signatureStrokes.filter((s) => s.layer === layer),
+}));
 ---
 
 <span class:list={['sig', { reveal: onView }, className]} aria-hidden="true">
@@ -30,7 +30,7 @@ const layers = [
         <span class="layer" style={`--sig-url:url('${l.ink}')`}>
           <svg viewBox="0 0 1400 975">
             {l.strokes.map((s) => (
-              <path d={s.d} pathLength="1" style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}`} />
+              <path d={s.d} pathLength="1" style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}${s.ease ? `;--ease:${s.ease}` : ''}`} />
             ))}
           </svg>
         </span>
@@ -68,7 +68,7 @@ const layers = [
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-dasharray: 1 2;
-    animation: sigStroke var(--t) cubic-bezier(0.4, 0, 0.6, 1) both;
+    animation: sigStroke var(--t) var(--ease, cubic-bezier(0.4, 0, 0.6, 1)) both;
     animation-delay: calc(var(--sig-delay) + var(--d));
   }
   .signature--on-view path {
