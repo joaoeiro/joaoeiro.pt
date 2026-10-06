@@ -1,10 +1,11 @@
 ---
 import { asset } from '../i18n';
+import { signatureStrokes } from '../data/signature';
 
 /**
- * João's handwritten signature, drawn in the text colour of the current theme (the SVG is only
- * used as a mask). It writes itself in from left to right: on load, or with `onView` once it
- * scrolls into view.
+ * João's handwritten signature, drawn in the text colour of the current theme (the SVGs are only
+ * used as masks). It writes itself stroke by stroke, as if by hand: on load, or with `onView`
+ * once it scrolls into view.
  */
 interface Props {
   class?: string;
@@ -14,51 +15,95 @@ interface Props {
   onView?: boolean;
 }
 const { class: className, delay = '0s', onView = false } = Astro.props;
-// Through asset() so it still loads when the site is served from a sub-path.
-const vars = `--sig-delay:${delay};--sig-url:url('${asset('/images/assinatura.svg')}')`;
+// The J and the rest of the letters are separate inks, each written by its own strokes.
+// Through asset() so they still load when the site is served from a sub-path.
+const layers = [
+  { ink: asset('/images/assinatura-j.svg'), strokes: signatureStrokes.slice(0, 1) },
+  { ink: asset('/images/assinatura-letras.svg'), strokes: signatureStrokes.slice(1) },
+];
 ---
 
-{
-  onView ? (
-    // The observer can't see a fully clipped element, so it watches a wrapper instead.
-    <span class:list={['reveal', className]} aria-hidden="true">
-      <span class="signature signature--on-view" style={vars} />
-    </span>
-  ) : (
-    <span class:list={['signature', className]} style={vars} aria-hidden="true" />
-  )
-}
+<span class:list={['sig', { reveal: onView }, className]} aria-hidden="true">
+  <span class:list={['signature', { 'signature--on-view': onView }]} style={`--sig-delay:${delay}`}>
+    {
+      layers.map((l) => (
+        <span class="layer" style={`--sig-url:url('${l.ink}')`}>
+          <svg viewBox="0 0 1400 975">
+            {l.strokes.map((s) => (
+              <path d={s.d} pathLength="1" style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}`} />
+            ))}
+          </svg>
+        </span>
+      ))
+    }
+  </span>
+</span>
 
 <style>
+  /* With `onView`, the site's `.reveal` observer watches this wrapper. */
+  .sig {
+    display: block;
+  }
   .signature {
+    position: relative;
     display: block;
     aspect-ratio: 1400 / 975;
-    background: var(--ivory);
+  }
+  /* Each ink is a mask; thick pen strokes along its centre lines fill it in, in writing order. */
+  .layer {
+    position: absolute;
+    inset: 0;
     -webkit-mask: var(--sig-url) center / contain no-repeat;
     mask: var(--sig-url) center / contain no-repeat;
-    clip-path: inset(0 100% 0 0);
-    animation: sigWrite 2.2s cubic-bezier(0.45, 0.05, 0.25, 1) forwards;
-    animation-delay: var(--sig-delay);
   }
-  .signature--on-view {
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  path {
+    fill: none;
+    stroke: var(--ivory);
+    stroke-width: var(--w);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1 2;
+    animation: sigStroke var(--t) cubic-bezier(0.4, 0, 0.6, 1) both;
+    animation-delay: calc(var(--sig-delay) + var(--d));
+  }
+  .signature--on-view path {
     animation-play-state: paused;
   }
-  :global(.is-visible) > .signature--on-view {
+  :global(.is-visible) > .signature--on-view path {
     animation-play-state: running;
   }
-  @keyframes sigWrite {
+  /* Hidden until the pen lands, so the round cap doesn't leave a dot before its stroke starts. */
+  @keyframes sigStroke {
+    from {
+      stroke-dashoffset: 1;
+      opacity: 0;
+    }
+    1% {
+      opacity: 1;
+    }
     to {
-      clip-path: inset(0 0 0 0);
+      stroke-dashoffset: 0;
+      opacity: 1;
     }
   }
-  :global(.no-js) .signature {
-    clip-path: none;
-    animation: none;
+  /* Without the animation, show the whole signature straight from the ink. */
+  :global(.no-js) .layer {
+    background: var(--ivory);
+  }
+  :global(.no-js) .signature svg {
+    display: none;
   }
   @media (prefers-reduced-motion: reduce) {
-    .signature {
-      clip-path: none;
-      animation: none;
+    .layer {
+      background: var(--ivory);
+    }
+    .signature svg {
+      display: none;
     }
   }
 </style>

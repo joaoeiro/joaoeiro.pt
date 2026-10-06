@@ -48,7 +48,6 @@ const year = new Date().getFullYear();
   </div>
   <div class="wrap footer__base">
     <span>© {year} {site.name}. {t('footer.rights')}</span>
-    <a class="photo-ask" href={path('contact', lang)}>{t('photo.ask')}</a>
     <a href="#main">{t('footer.top')} ↑</a>
   </div>
 </footer>
@@ -148,12 +147,6 @@ const year = new Date().getFullYear();
     align-items: center;
     gap: 0.5rem;
     font-size: 1rem;
-  }
-  .photo-ask {
-    transition: color 0.3s;
-  }
-  .photo-ask:hover {
-    color: var(--gold-2);
   }
   .footer__base {
     display: flex;
