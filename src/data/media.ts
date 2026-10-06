@@ -27,4 +27,9 @@ export const instagram: InstagramVideo[] = [
     cover: '/images/instagram/piano-em-casa.jpg',
     caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
   },
+  {
+    url: 'https://www.instagram.com/p/DaYIXISqaO8/',
+    cover: '/images/instagram/maos-no-piano.jpg',
+    caption: { en: 'João Eiró’s hands on the piano', pt: 'As mãos do João Eiró ao piano' },
+  },
 ];
