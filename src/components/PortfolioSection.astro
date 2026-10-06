@@ -1,10 +1,9 @@
 ---
 /**
- * Home-page Portfolio: Instagram videos on a full-width maroon band (like the student reviews),
- * then photos. Each video shows its cover; a click plays it in place. Always open, unlike the
+ * Home-page videos (the old Portfolio): an inviting title and the Instagram videos on a full-width
+ * maroon band (like the student reviews), then photos. Each video shows its cover; a click plays it in place. Always open, unlike the
  * expandable sections above it.
  */
-import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
 import { asset, pick, sections, useT, type Lang } from '../i18n';
 import { instagram } from '../data/media';
@@ -22,21 +21,21 @@ const embed = (url: string) => url.split('?')[0].replace(/\/?$/, '/') + 'embed/'
 
 const copy = {
   en: {
-    title: 'Portfolio',
+    title: 'Hear me play',
     photosLabel: 'Gallery',
   },
   pt: {
-    title: 'Portfólio',
+    title: 'Ouve-me a tocar',
     photosLabel: 'Galeria',
   },
 }[lang];
 ---
 
 <div class="portfolio" id={sections.portfolio[lang]}>
-  <SectionHead title={copy.title} />
   {
     videos.length > 0 && (
       <div class="band">
+        <h2 class="band__title">{copy.title}</h2>
         <div class="reels">
           {videos.map((v) => (
             <button
@@ -106,13 +105,6 @@ const copy = {
     display: grid;
     gap: clamp(2.5rem, 2rem + 2vw, 4rem);
   }
-  .portfolio :global(.head) {
-    margin-bottom: 0;
-  }
-  /* Same colour as an open section's title above. */
-  .portfolio :global(.head h2) {
-    color: var(--gold);
-  }
   .tab-block > .eyebrow {
     margin-bottom: 1.4rem;
   }
@@ -121,6 +113,16 @@ const copy = {
     margin-inline: calc(50% - 50vw);
     padding: clamp(3rem, 2rem + 4vw, 5.5rem) calc(50vw - 50%);
     background: #800000;
+  }
+  .band__title {
+    margin: 0 0 clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    /* Same type as the section titles above. */
+    font-family: var(--font-body);
+    font-size: clamp(2rem, 1.3rem + 2.7vw, 3.6rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: #f4ecdc;
   }
   .band :global(.reels) {
     display: grid;

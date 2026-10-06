@@ -8,10 +8,10 @@ interface Props {
   lang: Lang;
   route: RouteKey;
 }
-const { lang } = Astro.props;
+const { lang, route } = Astro.props;
 const t = useT(lang);
 // Facebook is left out of the footer on purpose.
-const socials = (['youtube', 'instagram', 'tiktok', 'spotify'] as const)
+const socials = (['instagram', 'tiktok', 'youtube', 'spotify'] as const)
   .filter((k) => site.socials[k])
   .map((k) => ({ key: k, href: site.socials[k] }));
 const year = new Date().getFullYear();
@@ -20,6 +20,17 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="wrap footer__follow">
     <Signature class="footer__sig" onView />
+    {
+      // Invitation to write; left out on the contact page, which is the form itself.
+      route !== 'contact' && (
+        <div class="cta">
+          <p class="lead cta__line">{t('footer.ctaLine')}</p>
+          <a class="btn cta__btn" href={path('contact', lang)}>
+            {t('footer.ctaButton')} <Icon name="arrow" />
+          </a>
+        </div>
+      )
+    }
     <h4>{t('footer.follow')}</h4>
     <div class="socials">
       {
@@ -45,15 +56,43 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     position: relative;
-    margin-top: 4rem;
     background: linear-gradient(180deg, transparent, var(--footer-shade));
   }
   .footer__follow {
     display: grid;
     justify-items: center;
     gap: 1.6rem;
-    padding-block: 4.5rem 3.5rem;
+    padding-block: 4rem 3.5rem;
     text-align: center;
+  }
+  .cta {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    margin-bottom: 1.4rem;
+  }
+  /* Same type as the home page's intro line. */
+  .cta__line {
+    margin: 0;
+  }
+  /* The site's maroon with sand lettering; on hover it lifts, deepens and the arrow nudges on. */
+  .cta__btn {
+    border-color: #800000;
+    background: #800000;
+    color: #d7cfc4;
+    transition: transform 0.3s var(--ease), background-color 0.3s, box-shadow 0.3s;
+  }
+  .cta__btn :global(svg) {
+    transition: transform 0.3s var(--ease);
+  }
+  .cta__btn:hover {
+    background: #6e0000;
+    border-color: #6e0000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -10px rgb(128 0 0 / 0.6);
+  }
+  .cta__btn:hover :global(svg) {
+    transform: translateX(4px);
   }
   .footer__follow :global(.footer__sig) {
     display: block;
@@ -91,11 +130,12 @@ const year = new Date().getFullYear();
     border: 1px solid var(--line);
     transition: 0.4s var(--ease);
   }
+  /* The site's maroon, flat. */
   .socials a:hover {
-    background: var(--gold-grad);
-    color: var(--on-accent);
+    background: #800000;
+    color: #f4ecdc;
     transform: translateY(-4px) rotate(-8deg);
-    border-color: var(--gold);
+    border-color: #800000;
   }
   .contacts {
     display: flex;
