@@ -24,8 +24,8 @@ const year = new Date().getFullYear();
       // Invitation to write; left out on the contact page, which is the form itself.
       route !== 'contact' && (
         <div class="cta">
-          <p class="cta__line">{t('footer.ctaLine')}</p>
-          <a class="btn btn--gold" href={path('contact', lang)}>
+          <p class="lead cta__line">{t('footer.ctaLine')}</p>
+          <a class="btn cta__btn" href={path('contact', lang)}>
             {t('footer.ctaButton')} <Icon name="arrow" />
           </a>
         </div>
@@ -71,13 +71,19 @@ const year = new Date().getFullYear();
     gap: 1.1rem;
     margin-bottom: 1.4rem;
   }
+  /* Same type as the home page's intro line. */
   .cta__line {
     margin: 0;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
-    line-height: 1.15;
-    color: var(--ivory);
+  }
+  /* Outlined like the social icons below, and the same flat maroon and tilt on hover. */
+  .cta__btn {
+    transition: 0.4s var(--ease);
+  }
+  .cta__btn:hover {
+    background: #800000;
+    color: #f4ecdc;
+    border-color: #800000;
+    transform: translateY(-4px) rotate(-3deg);
   }
   .footer__follow :global(.footer__sig) {
     display: block;
