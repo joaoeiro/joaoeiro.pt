@@ -17,12 +17,39 @@ interface Props {
 const { class: className, delay = '0s', onView = false } = Astro.props;
 // Through asset() so it still loads when the site is served from a sub-path.
 const vars = `--sig-delay:${delay};--sig-url:url('${asset('/images/assinatura.svg')}')`;
+// The page can hold more than one signature, so each one's masks get their own ids.
+const uid = `sig-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <span class:list={['sig', { reveal: onView }, className]} aria-hidden="true">
   <span class:list={['signature', { 'signature--on-view': onView }]} style={vars}>
     <svg viewBox="0 0 1400 975">
-      {signatureStrokes.map((s) => <path d={s.d} pathLength="1" style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width ?? 30}`} />)}
+      {
+        signatureStrokes.map(
+          (s, i) =>
+            s.core && (
+              // Where later letters touch this stroke (the J's long line), their ink waits for them.
+              <mask id={`${uid}-${i}`} maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="975">
+                <rect width="1400" height="975" fill="#fff" />
+                {signatureStrokes.slice(i + 1).map((l) => (
+                  <path d={l.d} stroke="#000" stroke-width={l.width} />
+                ))}
+                <path d={s.d} stroke="#fff" stroke-width={s.core} />
+              </mask>
+            ),
+        )
+      }
+      {
+        signatureStrokes.map((s, i) => (
+          <path
+            class="stroke"
+            d={s.d}
+            pathLength="1"
+            mask={s.core ? `url(#${uid}-${i})` : undefined}
+            style={`--d:${s.delay}s;--t:${s.dur}s;--w:${s.width}`}
+          />
+        ))
+      }
     </svg>
   </span>
 </span>
@@ -44,7 +71,12 @@ const vars = `--sig-delay:${delay};--sig-url:url('${asset('/images/assinatura.sv
     width: 100%;
     height: 100%;
   }
-  path {
+  mask path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .stroke {
     fill: none;
     stroke: var(--ivory);
     stroke-width: var(--w);
@@ -54,10 +86,10 @@ const vars = `--sig-delay:${delay};--sig-url:url('${asset('/images/assinatura.sv
     animation: sigStroke var(--t) cubic-bezier(0.4, 0, 0.6, 1) both;
     animation-delay: calc(var(--sig-delay) + var(--d));
   }
-  .signature--on-view path {
+  .signature--on-view .stroke {
     animation-play-state: paused;
   }
-  :global(.is-visible) > .signature--on-view path {
+  :global(.is-visible) > .signature--on-view .stroke {
     animation-play-state: running;
   }
   /* Hidden until the pen lands, so the round cap doesn't leave a dot before its stroke starts. */
