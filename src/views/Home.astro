@@ -172,19 +172,20 @@ const photoCredit = { name: 'Carolina Galvão', href: 'https://www.instagram.com
     animation: role 9s infinite;
     animation-delay: calc(var(--n) * 3s);
   }
+  /* Each role holds about 2s; it slides out (0.9s) as the next one slides in. */
   @keyframes role {
     0% {
       opacity: 0;
       transform: translateY(100%);
       filter: blur(6px);
     }
-    5%,
-    28% {
+    10%,
+    33.33% {
       opacity: 1;
       transform: none;
       filter: none;
     }
-    33%,
+    43.33%,
     100% {
       opacity: 0;
       transform: translateY(-100%);
