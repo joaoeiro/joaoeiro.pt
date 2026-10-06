@@ -19,7 +19,7 @@ interface Props {
   focus?: string;
   /** Which side the picture's subject sits on; the title goes on the other side. */
   side?: 'left' | 'right';
-  /** Who took the picture, credited up the picture's outer edge. */
+  /** Who took the picture, credited under it on the right once the section is open. */
   credit?: { name: string; href?: string };
 }
 const { lang, section, title, sub, image, focus = '50% 40%', side = 'left', credit } = Astro.props;
@@ -33,13 +33,6 @@ const { en, pt, legacy = [] } = sections[section];
       <span class="tab__frame">
         <Picture src={image} alt="" formats={['avif', 'webp']} widths={[640, 960, 1280, 1600, 2000]} sizes="100vw" style={`object-position: ${focus}`} />
       </span>
-      {
-        credit && (
-          <span class="tab__credit">
-            {t('photo.by')}: {credit.href ? <a href={credit.href} target="_blank" rel="noopener">{credit.name}</a> : credit.name}
-          </span>
-        )
-      }
     </span>
     <span class="tab__head">
       <span class="tab__title">{title}</span>
@@ -47,6 +40,13 @@ const { en, pt, legacy = [] } = sections[section];
     </span>
     <span class="tab__icon" aria-hidden="true"></span>
   </summary>
+  {
+    credit && (
+      <p class="tab__credit">
+        {t('photo.by')}: {credit.href ? <a href={credit.href} target="_blank" rel="noopener">{credit.name}</a> : credit.name}
+      </p>
+    )
+  }
   <div class="tab__body">
     <slot />
   </div>
@@ -262,29 +262,26 @@ const { en, pt, legacy = [] } = sections[section];
       transform: translateY(-12px);
     }
   }
-  /* Credit in the top corner away from the text. */
+  /* Credit under the open picture, small, on the right. */
   .tab__credit {
-    position: absolute;
-    top: 1rem;
-    right: var(--inset);
+    margin: 0.5rem 0 0;
+    text-align: right;
     font-size: 0.72rem;
     letter-spacing: 0.04em;
-    color: rgb(244 236 220 / 0.75);
-    text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
+    color: var(--muted);
   }
-  .tab--left .tab__credit {
-    right: auto;
-    left: var(--inset);
+  .tab[open] .tab__credit {
+    animation: tabIn 0.6s var(--ease);
   }
   .tab__credit a {
-    color: #f4ecdc;
+    color: var(--ivory-dim);
     text-decoration: underline;
-    text-decoration-color: rgb(243 215 154 / 0.7);
+    text-decoration-color: var(--gold-2);
     text-underline-offset: 0.2em;
     transition: color 0.3s;
   }
   .tab__credit a:hover {
-    color: #f3d79a;
+    color: var(--gold-2);
   }
   @media (prefers-reduced-motion: reduce) {
     summary,
@@ -350,12 +347,8 @@ const { en, pt, legacy = [] } = sections[section];
     .tab--left summary::after {
       background: linear-gradient(to top, rgb(7 6 10 / 0.85), rgb(7 6 10 / 0.35) 55%, transparent 80%);
     }
-    .tab__credit,
-    .tab--left .tab__credit {
-      top: 0.7rem;
-      right: 2.6rem;
-      left: auto;
-      font-size: 0.62rem;
+    .tab__credit {
+      font-size: 0.65rem;
     }
   }
 </style>
