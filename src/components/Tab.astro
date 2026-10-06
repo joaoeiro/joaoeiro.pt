@@ -39,6 +39,7 @@ const { en, pt, legacy = [] } = sections[section];
       <span class="tab__sub">{sub}</span>
     </span>
     <span class="tab__icon" aria-hidden="true"></span>
+    <span class="tab__probe" aria-hidden="true"></span>
   </summary>
   {
     credit && (
@@ -48,6 +49,9 @@ const { en, pt, legacy = [] } = sections[section];
     )
   }
   <div class="tab__body">
+    <button type="button" class="tab__down" aria-label={t('tab.down')} tabindex="-1">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m6 9.5 6 6 6-6" /></svg>
+    </button>
     <slot />
   </div>
 </details>
@@ -60,10 +64,36 @@ const { en, pt, legacy = [] } = sections[section];
 
   const find = (hash: string) => tabs.find((t) => t.id === hash || t.dataset.aliases!.split(' ').includes(hash));
 
-  // Bring a section's title to the top of the page (just under the menu). Wait a frame so a
-  // section closing above it has collapsed first, otherwise the page would land off target.
-  const toTop = (tab: HTMLDetailsElement) =>
-    requestAnimationFrame(() => tab.scrollIntoView({ behavior: smooth, block: 'start' }));
+  // Bring an open section into view with the start of what it reveals showing too: the bottom
+  // of its band (where the title sits) lands a little past the middle of the screen, so the
+  // text below peeks in and it's clear something opened. A band short enough to fit with room
+  // to spare just goes to the top (under the menu). The band may still be growing, so its
+  // opened height is read off a hidden probe. Wait a frame so a section closing above it has
+  // collapsed first, otherwise the page would land off target.
+  const REVEAL_AT = 0.6;
+  const reveal = (tab: HTMLDetailsElement) =>
+    requestAnimationFrame(() => {
+      const menu = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      const band = tab.querySelector<HTMLElement>('.tab__probe')!.offsetHeight;
+      const at = Math.min(menu, innerHeight * REVEAL_AT - band);
+      scrollTo({ top: scrollY + tab.getBoundingClientRect().top - at, behavior: smooth });
+    });
+
+  // While an open section's text is mostly still below the screen, a small arrow bounces just
+  // under its band (on larger screens, see the CSS); it goes once the reader scrolls into the
+  // text, and clicking it scrolls there.
+  const hint = (tab: HTMLDetailsElement) => {
+    const body = tab.querySelector<HTMLElement>('.tab__body')!;
+    const r = body.getBoundingClientRect();
+    tab.classList.toggle('tab--hint', tab.open && r.top > innerHeight * 0.35 && r.bottom > innerHeight);
+  };
+  addEventListener('scroll', () => tabs.forEach((t) => t.classList.contains('tab--hint') && hint(t)), { passive: true });
+  tabs.forEach((tab) =>
+    tab.querySelector('.tab__down')!.addEventListener('click', () => {
+      const menu = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      scrollTo({ top: scrollY + tab.querySelector('.tab__body')!.getBoundingClientRect().top - menu, behavior: smooth });
+    }),
+  );
 
   // Open a section. One open further up the page closes at once, and the page is shifted by
   // what it took up so the chosen section stays where it was on screen; from there it glides
@@ -89,7 +119,7 @@ const { en, pt, legacy = [] } = sections[section];
   };
 
   const open = (tab: HTMLDetailsElement) => {
-    if (tab.open) toTop(tab);
+    if (tab.open) reveal(tab);
     else show(tab);
   };
 
@@ -103,16 +133,18 @@ const { en, pt, legacy = [] } = sections[section];
     }),
   );
 
-  // Opening one section closes the others and lines it up at the top; the address and the
+  // Opening one section closes the others and brings it into view; the address and the
   // contact tab follow the open one.
   tabs.forEach((tab) =>
     tab.addEventListener('toggle', () => {
       if (tab.open) {
         tabs.forEach((t) => t !== tab && (t.open = false));
-        toTop(tab);
+        reveal(tab);
+        hint(tab);
         history.replaceState(null, '', `#${tab.id}`);
-      } else if (location.hash === `#${tab.id}`) {
-        history.replaceState(null, '', location.pathname + location.search);
+      } else {
+        tab.classList.remove('tab--hint');
+        if (location.hash === `#${tab.id}`) history.replaceState(null, '', location.pathname + location.search);
       }
       const current = tabs.find((t) => t.open)?.dataset.section;
       if (sideTab && sideHref) {
@@ -173,6 +205,14 @@ const { en, pt, legacy = [] } = sections[section];
     summary:hover {
       height: var(--opened);
     }
+  }
+  /* As tall as the open band, for the script to measure while the band is still growing. */
+  .tab__probe {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: var(--opened);
+    visibility: hidden;
   }
   .tab__media {
     position: absolute;
@@ -293,6 +333,48 @@ const { en, pt, legacy = [] } = sections[section];
   .tab[open] .tab__body {
     animation: tabIn 0.6s var(--ease);
   }
+  /* The arrow that says there's more below (see hint() above): only on larger screens, where
+     the open band takes up most of the screen; it fades in once the section has settled. */
+  .tab__body {
+    position: relative;
+  }
+  .tab__down {
+    display: none;
+  }
+  @media (min-width: 601px) {
+    .tab__down {
+      position: absolute;
+      top: 0.4rem;
+      left: 50%;
+      display: grid;
+      place-items: center;
+      width: 2.6rem;
+      height: 2.6rem;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--gold);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      translate: -50% 0;
+      transition: opacity 0.4s;
+    }
+    .tab--hint .tab__down {
+      opacity: 0.85;
+      pointer-events: auto;
+      transition-delay: 0.9s;
+      animation: tabDown 1.8s ease-in-out infinite;
+    }
+    .tab__down:hover {
+      opacity: 1;
+    }
+  }
+  @keyframes tabDown {
+    50% {
+      transform: translateY(6px);
+    }
+  }
   @keyframes tabIn {
     from {
       opacity: 0;
@@ -329,6 +411,9 @@ const { en, pt, legacy = [] } = sections[section];
     summary,
     .tab__media :global(img) {
       transition: none;
+    }
+    .tab--hint .tab__down {
+      animation: none;
     }
   }
   /* Shared building blocks for the sections' content. */
