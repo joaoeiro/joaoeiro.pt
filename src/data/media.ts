@@ -43,4 +43,9 @@ export const instagram: InstagramVideo[] = [
     cover: '/images/instagram/piano-microfone.jpg',
     caption: { en: 'João Eiró recording at the piano', pt: 'João Eiró a gravar ao piano' },
   },
+  {
+    url: 'https://www.instagram.com/p/DYVPSdtK7uG/',
+    cover: '/images/instagram/piano-caveira.jpg',
+    caption: { en: 'João Eiró’s hands on the Yamaha piano keys', pt: 'As mãos do João Eiró no teclado do piano Yamaha' },
+  },
 ];
