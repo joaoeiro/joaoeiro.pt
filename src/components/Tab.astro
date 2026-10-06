@@ -1,7 +1,8 @@
 ---
 /**
- * One expandable section of the home page. Closed, it shows a picture beside a short text
- * (on the left or the right, so consecutive sections zigzag); open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
+ * One expandable section of the home page. Closed, it is a photo band across the screen with
+ * the title over it (on the left or the right, so consecutive sections zigzag) that grows on
+ * hover; open, it shows the rest. Links to `#<anchor>` (the menu, old page addresses) open it in
  * place and scroll to it.
  */
 import { Picture } from 'astro:assets';
@@ -16,7 +17,7 @@ interface Props {
   image: ImageMetadata;
   /** CSS object-position, to frame the picture. */
   focus?: string;
-  /** Which side the picture sits on. */
+  /** Which side the picture's subject sits on; the title goes on the other side. */
   side?: 'left' | 'right';
   /** Who took the picture, credited up the picture's outer edge. */
   credit?: { name: string; href?: string };
@@ -30,7 +31,7 @@ const { en, pt, legacy = [] } = sections[section];
   <summary>
     <span class="tab__media">
       <span class="tab__frame">
-        <Picture src={image} alt="" formats={['avif', 'webp']} widths={[320, 640, 960]} sizes="(max-width: 600px) 110px, 320px" style={`object-position: ${focus}`} />
+        <Picture src={image} alt="" formats={['avif', 'webp']} widths={[640, 960, 1280, 1600, 2000]} sizes="100vw" style={`object-position: ${focus}`} />
       </span>
       {
         credit && (
@@ -107,31 +108,44 @@ const { en, pt, legacy = [] } = sections[section];
 </script>
 
 <style>
+  /* Each section is a photo band across the whole screen, title over it; it grows on hover. */
   summary {
-    --media: clamp(140px, 100px + 14vw, 320px);
-    display: grid;
-    grid-template-columns: var(--media) 1fr auto;
-    grid-template-areas: 'media head icon';
-    align-items: center;
-    gap: clamp(1rem, 0.5rem + 2.5vw, 3rem);
-    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem);
+    --closed: clamp(240px, 9rem + 16vw, 440px);
+    --opened: clamp(440px, 72vh, 780px);
+    /* Lines the text up with the page's content column. */
+    --inset: max(1.25rem, (100vw - 1200px) / 2);
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+    height: var(--closed);
+    margin-inline: calc(50% - 50vw);
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3.5rem) var(--inset);
+    overflow: hidden;
     list-style: none;
     cursor: pointer;
+    transition: height 0.9s var(--ease);
   }
-  .tab--right summary {
-    grid-template-columns: 1fr auto var(--media);
-    grid-template-areas: 'head icon media';
+  .tab {
+    margin-bottom: 6px;
+  }
+  .tab--left summary {
+    justify-content: flex-end;
+  }
+  .tab[open] summary {
+    height: var(--opened);
+  }
+  @media (hover: hover) {
+    summary:hover {
+      height: var(--opened);
+    }
   }
   .tab__media {
-    grid-area: media;
-    position: relative;
-  }
-  .tab__frame {
-    display: block;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: 14px;
-    background: var(--ink-3);
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: #18151f;
   }
   .tab__media :global(picture) {
     display: contents;
@@ -140,58 +154,87 @@ const { en, pt, legacy = [] } = sections[section];
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.8s var(--ease);
+    transform: scale(1.02);
+    transition: transform 1.2s var(--ease);
   }
-  summary:hover .tab__media :global(img) {
-    transform: scale(1.05);
+  summary:hover .tab__media :global(img),
+  .tab[open] .tab__media :global(img) {
+    transform: scale(1.07);
+  }
+  /* Shade on the text's side, so the title reads over any photo. */
+  summary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(7 6 10 / 0.7), transparent 55%),
+      linear-gradient(to right, rgb(7 6 10 / 0.75), transparent 65%);
+    transition: opacity 0.6s;
+  }
+  .tab--left summary::after {
+    background:
+      linear-gradient(to top, rgb(7 6 10 / 0.7), transparent 55%),
+      linear-gradient(to left, rgb(7 6 10 / 0.75), transparent 65%);
   }
   summary::-webkit-details-marker {
     display: none;
   }
   summary:focus-visible {
-    outline: 2px solid var(--gold-2);
-    outline-offset: 4px;
-    border-radius: 6px;
+    outline: 2px solid #f3d79a;
+    outline-offset: -6px;
   }
   .tab__head {
-    grid-area: head;
     display: grid;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    max-width: 38rem;
+  }
+  .tab--left .tab__head {
+    text-align: right;
   }
   .tab__title {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 1.3rem + 2.8vw, 3.8rem);
-    line-height: 1.05;
-    color: var(--ivory);
+    font-size: clamp(2.4rem, 1.4rem + 4vw, 5.5rem);
+    line-height: 1;
+    color: #f4ecdc;
+    text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
     transition: color 0.3s;
   }
   summary:hover .tab__title,
   .tab[open] .tab__title {
-    color: var(--gold);
+    color: #f3d79a;
   }
   .tab__sub {
-    max-width: 52ch;
-    color: var(--muted);
-    font-size: 0.98rem;
+    color: rgb(244 236 220 / 0.85);
+    font-size: 1rem;
   }
   /* A plus that turns into a minus. */
   .tab__icon {
-    grid-area: icon;
     position: relative;
-    width: 2.6rem;
-    height: 2.6rem;
-    border: 1px solid var(--line);
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid rgb(244 236 220 / 0.45);
     border-radius: 50%;
+    backdrop-filter: blur(4px);
     transition: border-color 0.3s, background-color 0.3s;
+  }
+  /* The + sits in the bottom corner across from the title. */
+  .tab--right .tab__icon {
+    margin-left: auto;
+  }
+  .tab--left .tab__icon {
+    order: -1;
+    margin-right: auto;
   }
   .tab__icon::before,
   .tab__icon::after {
     content: '';
     position: absolute;
     inset: 50% auto auto 50%;
-    width: 0.9rem;
+    width: 1rem;
     height: 1.5px;
-    background: var(--gold);
+    background: #f3d79a;
     translate: -50% -50%;
     transition: transform 0.4s var(--ease);
   }
@@ -202,12 +245,13 @@ const { en, pt, legacy = [] } = sections[section];
     transform: rotate(0deg);
   }
   summary:hover .tab__icon {
-    border-color: var(--gold);
+    border-color: #f3d79a;
+    background: rgb(7 6 10 / 0.3);
   }
   .tab__body {
     display: grid;
     gap: clamp(2.5rem, 2rem + 2vw, 4rem);
-    padding-bottom: clamp(3rem, 2rem + 3vw, 5rem);
+    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
   }
   .tab[open] .tab__body {
     animation: tabIn 0.6s var(--ease);
@@ -218,33 +262,35 @@ const { en, pt, legacy = [] } = sections[section];
       transform: translateY(-12px);
     }
   }
-  /* Credit runs up the picture's outer edge, like the portrait's on the home page. */
+  /* Credit in the top corner away from the text. */
   .tab__credit {
     position: absolute;
-    bottom: 0;
-    left: 100%;
-    margin-left: 0.4rem;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
+    top: 1rem;
+    right: var(--inset);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
-    color: var(--muted);
-    white-space: nowrap;
+    color: rgb(244 236 220 / 0.75);
+    text-shadow: 0 1px 4px rgb(0 0 0 / 0.6);
   }
   .tab--left .tab__credit {
-    left: auto;
-    right: 100%;
-    margin: 0 0.4rem 0 0;
+    right: auto;
+    left: var(--inset);
   }
   .tab__credit a {
-    color: var(--ivory-dim);
+    color: #f4ecdc;
     text-decoration: underline;
-    text-decoration-color: var(--gold-2);
+    text-decoration-color: rgb(243 215 154 / 0.7);
     text-underline-offset: 0.2em;
     transition: color 0.3s;
   }
   .tab__credit a:hover {
-    color: var(--gold-2);
+    color: #f3d79a;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    summary,
+    .tab__media :global(img) {
+      transition: none;
+    }
   }
   /* Shared building blocks for the sections' content. */
   .tab__body :global(.tab-lead) {
@@ -273,31 +319,42 @@ const { en, pt, legacy = [] } = sections[section];
   }
   @media (max-width: 600px) {
     summary {
-      --media: 88px;
+      --closed: clamp(220px, 64vw, 320px);
+      --opened: clamp(300px, 90vw, 440px);
       gap: 0.9rem;
       /* Keep the + clear of the contact tab on the screen's edge. */
-      padding-right: 1.6rem;
+      padding-right: 2.6rem;
     }
     .tab__icon {
-      width: 2rem;
-      height: 2rem;
+      width: 2.4rem;
+      height: 2.4rem;
     }
     .tab__title {
-      font-size: 1.7rem;
+      font-size: 2.3rem;
     }
     .tab__sub {
       font-size: 0.9rem;
     }
-    /* The picture is too short for the credit to run up its edge: it goes underneath. */
+    /* Narrow bands: title always bottom left, shade from below. */
+    .tab--left summary {
+      justify-content: flex-start;
+    }
+    .tab--left .tab__head {
+      text-align: left;
+    }
+    .tab--left .tab__icon {
+      order: 0;
+      margin: 0 0 0 auto;
+    }
+    summary::after,
+    .tab--left summary::after {
+      background: linear-gradient(to top, rgb(7 6 10 / 0.85), rgb(7 6 10 / 0.35) 55%, transparent 80%);
+    }
     .tab__credit,
     .tab--left .tab__credit {
-      top: 100%;
-      bottom: auto;
-      left: 50%;
-      right: auto;
-      margin: 0.3rem 0 0;
-      writing-mode: horizontal-tb;
-      transform: translateX(-50%);
+      top: 0.7rem;
+      right: 2.6rem;
+      left: auto;
       font-size: 0.62rem;
     }
   }
