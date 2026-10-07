@@ -18,7 +18,7 @@ export const sections: Record<'current' | 'archive' | 'lessons' | 'bio' | 'portf
   archive: { en: 'archive', pt: 'arquivo' },
   lessons: { en: 'lessons', pt: 'aulas' },
   bio: { en: 'biography', pt: 'biografia' },
-  portfolio: { en: 'portfolio', pt: 'portfolio' },
+  portfolio: { en: 'portfolio', pt: 'ouve-me', legacy: ['portfolio'] },
 };
 export type SectionKey = keyof typeof sections;
 

@@ -32,6 +32,8 @@ const copy = {
 ---
 
 <div class="portfolio" id={sections.portfolio[lang]}>
+  {/* Older links to this band (e.g. /pt/#portfolio) still land here. */}
+  {sections.portfolio.legacy?.filter((a) => a !== sections.portfolio[lang]).map((a) => <span id={a} />)}
   {
     videos.length > 0 && (
       <div class="band">
