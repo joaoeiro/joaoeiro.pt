@@ -60,4 +60,11 @@ const alt = (s: Show) =>
   .posters img.whole {
     object-fit: contain;
   }
+  /* On phones, two across: four posters fill a screen. */
+  @media (max-width: 600px) {
+    .posters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+  }
 </style>
