@@ -194,8 +194,8 @@ const dateKinds = ['single', 'range', 'open'] as const;
       </label>
       <fieldset class="sub" data-when="minor" disabled hidden>
         <label>
-          <span>{c.guardian}</span>
-          <input name={c.guardian} autocomplete="off" />
+          <span>{c.guardian}<Req /></span>
+          <input name={c.guardian} autocomplete="off" required />
         </label>
       </fieldset>
     </div>
@@ -245,8 +245,8 @@ const dateKinds = ['single', 'range', 'open'] as const;
     </fieldset>
     <fieldset class="sub" data-when="home" disabled hidden>
       <label>
-        <span>{c.area}</span>
-        <input name={c.area} placeholder={c.areaPh} />
+        <span>{c.area}<Req /></span>
+        <input name={c.area} placeholder={c.areaPh} required />
       </label>
     </fieldset>
     <label>
