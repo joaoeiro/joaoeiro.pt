@@ -1,16 +1,16 @@
 # joaoeiro.pt
 
 Website of **João Eiró** — pianist, piano teacher, accompanist, soloist and compulsive improviser.
-Built with [Astro](https://astro.build), fully static, in **English** (`/`) and **Portuguese** (`/pt/`).
-Visitors whose browser language is Portuguese are sent to the Portuguese version automatically
-(unless they pick a language with the EN/PT switch, which is remembered).
+Built with [Astro](https://astro.build), fully static, in **Portuguese** (`/`, the default) and **English** (`/en/`).
+Everyone lands on Portuguese; the PT/EN switch in the menu goes to the English version.
+The old English-first addresses (`/contact/`, `/pt/…`) redirect to their new place.
 
 One light theme: sand `#D7CFC4` and maroon `#800000`.
 All colours are tokens in `:root` at the top of `src/styles/global.css`.
 
 ## Pages
 
-Two pages, in English (`/`, `/contact/`) and Portuguese (`/pt/`, `/pt/contacto/`).
+Two pages, in Portuguese (`/`, `/contacto/`) and English (`/en/`, `/en/contact/`).
 
 **Home** — playable piano hero, the word ribbon, and five sections. Closed, each shows a picture beside a
 short text; clicking it expands the rest:
@@ -27,7 +27,7 @@ The menu and any link to an anchor open that section (`src/components/Tab.astro`
 (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section, or to the home page for pages that are gone.
 Each section's picture is set at the top of its file in `src/components/tabs/`.
 
-**Contact** — the contact form (subject: lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
+**Contact** — the contact form ("O que procuras?": lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
 
 ## Editing content — no code needed
 

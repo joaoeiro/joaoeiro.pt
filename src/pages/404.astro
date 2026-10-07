@@ -4,18 +4,18 @@ import Icon from '../components/Icon.astro';
 import { path } from '../i18n';
 ---
 
-<Layout lang="en" route="home" title="Wrong note — 404" description="This page does not exist." noindex>
+<Layout lang="pt" route="home" title="Nota errada — 404" description="Esta página não existe." noindex>
   <section class="lost">
     <div class="wrap">
-      <p class="eyebrow">404 · Nota errada</p>
-      <h1>Wrong <em>note</em>.</h1>
+      <p class="eyebrow">404 · Wrong note</p>
+      <h1>Nota <em>errada</em>.</h1>
       <p class="lead">
-        Even the best pianists hit one now and then. This page doesn’t exist — but the music goes on.
-        <br /><span class="muted">Esta página não existe — mas a música continua.</span>
+        Até os melhores pianistas falham uma de vez em quando. Esta página não existe — mas a música continua.
+        <br /><span class="muted" lang="en">This page doesn’t exist — but the music goes on.</span>
       </p>
       <div class="btn-row">
-        <a class="btn btn--gold" href={path('home', 'en')}>Home <Icon name="arrow" /></a>
-        <a class="btn" href={path('home', 'pt')}>Início</a>
+        <a class="btn btn--gold" href={path('home', 'pt')}>Início <Icon name="arrow" /></a>
+        <a class="btn" href={path('home', 'en')} lang="en">Home</a>
       </div>
     </div>
   </section>

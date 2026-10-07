@@ -12,7 +12,7 @@ interface Props {
   route: RouteKey;
   title: string;
   description: string;
-  /** Error pages: no canonical, no alternates, no language redirect. */
+  /** Error pages: no canonical, no alternates. */
   noindex?: boolean;
 }
 
@@ -56,7 +56,7 @@ const jsonLd = {
           {alternates.map((a) => (
             <link rel="alternate" hreflang={a.lang} href={a.href} />
           ))}
-          <link rel="alternate" hreflang="x-default" href={new URL(path(route, 'en'), origin).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL(path(route, 'pt'), origin).href} />
         </>
       )
     }
@@ -84,18 +84,6 @@ const jsonLd = {
       is:inline
       set:html={`document.documentElement.classList.remove('no-js');`}
     />
-    {
-      lang === 'en' && !noindex && (
-        <script
-          is:inline
-          set:html={`(function(){try{
-  if (localStorage.getItem('lang')) return;
-  var langs = navigator.languages || [navigator.language || ''];
-  if (String(langs[0] || '').toLowerCase().indexOf('pt') === 0) location.replace(${JSON.stringify(path(route, 'pt'))} + location.hash);
-}catch(e){}})();`}
-        />
-      )
-    }
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body data-route={route}>
@@ -122,15 +110,6 @@ const jsonLd = {
         { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
       );
       document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
-
-      // Remember an explicit language choice so auto-detection never overrides it.
-      document.querySelectorAll<HTMLElement>('[data-lang-choice]').forEach((a) =>
-        a.addEventListener('click', () => {
-          try {
-            localStorage.setItem('lang', a.dataset.langChoice!);
-          } catch {}
-        }),
-      );
     </script>
 
     <style is:global>

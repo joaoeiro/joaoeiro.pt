@@ -43,11 +43,10 @@ const links: { href: string; label: string; current?: boolean }[] = [
         href={path(route, other)}
         hreflang={other}
         lang={other}
-        data-lang-choice={other}
         title={t('lang.switch')}
       >
-        <span class:list={{ on: lang === 'en' }}>EN</span><span class="sep">/</span><span
-          class:list={{ on: lang === 'pt' }}>PT</span
+        <span class:list={{ on: lang === 'pt' }}>PT</span><span class="sep">/</span><span
+          class:list={{ on: lang === 'en' }}>EN</span
         >
       </a>
       <button class="burger" aria-expanded="false" aria-controls="drawer" data-burger>
@@ -69,7 +68,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
           ))
         }
       </nav>
-      <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
+      <a class="drawer__lang" href={path(route, other)} hreflang={other}>{t('lang.switch')}</a>
     </div>
   </div>
 </header>
