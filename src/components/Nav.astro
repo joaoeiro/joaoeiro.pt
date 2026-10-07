@@ -152,6 +152,31 @@ const links: { href: string; label: string; current?: boolean }[] = [
     apply(e.matches ? 'light' : 'dark');
   });
   addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+
+  // On the home page, the note sits over the menu link of the section on screen: the one that
+  // crosses a line a little above the middle of the screen. None at the very top (the hero) or
+  // at the very end (the footer).
+  const spots = [...nav.querySelectorAll<HTMLAnchorElement>('.links a[href*="#"]')]
+    .map((a) => ({ a, el: document.getElementById(decodeURIComponent(new URL(a.href).hash.slice(1))) }))
+    .filter((s): s is { a: HTMLAnchorElement; el: HTMLElement } => !!s.el && new URL(s.a.href).pathname === location.pathname);
+  if (spots.length) {
+    let queued = false;
+    const mark = () => {
+      queued = false;
+      const line = innerHeight * 0.45;
+      const atEnd = scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+      const here = atEnd ? undefined : spots.find(({ el }) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= line && r.bottom > line;
+      });
+      spots.forEach(({ a }) => (a === here?.a ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current')));
+    };
+    const queue = () => !queued && (queued = true) && requestAnimationFrame(mark);
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    new ResizeObserver(queue).observe(document.body);
+    mark();
+  }
 </script>
 
 <style>
@@ -252,11 +277,11 @@ const links: { href: string; label: string; current?: boolean }[] = [
     transition: 0.4s var(--ease);
   }
   .links a:hover,
-  .links a[aria-current='page'] {
+  .links a[aria-current] {
     color: var(--ivory);
   }
   .links a:hover::after,
-  .links a[aria-current='page']::after {
+  .links a[aria-current]::after {
     opacity: 1;
     transform: translate(-50%, 0);
   }
