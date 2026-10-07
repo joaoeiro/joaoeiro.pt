@@ -28,7 +28,7 @@ The menu and any link to an anchor open that section (`src/components/Tab.astro`
 (`/piano-lessons/`, `/pt/concertos/`…) redirect to their section, or to the home page for pages that are gone.
 Each section's picture is set at the top of its file in `src/components/tabs/`.
 
-**Contact** — the contact form ("O que procuras?": lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
+**Contact** — the contact form ("Em que te posso ajudar?": lessons, events or other). `?s=lessons` / `?s=events` preselects the subject.
 
 ## Editing content — no code needed
 
