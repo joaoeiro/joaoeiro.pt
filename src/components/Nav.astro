@@ -42,6 +42,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
         class="lang"
         href={path(route, other)}
         hreflang={other}
+        data-lang-choice={other}
         lang={other}
         title={t('lang.switch')}
       >
@@ -68,7 +69,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
           ))
         }
       </nav>
-      <a class="drawer__lang" href={path(route, other)} hreflang={other}>{t('lang.switch')}</a>
+      <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
     </div>
   </div>
 </header>

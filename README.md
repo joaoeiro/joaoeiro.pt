@@ -2,7 +2,8 @@
 
 Website of **João Eiró** — pianist, piano teacher, accompanist, soloist and compulsive improviser.
 Built with [Astro](https://astro.build), fully static, in **Portuguese** (`/`, the default) and **English** (`/en/`).
-Everyone lands on Portuguese; the PT/EN switch in the menu goes to the English version.
+Visitors whose browser's first language isn't Portuguese are sent to the English version automatically
+(unless they pick a language with the PT/EN switch, which is remembered).
 The old English-first addresses (`/contact/`, `/pt/…`) redirect to their new place.
 
 One light theme: sand `#D7CFC4` and maroon `#800000`.
