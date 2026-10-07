@@ -5,6 +5,7 @@
  * themselves, so the email João receives reads as plain question → answer.
  */
 import Icon from './Icon.astro';
+import Req from './Req.astro';
 import { site } from '../config/site';
 import { useT, type Lang } from '../i18n';
 
@@ -33,9 +34,9 @@ const c = {
     whereRequired: 'Please choose at least one option.',
     area: 'Area or town',
     areaPh: 'e.g. Benfica, Amadora, Telheiras…',
-    pianoHome: 'Is there a piano at home? (optional)',
+    pianoHome: 'Is there a piano at home?',
     pianoHomeOpts: ['Yes, an acoustic piano', 'Yes, a keyboard or digital piano', 'Not yet'],
-    goal: 'Goal (optional)',
+    goal: 'Goal',
     goalOpts: ['For fun', 'Exams or conservatoire', 'Playing the songs I love', 'Accompanying myself singing', 'Other'],
     schedule: 'Preferred days and times',
     schedulePh: 'e.g. weekday evenings after 6pm, Saturday mornings…',
@@ -43,6 +44,11 @@ const c = {
     eventType: 'Type of event',
     eventTypes: ['Wedding', 'Corporate event', 'Private event', 'Other'],
     eventDate: 'Event date',
+    dateKinds: { single: 'One day', range: 'A range of dates', open: 'Not decided yet' },
+    day: 'Day',
+    from: 'From',
+    to: 'To',
+    dateRange: (a: string, b: string) => `${a} to ${b}`,
     music: 'Type of music you’re looking for',
     musicPh: 'e.g. jazz, classical, pop on piano…',
     duration: 'Approximate duration',
@@ -51,18 +57,22 @@ const c = {
     venuePh: 'e.g. a quinta in Sintra, a hotel in Lisbon…',
     venuePiano: 'Does the venue have a piano?',
     venuePianoOpts: ['Yes', 'No', 'I don’t know'],
-    songs: 'Special songs (optional)',
+    songs: 'Special songs',
     songsPh: 'e.g. the bride’s entrance, the first dance…',
     guests: 'Number of guests',
     sound: 'Sound system',
     soundOpts: ['I have my own', 'I need you to bring one'],
+    details: 'Any other relevant details?',
     message: 'Your message',
     you: 'About you',
     name: 'Name',
     prefer: 'Preferred way to reach you',
-    preferOpts: { whatsapp: 'WhatsApp', phone: 'Phone call', email: 'Email' },
+    preferOpts: { whatsapp: 'WhatsApp', phone: 'Phone call', email: 'Email', other: 'Other' },
+    preferOther: 'Which one?',
+    preferOtherPh: 'e.g. Signal, Telegram, a text message…',
     contact: 'Your contact',
-    contactPh: { none: 'Phone number or email', whatsapp: 'WhatsApp number', phone: 'Phone number', email: 'Email address' },
+    contactPh: { none: 'Phone number or email', whatsapp: 'WhatsApp number', phone: 'Phone number', email: 'Email address', other: 'Your contact there' },
+    required: 'Indicates a required question',
   },
   pt: {
     mailSubject: 'Contacto pelo site',
@@ -82,9 +92,9 @@ const c = {
     whereRequired: 'Escolhe pelo menos uma opção.',
     area: 'Zona ou localidade',
     areaPh: 'Ex.: Benfica, Amadora, Telheiras…',
-    pianoHome: 'Tens piano em casa? (opcional)',
+    pianoHome: 'Tens piano em casa?',
     pianoHomeOpts: ['Sim, piano acústico', 'Sim, teclado ou piano digital', 'Ainda não'],
-    goal: 'Objetivo (opcional)',
+    goal: 'Objetivo',
     goalOpts: ['Lazer', 'Exames ou conservatório', 'Tocar as músicas de que gosto', 'Acompanhar-me a cantar', 'Outro'],
     schedule: 'Preferências de horário e dias da semana',
     schedulePh: 'Ex.: dias úteis depois das 18h, sábados de manhã…',
@@ -92,6 +102,11 @@ const c = {
     eventType: 'Tipo de evento',
     eventTypes: ['Casamento', 'Evento corporativo', 'Evento privado', 'Outro'],
     eventDate: 'Data do evento',
+    dateKinds: { single: 'Um dia', range: 'Intervalo de datas', open: 'Ainda não está definida' },
+    day: 'Dia',
+    from: 'De',
+    to: 'Até',
+    dateRange: (a: string, b: string) => `de ${a} a ${b}`,
     music: 'Tipo de música que procuras',
     musicPh: 'Ex.: jazz, clássico, pop ao piano…',
     duration: 'Duração aproximada do evento',
@@ -100,22 +115,27 @@ const c = {
     venuePh: 'Ex.: quinta em Sintra, hotel em Lisboa…',
     venuePiano: 'O espaço tem piano?',
     venuePianoOpts: ['Sim', 'Não', 'Não sei'],
-    songs: 'Músicas especiais (opcional)',
+    songs: 'Músicas especiais',
     songsPh: 'Ex.: entrada da noiva, primeira dança…',
     guests: 'Número de pessoas',
     sound: 'Sistema de som',
     soundOpts: ['Tenho o meu', 'Preciso que leve'],
+    details: 'Mais algum detalhe relevante?',
     message: 'A tua mensagem',
     you: 'Sobre ti',
     name: 'Nome',
     prefer: 'Como preferes que te contacte?',
-    preferOpts: { whatsapp: 'WhatsApp', phone: 'Chamada', email: 'Email' },
+    preferOpts: { whatsapp: 'WhatsApp', phone: 'Chamada', email: 'Email', other: 'Outro' },
+    preferOther: 'Qual?',
+    preferOtherPh: 'Ex.: Signal, Telegram, SMS…',
     contact: 'O teu contacto',
-    contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', phone: 'Número de telefone', email: 'Endereço de email' },
+    contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', phone: 'Número de telefone', email: 'Endereço de email', other: 'O teu contacto nesse meio' },
+    required: 'Indica uma pergunta obrigatória',
   },
 }[lang];
 
 const subjectKeys = ['lessons', 'events', 'other'] as const;
+const dateKinds = ['single', 'range', 'open'] as const;
 ---
 
 <form
@@ -130,13 +150,16 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
   data-error={t('form.error')}
   data-ph={JSON.stringify(c.contactPh)}
   data-where-required={c.whereRequired}
+  data-date-question={c.eventDate}
+  data-date-kinds={JSON.stringify(c.dateKinds)}
+  data-date-range={c.dateRange('{a}', '{b}')}
   method="post"
   action={site.formEndpoint || `mailto:${site.email}`}
 >
   <input type="hidden" name="_subject" value={c.mailSubject} />
 
   <fieldset class="group">
-    <legend>{c.subject}</legend>
+    <legend>{c.subject}<Req /></legend>
     <div class="pills">
       {
         subjectKeys.map((k) => (
@@ -152,7 +175,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
 
   <fieldset class="topic" data-for="lessons" disabled hidden>
     <fieldset class="group">
-      <legend>{c.lessonType}</legend>
+      <legend>{c.lessonType}<Req /></legend>
       <div class="pills">
         {
           c.lessonTypes.map((o) => (
@@ -166,13 +189,13 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     </fieldset>
     <div class="row">
       <label>
-        <span>{c.age}</span>
-        <input name={c.age} inputmode="numeric" placeholder={c.agePh} data-age />
+        <span>{c.age}<Req /></span>
+        <input name={c.age} inputmode="numeric" placeholder={c.agePh} data-age required />
       </label>
       <fieldset class="sub" data-when="minor" disabled hidden>
         <label>
           <span>{c.guardian}</span>
-          <input name={c.guardian} autocomplete="off" required />
+          <input name={c.guardian} autocomplete="off" />
         </label>
       </fieldset>
     </div>
@@ -207,7 +230,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
       </div>
     </fieldset>
     <fieldset class="group" data-where>
-      <legend>{c.where}</legend>
+      <legend>{c.where}<Req /></legend>
       <div class="checks">
         {
           c.whereOpts.map((o, i) => (
@@ -223,7 +246,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     <fieldset class="sub" data-when="home" disabled hidden>
       <label>
         <span>{c.area}</span>
-        <input name={c.area} placeholder={c.areaPh} required />
+        <input name={c.area} placeholder={c.areaPh} />
       </label>
     </fieldset>
     <label>
@@ -239,23 +262,48 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
   <fieldset class="topic" data-for="events" disabled hidden>
     <div class="row">
       <label>
-        <span>{c.eventType}</span>
+        <span>{c.eventType}<Req /></span>
         <select name={c.eventType} required>
           <option value="" disabled selected>—</option>
           {c.eventTypes.map((o) => <option>{o}</option>)}
         </select>
       </label>
-      <label>
-        <span>{c.eventDate}</span>
-        <input name={c.eventDate} type="date" />
-      </label>
     </div>
+    <fieldset class="group" data-date>
+      <legend>{c.eventDate}<Req /></legend>
+      <div class="pills">
+        {
+          dateKinds.map((k) => (
+            <label class="pill">
+              <input type="radio" name="_dateKind" value={k} required />
+              <span>{c.dateKinds[k]}</span>
+            </label>
+          ))
+        }
+      </div>
+      <fieldset class="sub dates" data-when="date-single" disabled hidden>
+        <label>
+          <span>{c.day}<Req /></span>
+          <input name="_dateDay" type="date" required />
+        </label>
+      </fieldset>
+      <fieldset class="sub dates row" data-when="date-range" disabled hidden>
+        <label>
+          <span>{c.from}<Req /></span>
+          <input name="_dateFrom" type="date" required data-date-from />
+        </label>
+        <label>
+          <span>{c.to}<Req /></span>
+          <input name="_dateTo" type="date" required data-date-to />
+        </label>
+      </fieldset>
+    </fieldset>
     <label>
-      <span>{c.venue}</span>
+      <span>{c.venue}<Req /></span>
       <input name={c.venue} placeholder={c.venuePh} required />
     </label>
     <fieldset class="group">
-      <legend>{c.venuePiano}</legend>
+      <legend>{c.venuePiano}<Req /></legend>
       <div class="pills">
         {
           c.venuePianoOpts.map((o) => (
@@ -268,26 +316,26 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
       </div>
     </fieldset>
     <label>
-      <span>{c.music}</span>
-      <input name={c.music} placeholder={c.musicPh} />
+      <span>{c.music}<Req /></span>
+      <input name={c.music} placeholder={c.musicPh} required />
     </label>
     <div class="row">
       <label>
-        <span>{c.duration}</span>
-        <input name={c.duration} placeholder={c.durationPh} />
+        <span>{c.duration}<Req /></span>
+        <input name={c.duration} placeholder={c.durationPh} required />
       </label>
       <label>
-        <span>{c.guests}</span>
-        <input name={c.guests} type="number" min="1" inputmode="numeric" />
+        <span>{c.guests}<Req /></span>
+        <input name={c.guests} type="number" min="1" inputmode="numeric" required />
       </label>
     </div>
     <fieldset class="group">
-      <legend>{c.sound}</legend>
+      <legend>{c.sound}<Req /></legend>
       <div class="pills">
         {
           c.soundOpts.map((o) => (
             <label class="pill">
-              <input type="radio" name={c.sound} value={o} />
+              <input type="radio" name={c.sound} value={o} required />
               <span>{o}</span>
             </label>
           ))
@@ -298,11 +346,15 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
       <span>{c.songs}</span>
       <textarea name={c.songs} rows="3" placeholder={c.songsPh}></textarea>
     </label>
+    <label>
+      <span>{c.details}</span>
+      <textarea name={c.details} rows="3"></textarea>
+    </label>
   </fieldset>
 
   <fieldset class="topic" data-for="other" disabled hidden>
     <label>
-      <span>{c.message}</span>
+      <span>{c.message}<Req /></span>
       <textarea name={c.message} rows="6" required></textarea>
     </label>
   </fieldset>
@@ -310,14 +362,14 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
   <fieldset class="topic you" data-for="any" disabled hidden>
     <p class="you__title">{c.you}</p>
     <label>
-      <span>{c.name}</span>
+      <span>{c.name}<Req /></span>
       <input name={c.name} autocomplete="name" required />
     </label>
     <fieldset class="group">
-      <legend>{c.prefer}</legend>
+      <legend>{c.prefer}<Req /></legend>
       <div class="pills">
         {
-          (['whatsapp', 'phone', 'email'] as const).map((k) => (
+          (['whatsapp', 'phone', 'email', 'other'] as const).map((k) => (
             <label class="pill">
               <input type="radio" name={c.prefer} value={c.preferOpts[k]} data-via={k} required />
               <span>{c.preferOpts[k]}</span>
@@ -326,13 +378,20 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
         }
       </div>
     </fieldset>
+    <fieldset class="sub" data-when="via-other" disabled hidden>
+      <label>
+        <span>{c.preferOther}<Req /></span>
+        <input name={c.preferOther} placeholder={c.preferOtherPh} required />
+      </label>
+    </fieldset>
     <label>
-      <span>{c.contact}</span>
+      <span>{c.contact}<Req /></span>
       <input name={c.contact} data-contact placeholder={c.contactPh.none} required />
     </label>
   </fieldset>
 
   <div class="actions" data-actions hidden>
+    <p class="req-note"><span aria-hidden="true">*</span> {c.required}</p>
     <button class="btn btn--gold" type="submit">
       <span data-label>{t('form.send')}</span>
       <Icon name="arrow" size={18} />
@@ -368,7 +427,8 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
     const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
-    const { endpoint, email, subject, sending, sent, mailto, error, whereRequired } = form.dataset;
+    const { endpoint, email, subject, sending, sent, mailto, error, whereRequired, dateQuestion, dateRange } = form.dataset;
+    const dateKinds = JSON.parse(form.dataset.dateKinds!) as Record<string, string>;
     const ph = JSON.parse(form.dataset.ph!) as Record<string, string>;
 
     // Show only the questions for the chosen subject; hidden ones are disabled so they are neither required nor sent.
@@ -395,21 +455,27 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     form.querySelectorAll<HTMLInputElement>('[data-via]').forEach((r) => {
       r.addEventListener('change', () => {
         const via = r.dataset.via!;
-        contact.type = via === 'email' ? 'email' : 'tel';
-        contact.autocomplete = via === 'email' ? 'email' : 'tel';
+        contact.type = via === 'email' ? 'email' : via === 'other' ? 'text' : 'tel';
+        contact.autocomplete = via === 'email' ? 'email' : via === 'other' ? 'off' : 'tel';
         contact.placeholder = ph[via];
+        sync();
       });
     });
 
-    // Follow-up questions: the area when lessons are at the student's home, a guardian when the student is a minor.
+    // Follow-up questions: the area when lessons are at the student's home, a guardian when the student is a minor,
+    // the event's day or range of days, and which channel when the visitor prefers "other".
     const age = form.querySelector<HTMLInputElement>('[data-age]')!;
     const atHome = form.querySelector<HTMLInputElement>('[data-at-home]')!;
+    const checked = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value;
     const conditions: Record<string, () => boolean> = {
       home: () => atHome.checked,
       minor: () => {
         const n = parseInt(age.value, 10);
         return n > 0 && n < 18;
       },
+      'date-single': () => checked('_dateKind') === 'single',
+      'date-range': () => checked('_dateKind') === 'range',
+      'via-other': () => form.querySelector<HTMLInputElement>('[data-via="other"]')!.checked,
     };
     const sync = () =>
       form.querySelectorAll<HTMLFieldSetElement>('[data-when]').forEach((f) => {
@@ -419,6 +485,30 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
       });
     age.addEventListener('input', sync);
     atHome.addEventListener('change', sync);
+    form.querySelectorAll('input[name="_dateKind"]').forEach((r) => r.addEventListener('change', sync));
+
+    // A range can't end before it starts.
+    const from = form.querySelector<HTMLInputElement>('[data-date-from]')!;
+    const to = form.querySelector<HTMLInputElement>('[data-date-to]')!;
+    from.addEventListener('change', () => (to.min = from.value));
+
+    // The event date reaches the email as one answer: a day, "from … to …", or "not decided yet".
+    const day = (v: FormDataEntryValue | null) => String(v ?? '').split('-').reverse().join('/');
+    const tidy = (raw: FormData) => {
+      const out = new FormData();
+      for (const [k, v] of raw.entries()) {
+        if (k === '_dateKind') {
+          const when =
+            v === 'single'
+              ? day(raw.get('_dateDay'))
+              : v === 'range'
+                ? dateRange!.replace('{a}', day(raw.get('_dateFrom'))).replace('{b}', day(raw.get('_dateTo')))
+                : dateKinds.open;
+          out.append(dateQuestion!, when);
+        } else if (!k.startsWith('_date')) out.append(k, v);
+      }
+      return out;
+    };
 
     // "Where" accepts one or both boxes, but at least one.
     const boxes = [...where.querySelectorAll<HTMLInputElement>('input[type=checkbox]')];
@@ -428,7 +518,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const data = new FormData(form);
+      const data = tidy(new FormData(form));
       const topic = form.querySelector<HTMLInputElement>('[data-topic]:checked')?.value ?? '';
       const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
       const title = [subject, topic, name].filter(Boolean).join(' — ');
@@ -456,6 +546,7 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
         const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
+        sync();
         form.classList.add('is-sent');
         status.textContent = sent!;
       } catch {
@@ -662,6 +753,24 @@ const subjectKeys = ['lessons', 'events', 'other'] as const;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+  }
+  .req-note {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .req-note span {
+    color: var(--gold);
+  }
+  .dates {
+    margin-top: 1rem;
+  }
+  /* Once the visitor has tried to send, missing answers are outlined. */
+  input:user-invalid:not([type='radio']):not([type='checkbox']),
+  select:user-invalid,
+  textarea:user-invalid {
+    border-color: #c0392b;
   }
   .status {
     margin: 0;
