@@ -41,6 +41,11 @@ const copy = {
 </Layout>
 
 <style>
+  /* Less room under the top bar than other inner pages. On phones (3rem) the title starts
+     exactly as high as "Do clássico ao jazz" on the home page. */
+  :global(.page-hero) {
+    padding-top: calc(var(--nav-h) + clamp(3rem, 2rem + 3vw, 4.5rem));
+  }
   .top {
     padding-top: 0;
   }
