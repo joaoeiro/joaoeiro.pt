@@ -111,6 +111,11 @@ const copy = {
 </Tab>
 
 <style>
+  /* The last section, right above the videos band: its closing link sits halfway between the
+     reviews band and the videos band (the gap under the section counts towards the space below). */
+  :global(.tab[data-section='lessons'] .tab__body) {
+    padding-bottom: calc(var(--body-gap) - var(--tab-gap));
+  }
   .body {
     display: grid;
     gap: 1.2rem;

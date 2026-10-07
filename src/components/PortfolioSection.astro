@@ -104,8 +104,14 @@ const copy = {
 
 <style>
   .portfolio {
+    position: relative;
     display: grid;
     gap: clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  /* The old-link anchors sit at the top without taking up a row (and the gap after it). */
+  .portfolio > span {
+    position: absolute;
+    top: 0;
   }
   .tab-block > .eyebrow {
     margin-bottom: 1.4rem;
