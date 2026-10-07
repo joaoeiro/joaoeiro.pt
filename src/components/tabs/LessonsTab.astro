@@ -24,7 +24,6 @@ const copy = {
     ],
     expect: {
       title: 'What to expect from the lessons',
-      note: 'One or more of these — you choose!',
       items: [
         'Lessons tailored to you',
         'Learning to play songs quickly and effectively',
@@ -35,7 +34,6 @@ const copy = {
     },
     notExpect: {
       title: 'What <em>not</em> to expect',
-      note: 'None of these will happen!',
       items: [
         'Generic, one-size-fits-all teaching',
         'A passive process where you just do what I say',
@@ -59,7 +57,6 @@ const copy = {
     ],
     expect: {
       title: 'O que esperar das aulas?',
-      note: 'Uma ou mais destas hipóteses, tu escolhes!',
       items: [
         'Aulas adaptadas a ti',
         'Aprender a tocar músicas de forma rápida e eficaz',
@@ -70,7 +67,6 @@ const copy = {
     },
     notExpect: {
       title: 'O que <em>não</em> esperar das aulas?',
-      note: 'Nenhuma destas hipóteses vai acontecer!',
       items: [
         'Fórmulas de ensino genéricas',
         'Um processo passivo em que só tens de fazer o que eu digo',
@@ -96,7 +92,6 @@ const copy = {
       ].map((col) => (
         <section class:list={['expect__col', `expect__col--${col.kind}`]}>
           <h3 set:html={col.title} />
-          <p class="expect__note">{col.note}</p>
           <ul>
             {col.items.map((item) => (
               <li>
@@ -142,18 +137,12 @@ const copy = {
     border-color: rgb(var(--accent-rgb) / 0.35);
   }
   h3 {
-    margin: 0;
+    margin: 0 0 1.1rem;
     font-size: clamp(1.3rem, 1.1rem + 0.6vw, 1.6rem);
     color: var(--ivory);
   }
   h3 :global(em) {
     color: var(--gold);
-  }
-  .expect__note {
-    margin: 0.35rem 0 1.1rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-    font-style: italic;
   }
   ul {
     display: grid;
