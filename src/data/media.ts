@@ -1,7 +1,8 @@
 import type { L10n } from '../i18n';
 
 /**
- * Instagram videos for the Portfolio band on the home page, in the order they appear.
+ * Instagram videos for the Portfolio band on the home page, in the order they appear:
+ * newest post first, as on Instagram.
  * Each one shows its cover image; a click plays the video right there.
  *
  *   url:   the post/reel link, e.g. https://www.instagram.com/reel/ABC123/
@@ -24,19 +25,14 @@ export interface InstagramVideo {
 export const instagram: InstagramVideo[] = [
   // { url: 'https://www.instagram.com/reel/XXXXXXXXXXX/', cover: '/images/instagram/moonlight.jpg', video: '/videos/moonlight.mp4', caption: { en: 'Moonlight Sonata', pt: 'Sonata ao Luar' } },
   {
-    url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
-    cover: '/images/instagram/piano-em-casa.jpg',
-    caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
-  },
-  {
     url: 'https://www.instagram.com/p/DaYIXISqaO8/',
     cover: '/images/instagram/maos-no-piano.jpg',
     caption: { en: 'João Eiró’s hands on the piano', pt: 'As mãos do João Eiró ao piano' },
   },
   {
-    url: 'https://www.instagram.com/p/DRU_7OMCDDK/',
-    cover: '/images/instagram/piano-janela.jpg',
-    caption: { en: 'João Eiró playing the piano by the window', pt: 'João Eiró a tocar piano junto à janela' },
+    url: 'https://www.instagram.com/p/DZ-w3Rdq3BL/',
+    cover: '/images/instagram/teclado-preto-e-branco.jpg',
+    caption: { en: 'João Eiró playing the piano, seen from above in black and white', pt: 'João Eiró a tocar piano, visto de cima a preto e branco' },
   },
   {
     url: 'https://www.instagram.com/p/DZnjcS9K3fU/',
@@ -44,14 +40,19 @@ export const instagram: InstagramVideo[] = [
     caption: { en: 'João Eiró recording at the piano', pt: 'João Eiró a gravar ao piano' },
   },
   {
+    url: 'https://www.instagram.com/p/DYkkEp-KssD/',
+    cover: '/images/instagram/teclado-dado.jpg',
+    caption: { en: 'João Eiró’s hands on the keys, seen from above', pt: 'As mãos do João Eiró no teclado, vistas de cima' },
+  },
+  {
     url: 'https://www.instagram.com/p/DYVPSdtK7uG/',
     cover: '/images/instagram/piano-caveira.jpg',
     caption: { en: 'João Eiró’s hands on the Yamaha piano keys', pt: 'As mãos do João Eiró no teclado do piano Yamaha' },
   },
   {
-    url: 'https://www.instagram.com/p/Cu4tnO6I_kc/',
-    cover: '/images/instagram/piano-camisola-verde.jpg',
-    caption: { en: 'João Eiró playing the piano', pt: 'João Eiró a tocar piano' },
+    url: 'https://www.instagram.com/p/DYFvqYTqFzS/',
+    cover: '/images/instagram/piano-camisola-riscas.jpg',
+    caption: { en: 'João Eiró recording at the piano, in a striped T-shirt', pt: 'João Eiró a gravar ao piano, de t-shirt às riscas' },
   },
   {
     url: 'https://www.instagram.com/p/DXWfQWTKfF0/',
@@ -64,9 +65,9 @@ export const instagram: InstagramVideo[] = [
     caption: { en: 'João Eiró playing the piano at home', pt: 'João Eiró a tocar piano em casa' },
   },
   {
-    url: 'https://www.instagram.com/p/DBgvfw3IK80/',
-    cover: '/images/instagram/piano-rosa.jpg',
-    caption: { en: 'João Eiró playing the piano, with a red rose on the lid', pt: 'João Eiró a tocar piano, com uma rosa vermelha na tampa' },
+    url: 'https://www.instagram.com/p/DRU_7OMCDDK/',
+    cover: '/images/instagram/piano-janela.jpg',
+    caption: { en: 'João Eiró playing the piano by the window', pt: 'João Eiró a tocar piano junto à janela' },
   },
   {
     url: 'https://www.instagram.com/p/DQw61JqjEiZ/',
@@ -74,14 +75,19 @@ export const instagram: InstagramVideo[] = [
     caption: { en: 'João Eiró playing the piano under a wall clock', pt: 'João Eiró a tocar piano por baixo de um relógio de parede' },
   },
   {
-    url: 'https://www.instagram.com/p/DYkkEp-KssD/',
-    cover: '/images/instagram/teclado-dado.jpg',
-    caption: { en: 'João Eiró’s hands on the keys, seen from above', pt: 'As mãos do João Eiró no teclado, vistas de cima' },
+    url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
+    cover: '/images/instagram/piano-em-casa.jpg',
+    caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
   },
   {
-    url: 'https://www.instagram.com/p/DZ-w3Rdq3BL/',
-    cover: '/images/instagram/teclado-preto-e-branco.jpg',
-    caption: { en: 'João Eiró playing the piano, seen from above in black and white', pt: 'João Eiró a tocar piano, visto de cima a preto e branco' },
+    url: 'https://www.instagram.com/p/DBgvfw3IK80/',
+    cover: '/images/instagram/piano-rosa.jpg',
+    caption: { en: 'João Eiró playing the piano, with a red rose on the lid', pt: 'João Eiró a tocar piano, com uma rosa vermelha na tampa' },
+  },
+  {
+    url: 'https://www.instagram.com/p/Cu4tnO6I_kc/',
+    cover: '/images/instagram/piano-camisola-verde.jpg',
+    caption: { en: 'João Eiró playing the piano', pt: 'João Eiró a tocar piano' },
   },
   {
     url: 'https://www.instagram.com/p/CtKRgY8JSc3/',
