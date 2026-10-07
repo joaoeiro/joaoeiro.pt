@@ -5,8 +5,10 @@
  * themselves, so the email João receives reads as plain question → answer.
  */
 import Icon from './Icon.astro';
+import Protected from './Protected.astro';
 import Req from './Req.astro';
 import { site } from '../config/site';
+import { encode } from '../lib/obfuscate';
 import { useT, type Lang } from '../i18n';
 
 interface Props {
@@ -140,7 +142,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
   class="form"
   data-form
   data-endpoint={site.formEndpoint}
-  data-email={site.email}
+  data-email={encode(site.email)}
   data-subject={c.mailSubject}
   data-sending={t('form.sending')}
   data-sent={t('form.sent')}
@@ -152,7 +154,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
   data-date-kinds={JSON.stringify(c.dateKinds)}
   data-date-range={c.dateRange('{a}', '{b}')}
   method="post"
-  action={site.formEndpoint || `mailto:${site.email}`}
+  action={site.formEndpoint || undefined}
 >
   <input type="hidden" name="_subject" value={c.mailSubject} />
 
@@ -397,12 +399,12 @@ const dateKinds = ['single', 'range', 'open'] as const;
   </div>
 
   <p class="direct">
-    <a href={`mailto:${site.email}?subject=${encodeURIComponent(c.mailSubject)}`}><Icon name="mail" size={16} /> {site.email}</a>
+    <Protected kind="email" value={site.email} subject={c.mailSubject}><Icon slot="icon" name="mail" size={16} /> Email</Protected>
     {
       site.phone && (
-        <a href={`tel:${site.phone.replace(/\s/g, '')}`}>
-          <Icon name="phone" size={16} /> {site.phone}
-        </a>
+        <Protected kind="phone" value={site.phone}>
+          <Icon slot="icon" name="phone" size={16} /> {t('form.phone').replace(/\s*\(.*\)/, '')}
+        </Protected>
       )
     }
     {
@@ -416,6 +418,8 @@ const dateKinds = ['single', 'range', 'open'] as const;
 </form>
 
 <script>
+  import { decode } from '../lib/obfuscate';
+
   document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const label = form.querySelector<HTMLElement>('[data-label]')!;
@@ -423,7 +427,8 @@ const dateKinds = ['single', 'range', 'open'] as const;
     const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
     const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
-    const { endpoint, email, subject, sending, sent, mailto, error, whereRequired, dateQuestion, dateRange } = form.dataset;
+    const { endpoint, subject, sending, sent, mailto, error, whereRequired, dateQuestion, dateRange } = form.dataset;
+    const email = decode(form.dataset.email!);
     const dateKinds = JSON.parse(form.dataset.dateKinds!) as Record<string, string>;
     const ph = JSON.parse(form.dataset.ph!) as Record<string, string>;
 
