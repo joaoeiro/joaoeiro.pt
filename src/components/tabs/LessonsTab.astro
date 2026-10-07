@@ -162,14 +162,8 @@ const copy = {
   li :global(.expect__icon) {
     margin-top: 0.15em;
   }
-  /* Ticks and crosses: the site's light blue in the dark theme, maroon in the light one. */
-  .expect {
-    --mark: #a3b8dc;
-  }
-  :global(:root[data-theme='light']) .expect {
-    --mark: #800000;
-  }
+  /* Ticks and crosses in the site's maroon. */
   li :global(.expect__icon) {
-    color: var(--mark);
+    color: #800000;
   }
 </style>

@@ -5,9 +5,8 @@ Built with [Astro](https://astro.build), fully static, in **English** (`/`) and 
 Visitors whose browser language is Portuguese are sent to the Portuguese version automatically
 (unless they pick a language with the EN/PT switch, which is remembered).
 
-Two themes: **dark** (noir, gold, ivory) and **light** (sand `#D7CFC4`, maroon `#800000`).
-The site follows the visitor's system setting; the sun/moon button switches and remembers the choice.
-All colours are tokens at the top of `src/styles/global.css` — `:root` for dark, `:root[data-theme='light']` for light.
+One light theme: sand `#D7CFC4` and maroon `#800000`.
+All colours are tokens in `:root` at the top of `src/styles/global.css`.
 
 ## Pages
 

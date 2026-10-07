@@ -62,7 +62,7 @@ const jsonLd = {
     }
     <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
     <link rel="sitemap" href={asset('/sitemap-index.xml')} />
-    <meta name="theme-color" content="#07060a" />
+    <meta name="theme-color" content="#d7cfc4" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -82,11 +82,7 @@ const jsonLd = {
 
     <script
       is:inline
-      set:html={`(function(){var d=document.documentElement;d.classList.remove('no-js');var t;
-try{t=localStorage.getItem('theme')}catch(e){}
-if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
-d.dataset.theme=t;
-var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#d7cfc4':'#07060a';})();`}
+      set:html={`document.documentElement.classList.remove('no-js');`}
     />
     {
       lang === 'en' && !noindex && (

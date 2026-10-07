@@ -38,25 +38,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
     </nav>
 
     <div class="actions">
-      <button
-        class="theme"
-        type="button"
-        data-theme-toggle
-        data-label-light={t('theme.light')}
-        data-label-dark={t('theme.dark')}
-        aria-label={t('theme.light')}
-      >
-        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4.2" fill="currentColor" />
-          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" />
-          </g>
-        </svg>
-        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M20.2 14.6A8.5 8.5 0 0 1 9.4 3.8a8.5 8.5 0 1 0 10.8 10.8Z" />
-          <text x="15.5" y="9.5" font-size="7" fill="currentColor">♪</text>
-        </svg>
-      </button>
       <a
         class="lang"
         href={path(route, other)}
@@ -115,46 +96,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
   // A tap on the dimmed page below the band closes it too.
   drawer.addEventListener('click', (e) => e.target === drawer && setOpen(false));
 
-  // Light / dark theme: follows the system until the visitor picks one.
-  const root = document.documentElement;
-  const toggle = nav.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
-  const meta = document.querySelector<HTMLMetaElement>('meta[name=theme-color]');
-  const apply = (theme: string) => {
-    root.dataset.theme = theme;
-    if (meta) meta.content = theme === 'light' ? '#d7cfc4' : '#07060a';
-    toggle.setAttribute('aria-label', toggle.dataset[theme === 'light' ? 'labelDark' : 'labelLight']!);
-  };
-  apply(root.dataset.theme ?? 'dark');
-
-  toggle.addEventListener('click', () => {
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-    try {
-      localStorage.setItem('theme', next);
-    } catch {}
-    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!document.startViewTransition || calm) return apply(next);
-
-    const r = toggle.getBoundingClientRect();
-    const x = r.left + r.width / 2;
-    const y = r.top + r.height / 2;
-    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-    root.classList.add('theme-switching');
-    const vt = document.startViewTransition(() => apply(next));
-    vt.ready.then(() =>
-      root.animate(
-        { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 700, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
-      ),
-    );
-    vt.finished.finally(() => root.classList.remove('theme-switching'));
-  });
-
-  matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-    try {
-      if (localStorage.getItem('theme')) return;
-    } catch {}
-    apply(e.matches ? 'light' : 'dark');
-  });
   addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
 
   // On the home page, the note sits over the menu link of the section on screen: the one that
@@ -316,48 +257,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
     margin-inline: 0.3rem;
     opacity: 0.4;
   }
-  .theme {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    background: transparent;
-    color: var(--gold);
-    cursor: pointer;
-    overflow: hidden;
-    transition: border-color 0.3s;
-  }
-  .theme:hover {
-    border-color: var(--gold);
-  }
-  .theme svg {
-    position: absolute;
-    width: 19px;
-    height: 19px;
-    transition:
-      transform 0.6s var(--ease),
-      opacity 0.4s;
-  }
-  /* Show the icon of the theme you would switch to. */
-  .theme .sun {
-    transform: translateY(0) rotate(0);
-  }
-  .theme .moon {
-    opacity: 0;
-    transform: translateY(120%) rotate(-60deg);
-  }
-  :global([data-theme='light']) .theme .sun {
-    opacity: 0;
-    transform: translateY(-120%) rotate(90deg);
-  }
-  :global([data-theme='light']) .theme .moon {
-    opacity: 1;
-    transform: none;
-  }
   .burger {
     display: none;
     width: 44px;
@@ -403,11 +302,8 @@ const links: { href: string; label: string; current?: boolean }[] = [
     background: rgb(0 0 0 / 0);
     transition: background 0.5s;
   }
+  /* The sand page needs a deep shade to read as dimmed. */
   .is-open .drawer {
-    background: rgb(0 0 0 / 0.45);
-  }
-  /* The sand page needs a deeper shade to read as dimmed. */
-  :global([data-theme='light']) .is-open .drawer {
     background: rgb(40 10 10 / 0.6);
   }
   .drawer__panel {
