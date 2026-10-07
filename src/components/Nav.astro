@@ -11,10 +11,10 @@ const t = useT(lang);
 const other: Lang = lang === 'en' ? 'pt' : 'en';
 // Everything but the contact page is a section of the home page.
 const links: { href: string; label: string; current?: boolean }[] = [
+  { href: sectionHref('bio', lang), label: t('nav.bio') },
   { href: sectionHref('current', lang), label: t('nav.current') },
   { href: sectionHref('archive', lang), label: t('nav.archive') },
   { href: sectionHref('lessons', lang), label: t('nav.lessons') },
-  { href: sectionHref('bio', lang), label: t('nav.bio') },
   { href: sectionHref('portfolio', lang), label: t('nav.portfolio') },
   { href: path('contact', lang), label: t('nav.contact'), current: route === 'contact' },
 ];
