@@ -78,4 +78,9 @@ export const instagram: InstagramVideo[] = [
     cover: '/images/instagram/teclado-dado.jpg',
     caption: { en: 'João Eiró’s hands on the keys, seen from above', pt: 'As mãos do João Eiró no teclado, vistas de cima' },
   },
+  {
+    url: 'https://www.instagram.com/p/DZ-w3Rdq3BL/',
+    cover: '/images/instagram/teclado-preto-e-branco.jpg',
+    caption: { en: 'João Eiró playing the piano, seen from above in black and white', pt: 'João Eiró a tocar piano, visto de cima a preto e branco' },
+  },
 ];
