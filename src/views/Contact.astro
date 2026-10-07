@@ -41,6 +41,13 @@ const copy = {
 </Layout>
 
 <style>
+  /* Where the home page stacks its hero (one column), start the title exactly as high as "Do clássico ao jazz" sits there.
+     On wider screens the home hero is centred in the window, which already lands close to the usual page header. */
+  @media (max-width: 1080px) {
+    :global(.page-hero) {
+      padding-top: calc(var(--nav-h) + 3rem);
+    }
+  }
   .top {
     padding-top: 0;
   }
