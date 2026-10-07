@@ -390,7 +390,8 @@ const links: { href: string; label: string; current?: boolean }[] = [
   }
   /* Mobile menu: a band dropping from under the header, over the page, which dims below it. */
   .nav.is-open {
-    background: rgb(var(--bg-rgb) / 0.97);
+    background: var(--ink);
+    backdrop-filter: none;
     border-color: var(--line);
   }
   .drawer {
@@ -414,9 +415,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 1.25rem 1.25rem 1.75rem;
-    background:
-      radial-gradient(circle at 90% 0%, rgb(var(--wine-rgb) / 0.35), transparent 60%),
-      rgb(var(--bg-rgb));
+    background: var(--ink);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 24px 40px -20px rgb(0 0 0 / 0.6);
     clip-path: inset(0 0 100% 0);
