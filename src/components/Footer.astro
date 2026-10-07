@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Protected from './Protected.astro';
 import Signature from './Signature.astro';
 import { site } from '../config/site';
 import { path, useT, type Lang, type RouteKey } from '../i18n';
@@ -42,8 +43,14 @@ const year = new Date().getFullYear();
       }
     </div>
     <div class="contacts">
-      <a class="mail" href={`mailto:${site.email}`}><Icon name="mail" size={18} /> {site.email}</a>
-      {site.phone && <a class="mail" href={`tel:${site.phone.replace(/\s/g, '')}`}><Icon name="phone" size={18} /> {site.phone}</a>}
+      <Protected class="mail" kind="email" value={site.email}><Icon slot="icon" name="mail" size={18} /> Email</Protected>
+      {
+        site.phone && (
+          <Protected class="mail" kind="phone" value={site.phone}>
+            <Icon slot="icon" name="phone" size={18} /> {t('form.phone').replace(/\s*\(.*\)/, '')}
+          </Protected>
+        )
+      }
     </div>
   </div>
   <div class="wrap footer__base">
