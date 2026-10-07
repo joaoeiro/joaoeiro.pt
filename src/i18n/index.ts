@@ -1,11 +1,11 @@
 export const languages = { en: 'English', pt: 'Português' } as const;
 export type Lang = keyof typeof languages;
-export const defaultLang: Lang = 'en';
+export const defaultLang: Lang = 'pt';
 
-/** One entry per page. English lives at the root, Portuguese under /pt. */
+/** One entry per page. Portuguese lives at the root, English under /en. */
 export const routes = {
-  home: { en: '/', pt: '/pt/' },
-  contact: { en: '/contact/', pt: '/pt/contacto/' },
+  home: { en: '/en/', pt: '/' },
+  contact: { en: '/en/contact/', pt: '/contacto/' },
 } as const;
 export type RouteKey = keyof typeof routes;
 
@@ -64,8 +64,6 @@ export const ui = {
     'tab.down': 'Scroll down to read more',
     'lang.switch': 'Ler em Português',
     'lang.short': 'PT',
-    'theme.light': 'Switch to light theme',
-    'theme.dark': 'Switch to dark theme',
     'piano.hint': 'Click the keys, or play with your keyboard',
     'piano.sound': 'Sound',
     'piano.credit': 'Piano sound:',
@@ -108,8 +106,6 @@ export const ui = {
     'tab.down': 'Descer para ler mais',
     'lang.switch': 'Read in English',
     'lang.short': 'EN',
-    'theme.light': 'Mudar para tema claro',
-    'theme.dark': 'Mudar para tema escuro',
     'piano.hint': 'Clica nas teclas ou toca com o teclado do computador',
     'piano.sound': 'Som',
     'piano.credit': 'Som de piano:',

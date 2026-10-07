@@ -56,13 +56,13 @@ const jsonLd = {
           {alternates.map((a) => (
             <link rel="alternate" hreflang={a.lang} href={a.href} />
           ))}
-          <link rel="alternate" hreflang="x-default" href={new URL(path(route, 'en'), origin).href} />
+          <link rel="alternate" hreflang="x-default" href={new URL(path(route, 'pt'), origin).href} />
         </>
       )
     }
     <link rel="icon" href={asset('/favicon.svg')} type="image/svg+xml" />
     <link rel="sitemap" href={asset('/sitemap-index.xml')} />
-    <meta name="theme-color" content="#07060a" />
+    <meta name="theme-color" content="#d7cfc4" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -82,20 +82,17 @@ const jsonLd = {
 
     <script
       is:inline
-      set:html={`(function(){var d=document.documentElement;d.classList.remove('no-js');var t;
-try{t=localStorage.getItem('theme')}catch(e){}
-if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
-d.dataset.theme=t;
-var m=document.querySelector('meta[name=theme-color]');if(m)m.content=t==='light'?'#d7cfc4':'#07060a';})();`}
+      set:html={`document.documentElement.classList.remove('no-js');`}
     />
     {
-      lang === 'en' && !noindex && (
+      lang === 'pt' && !noindex && (
         <script
           is:inline
           set:html={`(function(){try{
   if (localStorage.getItem('lang')) return;
   var langs = navigator.languages || [navigator.language || ''];
-  if (String(langs[0] || '').toLowerCase().indexOf('pt') === 0) location.replace(${JSON.stringify(path(route, 'pt'))} + location.hash);
+  var first = String(langs[0] || '').toLowerCase();
+  if (first && first.indexOf('pt') !== 0) location.replace(${JSON.stringify(path(route, 'en'))} + location.hash);
 }catch(e){}})();`}
         />
       )

@@ -1,87 +1,24 @@
 :root {
-  /* ---------- Dark theme (stage at night: noir, gold, ivory) ---------- */
-  --ink: #07060a;
-  --ink-2: #0f0d14;
-  --ink-3: #18151f;
-  --bg-rgb: 7 6 10;
-  --fg-rgb: 244 236 220;
-  --line: rgb(var(--fg-rgb) / 0.12);
-  --ivory: #f4ecdc;
-  --ivory-dim: rgb(var(--fg-rgb) / 0.72);
-  --muted: rgb(var(--fg-rgb) / 0.52);
-
-  /* Accent: --gold for text and glyphs, --gold-2 for bright text/hover,
-     --accent-rgb / --accent-2-rgb for borders and glows. */
-  --gold: #d9b26a;
-  --gold-2: #f3d79a;
-  --gold-deep: #9c7535;
-  --accent-2: #f3d79a;
-  --accent-rgb: 217 178 106;
-  --accent-2-rgb: 243 215 154;
-  /* Fills (buttons, badges) and large display text. */
-  --gold-grad: linear-gradient(100deg, #9c7535 0%, #f3d79a 35%, #d9b26a 55%, #fff1cf 70%, #b78b45 100%);
-  --gold-text-grad: var(--gold-grad);
-  --on-accent: #07060a;
-
-  --wine: #6d1f35;
-  --violet: #3b2a6b;
-  --wine-rgb: 109 31 53;
-  --violet-rgb: 59 42 107;
-  --stage-top: #1a1426;
-
-  /* Translucent white surfaces; multiplied up in the light theme. */
-  --surface-rgb: 255 255 255;
-  --surface-k: 1;
-  --card-shadow: none;
-  --field-bg: rgb(0 0 0 / 0.35);
-  --footer-shade: rgb(0 0 0 / 0.6);
-  --picker-filter: invert(0.8) sepia(1) saturate(3) hue-rotate(5deg);
-  --grain: 0.06;
-
-  /* Piano highlights */
-  --key-lit-1: #c9a45e;
-  --key-lit-2: #f3d79a;
-  --key-lit-3: #fff1cf;
-  --key-lit-edge: #9c7535;
-  --key-lit-black: #5a4220;
-  --spark-hue: 30;
-  --spark-l: 72%;
-  --gp-1: #9c7535;
-  --gp-2: #f3d79a;
-  --gp-3: #b78b45;
-  --vinyl-a: #0c0b10;
-  --vinyl-b: #17151d;
-  --vinyl-label: #111;
-
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
-  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
-
-  --radius: 18px;
-  --wrap: min(1200px, 100% - 2.5rem);
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --nav-h: 72px;
-
-  color-scheme: dark;
-}
-
-/* ---------- Light theme (daylight salon: sand #D7CFC4, maroon #800000) ---------- */
-:root[data-theme='light'] {
+  /* ---------- Daylight salon: sand #D7CFC4, maroon #800000 ---------- */
   --ink: #d7cfc4;
   --ink-2: #cfc6ba;
   --ink-3: #c6bcaf;
   --bg-rgb: 215 207 196;
   --fg-rgb: 38 26 24;
+  --line: rgb(var(--fg-rgb) / 0.12);
   --ivory: #261a18;
   --ivory-dim: rgb(var(--fg-rgb) / 0.8);
   --muted: rgb(var(--fg-rgb) / 0.72);
 
-  /* #800000 for text, fills and glows; light text sits on maroon fills. */
+  /* Accent (#800000): --gold for text and glyphs, --gold-2 for hover,
+     --accent-rgb / --accent-2-rgb for borders and glows; light text sits on maroon fills. */
   --gold: #800000;
   --gold-2: #6e0000;
   --gold-deep: #9a1c1c;
   --accent-2: #800000;
   --accent-rgb: 128 0 0;
   --accent-2-rgb: 128 0 0;
+  /* Fills (buttons, badges) and large display text. */
   --gold-grad: linear-gradient(100deg, #6a0000 0%, #9e2424 35%, #800000 55%, #ab3434 70%, #640000 100%);
   --gold-text-grad: linear-gradient(100deg, #6a0000 0%, #962020 35%, #800000 55%, #a02a2a 70%, #600000 100%);
   --on-accent: #f6efe6;
@@ -90,8 +27,9 @@
   --violet: #e8dfd2;
   --wine-rgb: 160 80 72;
   --violet-rgb: 236 228 216;
-  --stage-top: #d7cfc4;
 
+  /* Translucent white surfaces, multiplied up to read on the sand. */
+  --surface-rgb: 255 255 255;
   --surface-k: 12;
   --card-shadow: 0 18px 40px -28px rgb(70 30 20 / 0.45);
   --field-bg: #f4efe8;
@@ -99,6 +37,7 @@
   --picker-filter: none;
   --grain: 0;
 
+  /* Piano highlights */
   --key-lit-1: #9a1c1c;
   --key-lit-2: #c46a5e;
   --key-lit-3: #ecd2c8;
@@ -113,18 +52,19 @@
   --vinyl-b: #ddd4c8;
   --vinyl-label: #b8867c;
 
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius: 18px;
+  --wrap: min(1200px, 100% - 2.5rem);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 72px;
+
   color-scheme: light;
 }
 
 @view-transition {
   navigation: auto;
-}
-
-/* Theme switch: the new theme spreads out in a circle from the toggle. */
-html.theme-switching::view-transition-old(root),
-html.theme-switching::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
 }
 
 *,

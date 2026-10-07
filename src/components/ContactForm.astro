@@ -1,6 +1,6 @@
 ---
 /**
- * The one contact form. "Assunto" picks a set of questions (lessons, events or other);
+ * The one contact form. "Em que te posso ajudar?" picks a set of questions (lessons, events or other);
  * the page can preselect it with ?s=lessons|events|other. Field names are the questions
  * themselves, so the email João receives reads as plain question → answer.
  */
@@ -18,9 +18,8 @@ const t = useT(lang);
 const c = {
   en: {
     mailSubject: 'Website enquiry',
-    subject: 'Subject',
+    subject: 'How can I help?',
     subjects: { lessons: 'Lessons', events: 'Events', other: 'Other' },
-    pick: 'Choose a subject to see the questions.',
     lessonType: 'Piano lessons, music theory or something else?',
     lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
     age: 'Student’s age',
@@ -76,9 +75,8 @@ const c = {
   },
   pt: {
     mailSubject: 'Contacto pelo site',
-    subject: 'Assunto',
+    subject: 'Em que te posso ajudar?',
     subjects: { lessons: 'Aulas', events: 'Eventos', other: 'Outro' },
-    pick: 'Escolhe o assunto para ver as perguntas.',
     lessonType: 'Aulas de piano, formação musical ou outro?',
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
     age: 'Idade do aluno',
@@ -170,7 +168,6 @@ const dateKinds = ['single', 'range', 'open'] as const;
         ))
       }
     </div>
-    <p class="hint" data-pick>{c.pick}</p>
   </fieldset>
 
   <fieldset class="topic" data-for="lessons" disabled hidden>
@@ -423,7 +420,6 @@ const dateKinds = ['single', 'range', 'open'] as const;
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const label = form.querySelector<HTMLElement>('[data-label]')!;
     const actions = form.querySelector<HTMLElement>('[data-actions]')!;
-    const pick = form.querySelector<HTMLElement>('[data-pick]')!;
     const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
     const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
@@ -439,7 +435,6 @@ const dateKinds = ['single', 'range', 'open'] as const;
         f.disabled = !on;
       });
       actions.hidden = false;
-      pick.hidden = true;
     };
     form.querySelectorAll<HTMLInputElement>('[data-topic]').forEach((r) => {
       r.addEventListener('change', () => show(r.dataset.topic!));
@@ -573,8 +568,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
   }
   .sub[hidden],
   .topic[hidden],
-  .actions[hidden],
-  .hint[hidden] {
+  .actions[hidden] {
     display: none;
   }
   .row {

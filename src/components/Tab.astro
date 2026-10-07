@@ -193,7 +193,8 @@ const { en, pt, legacy = [] } = sections[section];
     transition: height 0.9s var(--ease);
   }
   .tab {
-    margin-bottom: 6px;
+    --tab-gap: 6px;
+    margin-bottom: var(--tab-gap);
   }
   .tab--left summary {
     justify-content: flex-end;
@@ -276,7 +277,7 @@ const { en, pt, legacy = [] } = sections[section];
     text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
     transition: color 0.3s;
   }
-  /* The site's sand background colour (light theme). */
+  /* The site's sand background colour. */
   summary:hover .tab__title,
   .tab[open] .tab__title {
     color: #d7cfc4;
@@ -326,9 +327,10 @@ const { en, pt, legacy = [] } = sections[section];
     background: rgb(7 6 10 / 0.3);
   }
   .tab__body {
+    --body-gap: clamp(2.5rem, 2rem + 2vw, 4rem);
     display: grid;
-    gap: clamp(2.5rem, 2rem + 2vw, 4rem);
-    padding-block: clamp(2.5rem, 2rem + 2vw, 4rem) clamp(3rem, 2rem + 3vw, 5rem);
+    gap: var(--body-gap);
+    padding-block: var(--body-gap) clamp(3rem, 2rem + 3vw, 5rem);
   }
   .tab[open] .tab__body {
     animation: tabIn 0.6s var(--ease);
