@@ -405,6 +405,10 @@ const links: { href: string; label: string; current?: boolean }[] = [
   .is-open .drawer {
     background: rgb(0 0 0 / 0.45);
   }
+  /* The sand page needs a deeper shade to read as dimmed. */
+  :global([data-theme='light']) .is-open .drawer {
+    background: rgb(40 10 10 / 0.6);
+  }
   .drawer__panel {
     max-height: 100%;
     overflow-y: auto;
