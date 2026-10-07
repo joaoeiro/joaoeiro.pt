@@ -53,4 +53,39 @@ export const instagram: InstagramVideo[] = [
     cover: '/images/instagram/piano-camisola-verde.jpg',
     caption: { en: 'João Eiró playing the piano', pt: 'João Eiró a tocar piano' },
   },
+  {
+    url: 'https://www.instagram.com/p/DXWfQWTKfF0/',
+    cover: '/images/instagram/piano-candeeiro.jpg',
+    caption: { en: 'João Eiró’s hands on the piano, lit by a desk lamp', pt: 'As mãos do João Eiró ao piano, sob um candeeiro' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DXPOjsEqerm/',
+    cover: '/images/instagram/piano-dados.jpg',
+    caption: { en: 'João Eiró playing the piano at home', pt: 'João Eiró a tocar piano em casa' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DBgvfw3IK80/',
+    cover: '/images/instagram/piano-rosa.jpg',
+    caption: { en: 'João Eiró playing the piano, with a red rose on the lid', pt: 'João Eiró a tocar piano, com uma rosa vermelha na tampa' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DQw61JqjEiZ/',
+    cover: '/images/instagram/piano-relogio.jpg',
+    caption: { en: 'João Eiró playing the piano under a wall clock', pt: 'João Eiró a tocar piano por baixo de um relógio de parede' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DYkkEp-KssD/',
+    cover: '/images/instagram/teclado-dado.jpg',
+    caption: { en: 'João Eiró’s hands on the keys, seen from above', pt: 'As mãos do João Eiró no teclado, vistas de cima' },
+  },
+  {
+    url: 'https://www.instagram.com/p/DZ-w3Rdq3BL/',
+    cover: '/images/instagram/teclado-preto-e-branco.jpg',
+    caption: { en: 'João Eiró playing the piano, seen from above in black and white', pt: 'João Eiró a tocar piano, visto de cima a preto e branco' },
+  },
+  {
+    url: 'https://www.instagram.com/p/CtKRgY8JSc3/',
+    cover: '/images/instagram/piano-calcoes-verdes.jpg',
+    caption: { en: 'João Eiró’s hands on the Yamaha piano, seen from the side', pt: 'As mãos do João Eiró no piano Yamaha, vistas de lado' },
+  },
 ];
