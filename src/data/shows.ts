@@ -167,6 +167,13 @@ export const shows: Show[] = [
     posterBg: 'linear-gradient(#141010, #413d3c)',
   },
   {
+    date: '2024-03-15T21:00',
+    title: { en: 'Misa a Buenos Aires — Misatango', pt: 'Misa a Buenos Aires — Misatango' },
+    venue: 'Auditório Vianna da Motta, Escola Superior de Música de Lisboa',
+    city: 'Lisboa',
+    image: '/images/shows/misa-a-buenos-aires.jpg',
+  },
+  {
     date: '2024-03-01T21:30',
     title: { en: 'A2', pt: 'A2' },
     with: 'Instantâneos',
