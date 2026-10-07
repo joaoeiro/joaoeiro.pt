@@ -77,17 +77,19 @@ const links: { href: string; label: string; current?: boolean }[] = [
   </div>
 
   <div class="drawer" id="drawer" data-drawer hidden>
-    <nav aria-label="Mobile">
-      <a href={path('home', lang)} style="--i:0">{t('nav.home')}</a>
-      {
-        links.map((l, i) => (
-          <a href={l.href} style={`--i:${i + 1}`} aria-current={l.current ? 'page' : undefined}>
-            {l.label}
-          </a>
-        ))
-      }
-    </nav>
-    <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
+    <div class="drawer__panel">
+      <nav aria-label="Mobile">
+        <a href={path('home', lang)} style="--i:0">{t('nav.home')}</a>
+        {
+          links.map((l, i) => (
+            <a href={l.href} style={`--i:${i + 1}`} aria-current={l.current ? 'page' : undefined}>
+              {l.label}
+            </a>
+          ))
+        }
+      </nav>
+      <a class="drawer__lang" href={path(route, other)} hreflang={other} data-lang-choice={other}>{t('lang.switch')}</a>
+    </div>
   </div>
 </header>
 
@@ -110,6 +112,8 @@ const links: { href: string; label: string; current?: boolean }[] = [
   burger.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'));
   // Links to home-page sections stay on the page, so close the menu ourselves.
   drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  // A tap on the dimmed page below the band closes it too.
+  drawer.addEventListener('click', (e) => e.target === drawer && setOpen(false));
 
   // Light / dark theme: follows the system until the visitor picks one.
   const root = document.documentElement;
@@ -155,8 +159,8 @@ const links: { href: string; label: string; current?: boolean }[] = [
 
   // On the home page, the note sits over the menu link of the section on screen: the one that
   // crosses a line a little above the middle of the screen. None at the very top (the hero) or
-  // at the very end (the footer).
-  const spots = [...nav.querySelectorAll<HTMLAnchorElement>('.links a[href*="#"]')]
+  // at the very end (the footer). The same goes for the mobile menu's links.
+  const spots = [...nav.querySelectorAll<HTMLAnchorElement>('.links a[href*="#"], .drawer nav a[href*="#"]')]
     .map((a) => ({ a, el: document.getElementById(decodeURIComponent(new URL(a.href).hash.slice(1))) }))
     .filter((s): s is { a: HTMLAnchorElement; el: HTMLElement } => !!s.el && new URL(s.a.href).pathname === location.pathname);
   if (spots.length) {
@@ -169,7 +173,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
         const r = el.getBoundingClientRect();
         return r.top <= line && r.bottom > line;
       });
-      spots.forEach(({ a }) => (a === here?.a ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current')));
+      spots.forEach(({ a, el }) => (el === here?.el ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current')));
     };
     const queue = () => !queued && (queued = true) && requestAnimationFrame(mark);
     addEventListener('scroll', queue, { passive: true });
@@ -384,49 +388,94 @@ const links: { href: string; label: string; current?: boolean }[] = [
   .is-open .burger i:last-of-type {
     transform: translateY(-3px) rotate(-45deg);
   }
+  /* Mobile menu: a band dropping from under the header, over the page, which dims below it. */
+  .nav.is-open {
+    background: rgb(var(--bg-rgb) / 0.97);
+    border-color: var(--line);
+  }
   .drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: calc(var(--nav-h) + 1rem) 2rem 2rem;
-    background:
-      radial-gradient(circle at 80% 10%, rgb(var(--wine-rgb) / 0.5), transparent 50%),
-      rgb(var(--bg-rgb) / 0.97);
-    clip-path: circle(0 at calc(100% - 3rem) 2.25rem);
-    transition: clip-path 0.7s var(--ease);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: calc(100dvh - var(--nav-h));
+    background: rgb(0 0 0 / 0);
+    transition: background 0.5s;
   }
   .is-open .drawer {
-    clip-path: circle(150% at calc(100% - 3rem) 2.25rem);
+    background: rgb(0 0 0 / 0.45);
+  }
+  /* The sand page needs a deeper shade to read as dimmed. */
+  :global([data-theme='light']) .is-open .drawer {
+    background: rgb(40 10 10 / 0.6);
+  }
+  .drawer__panel {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1.25rem 1.25rem 1.75rem;
+    background:
+      radial-gradient(circle at 90% 0%, rgb(var(--wine-rgb) / 0.35), transparent 60%),
+      rgb(var(--bg-rgb));
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 24px 40px -20px rgb(0 0 0 / 0.6);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.55s var(--ease);
+  }
+  .is-open .drawer__panel {
+    clip-path: inset(0 0 -60px 0);
   }
   .drawer nav {
     display: grid;
-    gap: 0.25rem;
   }
+  /* Same type as the footer's "Let's make music together?" line. */
   .drawer nav a {
-    font-family: var(--font-display);
-    font-size: clamp(2.2rem, 9vw, 3.2rem);
-    line-height: 1.2;
+    position: relative;
+    padding: 0.7rem 0 0.7rem 1.6rem;
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
+    color: var(--ivory-dim);
+    border-bottom: 1px solid var(--line);
     opacity: 0;
-    transform: translateX(-30px);
-    transition: 0.6s var(--ease);
-    transition-delay: calc(0.15s + var(--i) * 60ms);
+    transform: translateY(-8px);
+    transition: 0.5s var(--ease), color 0.3s;
+    transition-delay: calc(0.1s + var(--i) * 40ms);
   }
-  .drawer nav a[aria-current='page'] {
+  /* The note marks where you are, as on the desktop menu. */
+  .drawer nav a::before {
+    content: '♪';
+    position: absolute;
+    left: 0.15rem;
+    top: 50%;
     color: var(--gold);
+    opacity: 0;
+    transform: translate(-6px, -50%);
+    transition: 0.4s var(--ease);
+  }
+  .drawer nav a[aria-current] {
+    color: var(--ivory);
+  }
+  .drawer nav a[aria-current]::before {
+    opacity: 1;
+    transform: translate(0, -50%);
   }
   .is-open .drawer nav a {
     opacity: 1;
     transform: none;
   }
   .drawer__lang {
-    margin-top: 2.5rem;
+    display: inline-block;
+    margin-top: 1.25rem;
     color: var(--gold);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .drawer__panel,
+    .drawer nav a {
+      transition: none;
+    }
   }
   @media (max-width: 960px) {
     .links {
