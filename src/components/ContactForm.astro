@@ -20,6 +20,7 @@ const c = {
     mailSubject: 'Website enquiry',
     subject: 'How can I help?',
     subjects: { lessons: 'Lessons', events: 'Events', other: 'Other' },
+    firstFree: 'The first lesson is always free and with no commitment.',
     lessonType: 'Piano lessons, music theory or something else?',
     lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
     age: 'Student’s age',
@@ -77,6 +78,7 @@ const c = {
     mailSubject: 'Contacto pelo site',
     subject: 'Em que te posso ajudar?',
     subjects: { lessons: 'Aulas', events: 'Eventos', other: 'Outro' },
+    firstFree: 'A primeira aula é sempre grátis e sem compromisso.',
     lessonType: 'Aulas de piano, formação musical ou outro?',
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
     age: 'Idade do aluno',
@@ -170,6 +172,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
   </fieldset>
 
   <fieldset class="topic" data-for="lessons" disabled hidden>
+    <p class="note">{c.firstFree}</p>
     <fieldset class="group">
       <legend>{c.lessonType}<Req /></legend>
       <div class="pills">
@@ -570,6 +573,14 @@ const dateKinds = ['single', 'range', 'open'] as const;
   .you__title {
     margin: 0;
     color: var(--gold);
+  }
+  .note {
+    margin: 0;
+    padding: 0.8rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    color: var(--ivory);
+    font-size: 0.95rem;
   }
   .hint {
     margin: 0.5rem 0 0;
