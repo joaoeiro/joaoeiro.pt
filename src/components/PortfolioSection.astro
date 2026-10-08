@@ -54,8 +54,13 @@ const copy = {
                 </span>
               </button>
               <figcaption>
-                <span class="reel__title">{v.title}</span>
-                {v.artist && <span class="reel__artist">{v.artist}</span>}
+                <span class="reel__text">
+                  <span class="reel__title">{v.title}</span>
+                  {v.artist && <span class="reel__artist">{v.artist}</span>}
+                </span>
+                <a class="reel__link" href={v.url} target="_blank" rel="noopener" aria-label={`${t('media.instagram')}: ${v.title}`}>
+                  <Icon name="instagram" size={20} />
+                </a>
               </figcaption>
             </figure>
           ))}
@@ -157,10 +162,34 @@ const copy = {
     align-content: start;
   }
   .reel-item figcaption {
-    display: grid;
-    gap: 0.15rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
     line-height: 1.3;
     color: #f4ecdc;
+  }
+  .reel__text {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  /* The post on Instagram: the icon alone, with a comfortable tap area. */
+  .reel__link {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -8px 0 0;
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: opacity 0.3s, background-color 0.3s;
+  }
+  .reel__link:hover,
+  .reel__link:focus-visible {
+    opacity: 1;
+    background: rgb(255 255 255 / 0.12);
   }
   .reel__title {
     font-weight: 600;

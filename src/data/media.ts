@@ -44,6 +44,13 @@ export const instagram: InstagramVideo[] = [
     caption: { en: 'João Eiró recording at the piano, in a striped T-shirt', pt: 'João Eiró a gravar ao piano, de t-shirt às riscas' },
   },
   {
+    url: 'https://www.instagram.com/p/DXWfQWTKfF0/',
+    cover: '/images/instagram/piano-candeeiro.jpg',
+    title: 'Hedwig’s Theme',
+    artist: 'John Williams',
+    caption: { en: 'João Eiró’s hands on the piano, lit by a desk lamp', pt: 'As mãos do João Eiró ao piano, sob um candeeiro' },
+  },
+  {
     url: 'https://www.instagram.com/p/DXPOjsEqerm/',
     cover: '/images/instagram/piano-dados.jpg',
     title: 'O Lamento de Syrenia',
@@ -63,12 +70,5 @@ export const instagram: InstagramVideo[] = [
     title: 'Blackbird',
     artist: 'The Beatles / Brad Mehldau',
     caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
-  },
-  {
-    url: 'https://www.instagram.com/p/CtKRgY8JSc3/',
-    cover: '/images/instagram/piano-calcoes-verdes.jpg',
-    title: 'Succession',
-    artist: 'Nicholas Britell',
-    caption: { en: 'João Eiró’s hands on the Yamaha piano, seen from the side', pt: 'As mãos do João Eiró no piano Yamaha, vistas de lado' },
   },
 ];
