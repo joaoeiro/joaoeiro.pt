@@ -61,7 +61,7 @@ export const instagram: InstagramVideo[] = [
     url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
     cover: '/images/instagram/piano-em-casa.jpg',
     title: 'Blackbird',
-    artist: 'The Beatles',
+    artist: 'The Beatles / Brad Mehldau',
     caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
   },
   {
