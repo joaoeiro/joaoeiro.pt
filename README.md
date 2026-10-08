@@ -34,7 +34,7 @@ Each section's picture is set at the top of its file in `src/components/tabs/`.
 
 | What | Where |
 | --- | --- |
-| Email, phone, social links, form endpoint | `src/config/site.ts` |
+| Social links, form endpoint | `src/config/site.ts` |
 | Main photo (hero & portfolio), optimised automatically | `src/assets/joao-eiro-live.jpg` |
 | Portfolio videos (Instagram posts: cover image + video) | `src/data/media.ts` |
 | Concerts | `src/data/shows.ts` |
@@ -47,8 +47,8 @@ Each section's picture is set at the top of its file in `src/components/tabs/`.
 never on the live site. Replace them with real ones.
 
 **Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.
-With `formEndpoint` empty, it opens the visitor's email app pre-filled with every answer.
-Create a free [Formspree](https://formspree.io) form and paste its URL to receive messages directly.
+It is the only way to reach João on the site: no email or phone number is published.
+Messages go to the [Formspree](https://formspree.io) form in `formEndpoint`; if sending fails, the visitor is pointed to Instagram.
 
 ## Development
 
