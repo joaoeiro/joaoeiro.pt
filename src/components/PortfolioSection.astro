@@ -40,18 +40,24 @@ const copy = {
         <h2 class="band__title">{copy.title}</h2>
         <div class="reels">
           {videos.map((v) => (
-            <button
-              type="button"
-              class="reel"
-              data-video={v.video && asset(v.video)}
-              data-embed={v.video ? undefined : embed(v.url)}
-              aria-label={`${t('media.play')}: ${pick(v.caption, lang)}`}
-            >
-              <img src={asset(v.cover)} alt={pick(v.caption, lang)} loading="lazy" decoding="async" />
-              <span class="reel__play">
-                <Icon name="play" size={26} />
-              </span>
-            </button>
+            <figure class="reel-item">
+              <button
+                type="button"
+                class="reel"
+                data-video={v.video && asset(v.video)}
+                data-embed={v.video ? undefined : embed(v.url)}
+                aria-label={`${t('media.play')}: ${v.title}${v.artist ? `, ${v.artist}` : ''}`}
+              >
+                <img src={asset(v.cover)} alt={pick(v.caption, lang)} loading="lazy" decoding="async" />
+                <span class="reel__play">
+                  <Icon name="play" size={26} />
+                </span>
+              </button>
+              <figcaption>
+                <span class="reel__title">{v.title}</span>
+                {v.artist && <span class="reel__artist">{v.artist}</span>}
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
@@ -135,8 +141,33 @@ const copy = {
   }
   .band :global(.reels) {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    /* Six videos: one row of six on wide screens, two rows of three in between, three rows of two on phones. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  }
+  @media (min-width: 1000px) {
+    .band :global(.reels) {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+  .reel-item {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .reel-item figcaption {
+    display: grid;
+    gap: 0.15rem;
+    line-height: 1.3;
+    color: #f4ecdc;
+  }
+  .reel__title {
+    font-weight: 600;
+  }
+  .reel__artist {
+    font-size: 0.875em;
+    opacity: 0.75;
   }
   .band :global(.reel) {
     position: relative;
@@ -191,6 +222,9 @@ const copy = {
     .band :global(.reels) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.75rem;
+    }
+    .reel-item figcaption {
+      font-size: 0.875rem;
     }
     .band :global(.reel__play) {
       width: 48px;
