@@ -119,6 +119,9 @@ const blacks = keys.filter((k) => k.black);
 
     const audio = () => {
       if (ctx) return ctx;
+      // iPhone: without this, Web Audio obeys the ring/silent switch and a muted phone plays nothing.
+      const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+      if (session) session.type = 'playback';
       ctx = new AudioContext();
       const comp = ctx.createDynamicsCompressor();
       comp.threshold.value = -18;
@@ -146,6 +149,20 @@ const blacks = keys.filter((k) => k.black);
       return ctx;
     };
 
+    // A touch only counts as a user gesture when the finger lifts (not on pointerdown), and only then may
+    // the AudioContext start. So the end of every touch on the piano wakes it, with a silent blip for older iOS.
+    const unlock = () => {
+      const ac = audio();
+      if (ac.state === 'running') return;
+      ac.resume().catch(() => {});
+      const blip = ac.createBufferSource();
+      blip.buffer = ac.createBuffer(1, 1, 22050);
+      blip.connect(ac.destination);
+      blip.start(0);
+    };
+    root.addEventListener('touchend', unlock);
+    root.addEventListener('click', unlock);
+
     const freq = (m: number) => 440 * Math.pow(2, (m - 69) / 12);
 
     const nearest = (midi: number) => {
@@ -156,7 +173,7 @@ const blacks = keys.filter((k) => k.black);
 
     const strike = (midi: number, velocity = 0.8) => {
       const ac = audio();
-      if (ac.state === 'suspended') ac.resume();
+      if (ac.state !== 'running') ac.resume().catch(() => {});
       const now = ac.currentTime;
       const out = ac.createGain();
       const base = nearest(midi);
@@ -276,6 +293,7 @@ const blacks = keys.filter((k) => k.black);
       });
     });
     addEventListener('pointerup', () => {
+      if (pointerDown) unlock();
       pointerDown = false;
       if (current !== undefined) lift(current);
       current = undefined;
