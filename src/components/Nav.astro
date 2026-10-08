@@ -125,18 +125,26 @@ const links: { href: string; label: string; current?: boolean }[] = [
 </script>
 
 <style>
+  /* A maroon band with sand lettering: the site's colours turned around. The colour tokens are
+     redefined here so everything inside, the mobile menu included, follows. */
   .nav {
+    --ivory: #f4ecdc;
+    --ivory-dim: rgb(244 236 220 / 0.82);
+    --muted: rgb(244 236 220 / 0.7);
+    --gold: #f4ecdc;
+    --gold-grad: linear-gradient(#f4ecdc, #d9c7ad);
+    --line: rgb(244 236 220 / 0.22);
+    --ink: #800000;
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
     height: var(--nav-h);
-    transition: background 0.5s, backdrop-filter 0.5s, border-color 0.5s;
-    border-bottom: 1px solid transparent;
+    background: #800000;
+    color: var(--ivory);
+    transition: box-shadow 0.5s;
   }
   .nav.is-scrolled {
-    background: rgb(var(--bg-rgb) / 0.75);
-    backdrop-filter: blur(16px) saturate(1.4);
-    border-color: var(--line);
+    box-shadow: 0 10px 30px -18px rgb(40 10 10 / 0.7);
   }
   .nav__inner {
     width: min(1320px, 100% - 2.5rem);
@@ -288,11 +296,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
     transform: translateY(-3px) rotate(-45deg);
   }
   /* Mobile menu: a band dropping from under the header, over the page, which dims below it. */
-  .nav.is-open {
-    background: var(--ink);
-    backdrop-filter: none;
-    border-color: var(--line);
-  }
   .drawer {
     position: absolute;
     top: 100%;

@@ -5,10 +5,8 @@
  * themselves, so the email João receives reads as plain question → answer.
  */
 import Icon from './Icon.astro';
-import Protected from './Protected.astro';
 import Req from './Req.astro';
 import { site } from '../config/site';
-import { encode } from '../lib/obfuscate';
 import { useT, type Lang } from '../i18n';
 
 interface Props {
@@ -142,11 +140,10 @@ const dateKinds = ['single', 'range', 'open'] as const;
   class="form"
   data-form
   data-endpoint={site.formEndpoint}
-  data-email={encode(site.email)}
   data-subject={c.mailSubject}
   data-sending={t('form.sending')}
   data-sent={t('form.sent')}
-  data-mailto={t('form.mailto')}
+  data-instagram={site.socials.instagram}
   data-error={t('form.error')}
   data-ph={JSON.stringify(c.contactPh)}
   data-where-required={c.whereRequired}
@@ -398,27 +395,9 @@ const dateKinds = ['single', 'range', 'open'] as const;
     <p class="status" data-status aria-live="polite"></p>
   </div>
 
-  <p class="direct">
-    <Protected kind="email" value={site.email} subject={c.mailSubject}><Icon slot="icon" name="mail" size={16} /> Email</Protected>
-    {
-      site.phone && (
-        <Protected kind="phone" value={site.phone}>
-          <Icon slot="icon" name="phone" size={16} /> {t('form.phone').replace(/\s*\(.*\)/, '')}
-        </Protected>
-      )
-    }
-    {
-      site.whatsapp && (
-        <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noopener">
-          <Icon name="whatsapp" size={16} /> WhatsApp
-        </a>
-      )
-    }
-  </p>
 </form>
 
 <script>
-  import { decode } from '../lib/obfuscate';
 
   document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
@@ -427,8 +406,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
     const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
     const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
-    const { endpoint, subject, sending, sent, mailto, error, whereRequired, dateQuestion, dateRange } = form.dataset;
-    const email = decode(form.dataset.email!);
+    const { endpoint, subject, sending, sent, error, instagram, whereRequired, dateQuestion, dateRange } = form.dataset;
     const dateKinds = JSON.parse(form.dataset.dateKinds!) as Record<string, string>;
     const ph = JSON.parse(form.dataset.ph!) as Record<string, string>;
 
@@ -523,19 +501,6 @@ const dateKinds = ['single', 'range', 'open'] as const;
       const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
       const title = [subject, topic, name].filter(Boolean).join(' — ');
 
-      if (!endpoint) {
-        // No form backend configured: open the visitor's email app with every answer filled in.
-        const answers = new Map<string, string[]>();
-        for (const [k, v] of data.entries()) {
-          if (k.startsWith('_') || !String(v).trim()) continue;
-          answers.set(k, [...(answers.get(k) ?? []), String(v)]);
-        }
-        const body = [...answers].map(([k, v]) => `${k}: ${v.join(', ')}`).join('\n');
-        status.textContent = mailto!;
-        location.href = `mailto:${email}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
-        return;
-      }
-
       // Formspree: a clear subject line, and replying goes straight to the visitor when they chose email.
       data.set('_subject', title);
       if (contact.type === 'email') data.set('_replyto', contact.value);
@@ -543,14 +508,14 @@ const dateKinds = ['single', 'range', 'open'] as const;
       label.textContent = sending!;
       form.classList.add('is-busy');
       try {
-        const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const res = await fetch(endpoint!, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
         sync();
         form.classList.add('is-sent');
         status.textContent = sent!;
       } catch {
-        status.innerHTML = `${error} <a href="mailto:${email}">${email}</a>`;
+        status.innerHTML = `${error} <a href="${instagram}" target="_blank" rel="noopener">Instagram</a>.`;
       } finally {
         label.textContent = original;
         form.classList.remove('is-busy');
@@ -782,27 +747,5 @@ const dateKinds = ['single', 'range', 'open'] as const;
   .is-busy button {
     opacity: 0.7;
     pointer-events: none;
-  }
-  .direct {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1.6rem;
-    margin: 0.5rem 0 0;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--line);
-    font-size: 0.92rem;
-  }
-  .direct a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: var(--ivory-dim);
-    transition: color 0.3s;
-  }
-  .direct a:hover {
-    color: var(--gold-2);
-  }
-  .direct :global(svg) {
-    color: var(--gold);
   }
 </style>

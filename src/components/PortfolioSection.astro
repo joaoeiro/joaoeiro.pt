@@ -40,18 +40,29 @@ const copy = {
         <h2 class="band__title">{copy.title}</h2>
         <div class="reels">
           {videos.map((v) => (
-            <button
-              type="button"
-              class="reel"
-              data-video={v.video && asset(v.video)}
-              data-embed={v.video ? undefined : embed(v.url)}
-              aria-label={`${t('media.play')}: ${pick(v.caption, lang)}`}
-            >
-              <img src={asset(v.cover)} alt={pick(v.caption, lang)} loading="lazy" decoding="async" />
-              <span class="reel__play">
-                <Icon name="play" size={26} />
-              </span>
-            </button>
+            <figure class="reel-item">
+              <button
+                type="button"
+                class="reel"
+                data-video={v.video && asset(v.video)}
+                data-embed={v.video ? undefined : embed(v.url)}
+                aria-label={`${t('media.play')}: ${v.title}${v.artist ? `, ${v.artist}` : ''}`}
+              >
+                <img src={asset(v.cover)} alt={pick(v.caption, lang)} loading="lazy" decoding="async" />
+                <span class="reel__play">
+                  <Icon name="play" size={26} />
+                </span>
+              </button>
+              <figcaption>
+                <span class="reel__text">
+                  <span class="reel__title">{v.title}</span>
+                  {v.artist && <span class="reel__artist">{v.artist}</span>}
+                </span>
+                <a class="reel__link" href={v.url} target="_blank" rel="noopener" aria-label={`${t('media.instagram')}: ${v.title}`}>
+                  <Icon name="instagram" size={20} />
+                </a>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>
@@ -135,8 +146,57 @@ const copy = {
   }
   .band :global(.reels) {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    /* Six videos: one row of six on wide screens, two rows of three in between, three rows of two on phones. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+  }
+  @media (min-width: 1000px) {
+    .band :global(.reels) {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+  .reel-item {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+  .reel-item figcaption {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    line-height: 1.3;
+    color: #f4ecdc;
+  }
+  .reel__text {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  /* The post on Instagram: the icon alone, with a comfortable tap area. */
+  .reel__link {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -8px 0 0;
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: opacity 0.3s, background-color 0.3s;
+  }
+  .reel__link:hover,
+  .reel__link:focus-visible {
+    opacity: 1;
+    background: rgb(255 255 255 / 0.12);
+  }
+  .reel__title {
+    font-weight: 600;
+  }
+  .reel__artist {
+    font-size: 0.875em;
+    opacity: 0.75;
   }
   .band :global(.reel) {
     position: relative;
@@ -191,6 +251,9 @@ const copy = {
     .band :global(.reels) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0.75rem;
+    }
+    .reel-item figcaption {
+      font-size: 0.875rem;
     }
     .band :global(.reel__play) {
       width: 48px;
