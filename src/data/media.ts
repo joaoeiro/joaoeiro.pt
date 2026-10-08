@@ -32,6 +32,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DaYIXISqaO8/',
     cover: '/images/instagram/maos-no-piano.jpg',
+    video: '/videos/mia-sebastian.mp4',
     title: 'Mia & Sebastian’s Theme',
     artist: 'Justin Hurwitz',
     caption: { en: 'João Eiró’s hands on the piano', pt: 'As mãos do João Eiró ao piano' },
@@ -39,6 +40,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DYFvqYTqFzS/',
     cover: '/images/instagram/piano-camisola-riscas.jpg',
+    video: '/videos/waltz-for-debby.mp4',
     title: 'Waltz for Debby',
     artist: 'Bill Evans',
     caption: { en: 'João Eiró recording at the piano, in a striped T-shirt', pt: 'João Eiró a gravar ao piano, de t-shirt às riscas' },
@@ -46,6 +48,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DXWfQWTKfF0/',
     cover: '/images/instagram/piano-candeeiro.jpg',
+    video: '/videos/hedwig.mp4',
     title: 'Hedwig’s Theme',
     artist: 'John Williams',
     caption: { en: 'João Eiró’s hands on the piano, lit by a desk lamp', pt: 'As mãos do João Eiró ao piano, sob um candeeiro' },
@@ -53,6 +56,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DXPOjsEqerm/',
     cover: '/images/instagram/piano-dados.jpg',
+    video: '/videos/lamento-de-syrenia.mp4',
     title: 'O Lamento de Syrenia',
     artist: 'João Eiró',
     caption: { en: 'João Eiró playing the piano at home', pt: 'João Eiró a tocar piano em casa' },
@@ -60,6 +64,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DRU_7OMCDDK/',
     cover: '/images/instagram/piano-janela.jpg',
+    video: '/videos/clair-de-lune.mp4',
     title: 'Clair de Lune',
     artist: 'Claude Debussy',
     caption: { en: 'João Eiró playing the piano by the window', pt: 'João Eiró a tocar piano junto à janela' },
@@ -67,6 +72,7 @@ export const instagram: InstagramVideo[] = [
   {
     url: 'https://www.instagram.com/p/DLS5U9wiz0c/',
     cover: '/images/instagram/piano-em-casa.jpg',
+    video: '/videos/blackbird.mp4',
     title: 'Blackbird',
     artist: 'The Beatles / Brad Mehldau',
     caption: { en: 'João Eiró at the piano at home', pt: 'João Eiró ao piano em casa' },
