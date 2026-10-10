@@ -35,7 +35,7 @@ export const shows: Show[] = [
   {
     date: '2026-09-24T21:00',
     title: { en: 'A Corrupção de Alora', pt: 'A Corrupção de Alora' },
-    with: 'Teatroàespada',
+    with: 'teatroàespada',
     venue: '',
     city: '',
     image: '/images/shows/teatroaespada-corrupcao-de-alora.jpg',
@@ -51,7 +51,7 @@ export const shows: Show[] = [
   {
     date: '2026-06-19T21:00',
     title: { en: 'Círculo de Violetas e Poesia', pt: 'Círculo de Violetas e Poesia' },
-    with: 'Teatroàespada',
+    with: 'teatroàespada',
     venue: 'Pinguim Café',
     city: 'Porto',
     image: '/images/shows/teatroaespada-circulo-de-violetas.jpg',
@@ -67,7 +67,7 @@ export const shows: Show[] = [
   {
     date: '2026-03-01T21:00',
     title: { en: 'O Lamento de Syrenia', pt: 'O Lamento de Syrenia' },
-    with: 'Teatroàespada',
+    with: 'teatroàespada',
     venue: '',
     city: '',
     image: '/images/shows/teatroaespada-lamento-de-syrenia.jpg',
@@ -101,7 +101,7 @@ export const shows: Show[] = [
   {
     date: '2025-10-01T21:00',
     title: { en: 'O Sopro de Tiriath', pt: 'O Sopro de Tiriath' },
-    with: 'Teatroàespada',
+    with: 'teatroàespada',
     venue: '',
     city: '',
     image: '/images/shows/teatroaespada-sopro-de-tiriath.jpg',
