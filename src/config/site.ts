@@ -19,7 +19,7 @@ export const site = {
   socials: {
     youtube: 'https://www.youtube.com/@joaoeiropiano',
     instagram: 'https://www.instagram.com/piano.joaoeiro',
-    tiktok: 'https://www.tiktok.com/@joo.eir',
+    tiktok: 'https://www.tiktok.com/@piano.joaoeiro',
     facebook: 'https://www.facebook.com/pianistaJoaoEiro',
     // Optional — leave empty to hide.
     spotify: '',
