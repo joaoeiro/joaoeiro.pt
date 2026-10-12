@@ -23,6 +23,8 @@ const c = {
     firstFree: 'The first lesson is always free and with no commitment. Perfect for giving it a try!',
     lessonType: 'Piano lessons, music theory or something else?',
     lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
+    lessonOther: 'Which kind of lesson?',
+    lessonOtherPh: 'e.g. keyboard, harmony, composition…',
     age: 'Student’s age',
     agePh: 'e.g. 18',
     guardian: 'Parent or guardian’s name',
@@ -81,6 +83,8 @@ const c = {
     firstFree: 'A primeira aula é sempre grátis e sem compromisso. Ideal para experimentar!',
     lessonType: 'Aulas de piano, formação musical ou outro?',
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
+    lessonOther: 'Que tipo de aula?',
+    lessonOtherPh: 'Ex.: teclado, harmonia, composição…',
     age: 'Idade do aluno',
     agePh: 'Ex.: 18',
     guardian: 'Nome do encarregado de educação',
@@ -177,14 +181,26 @@ const dateKinds = ['single', 'range', 'open'] as const;
       <legend>{c.lessonType}<Req /></legend>
       <div class="pills">
         {
-          c.lessonTypes.map((o) => (
+          c.lessonTypes.map((o, i) => (
             <label class="pill">
-              <input type="radio" name={c.lessonType} value={o} required />
+              <input
+                type="radio"
+                name={c.lessonType}
+                value={o}
+                data-lesson-other={i === c.lessonTypes.length - 1 ? '' : undefined}
+                required
+              />
               <span>{o}</span>
             </label>
           ))
         }
       </div>
+    </fieldset>
+    <fieldset class="sub" data-when="lesson-other" disabled hidden>
+      <label>
+        <span>{c.lessonOther}<Req /></span>
+        <input name={c.lessonOther} placeholder={c.lessonOtherPh} autocomplete="off" required />
+      </label>
     </fieldset>
     <div class="row">
       <label>
@@ -444,7 +460,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
     });
 
     // Follow-up questions: the area when lessons are at the student's home, a guardian when the student is a minor,
-    // the event's day or range of days, and which channel when the visitor prefers "other".
+    // the event's day or range of days, which kind of lesson when it's "other", and which channel when the visitor prefers "other".
     const age = form.querySelector<HTMLInputElement>('[data-age]')!;
     const atHome = form.querySelector<HTMLInputElement>('[data-at-home]')!;
     const checked = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value;
@@ -456,6 +472,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
       },
       'date-single': () => checked('_dateKind') === 'single',
       'date-range': () => checked('_dateKind') === 'range',
+      'lesson-other': () => form.querySelector<HTMLInputElement>('[data-lesson-other]')!.checked,
       'via-other': () => form.querySelector<HTMLInputElement>('[data-via="other"]')!.checked,
     };
     const sync = () =>
@@ -466,6 +483,9 @@ const dateKinds = ['single', 'range', 'open'] as const;
       });
     age.addEventListener('input', sync);
     atHome.addEventListener('change', sync);
+    form
+      .querySelectorAll(`input[name="${CSS.escape(form.querySelector<HTMLInputElement>('[data-lesson-other]')!.name)}"]`)
+      .forEach((r) => r.addEventListener('change', sync));
     form.querySelectorAll('input[name="_dateKind"]').forEach((r) => r.addEventListener('change', sync));
 
     // A range can't end before it starts.
