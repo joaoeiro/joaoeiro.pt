@@ -24,7 +24,7 @@ const links: { href: string; label: string; current?: boolean }[] = [
   <div class="nav__inner">
     <a class="brand" href={path('home', lang)} aria-label={`${site.name} — ${t('nav.home')}`}>
       <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span class="brand__name">João <em>Eiró</em></span>
+      <span class="brand__name">João Eiró</span>
     </a>
 
     <nav class="links" aria-label="Main">
@@ -167,9 +167,6 @@ const links: { href: string; label: string; current?: boolean }[] = [
     font-size: 1.65rem;
     letter-spacing: 0.01em;
     white-space: nowrap;
-  }
-  .brand__name em {
-    color: var(--gold);
   }
   .eq {
     display: flex;
