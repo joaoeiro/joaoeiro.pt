@@ -24,7 +24,6 @@ const c = {
     lessonType: 'Piano lessons, music theory or something else?',
     lessonTypes: ['Piano lessons', 'Music theory', 'Other'],
     lessonOther: 'Which kind of lesson?',
-    lessonOtherPh: 'e.g. keyboard, harmony, composition…',
     age: 'Student’s age',
     agePh: 'e.g. 18',
     guardian: 'Parent or guardian’s name',
@@ -84,7 +83,6 @@ const c = {
     lessonType: 'Aulas de piano, formação musical ou outro?',
     lessonTypes: ['Aulas de piano', 'Formação musical', 'Outro'],
     lessonOther: 'Que tipo de aula?',
-    lessonOtherPh: 'Ex.: teclado, harmonia, composição…',
     age: 'Idade do aluno',
     agePh: 'Ex.: 18',
     guardian: 'Nome do encarregado de educação',
@@ -199,7 +197,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
     <fieldset class="sub" data-when="lesson-other" disabled hidden>
       <label>
         <span>{c.lessonOther}<Req /></span>
-        <input name={c.lessonOther} placeholder={c.lessonOtherPh} autocomplete="off" required />
+        <input name={c.lessonOther} autocomplete="off" required />
       </label>
     </fieldset>
     <div class="row">
