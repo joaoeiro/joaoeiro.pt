@@ -268,35 +268,57 @@ const blacks = keys.filter((k) => k.black);
       keyEls.get(midi)?.classList.remove('down');
     };
 
-    // Pointer: press, glide across keys, release.
-    let pointerDown = false;
-    let current: number | undefined;
+    // Pointer: every finger (or the mouse) is tracked on its own, so chords light up every key
+    // and sliding a finger across the keys plays each one it passes over.
+    const keysEl = root.querySelector<HTMLElement>('.keys')!;
+    const fingers = new Map<number, number | undefined>(); // pointerId -> key under that finger (if any)
+    const held = (midi: number) => [...fingers.values()].includes(midi);
+    const keyAt = (x: number, y: number) => {
+      const el = (document.elementFromPoint(x, y) as HTMLElement | null)?.closest<HTMLElement>('[data-midi]');
+      return el && keysEl.contains(el) ? Number(el.dataset.midi) : undefined;
+    };
+    const moveTo = (id: number, midi: number | undefined) => {
+      const prev = fingers.get(id);
+      if (fingers.has(id) && prev === midi) return;
+      fingers.set(id, midi);
+      if (prev !== undefined && !held(prev)) lift(prev);
+      if (midi !== undefined) press(midi, true);
+    };
+
+    keysEl.addEventListener('pointerdown', (e) => {
+      const midi = keyAt(e.clientX, e.clientY);
+      if (midi === undefined) return;
+      e.preventDefault();
+      // Touch captures the pointer to the first key by default, which hides the other keys from a sliding finger.
+      if (keysEl.hasPointerCapture?.(e.pointerId)) keysEl.releasePointerCapture(e.pointerId);
+      (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
+      moveTo(e.pointerId, midi);
+    });
+    // Some browsers set that capture just after pointerdown; let it go there too.
+    keysEl.addEventListener('gotpointercapture', (e) => {
+      if (fingers.has(e.pointerId)) (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    });
+    addEventListener('pointermove', (e) => {
+      if (!fingers.has(e.pointerId)) return;
+      moveTo(e.pointerId, keyAt(e.clientX, e.clientY));
+    });
+    const end = (e: PointerEvent) => {
+      if (!fingers.has(e.pointerId)) return;
+      unlock();
+      moveTo(e.pointerId, undefined);
+      fingers.delete(e.pointerId);
+    };
+    addEventListener('pointerup', end);
+    addEventListener('pointercancel', end);
+
     root.querySelectorAll<HTMLElement>('[data-midi]').forEach((el) => {
       const midi = Number(el.dataset.midi);
-      el.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        pointerDown = true;
-        current = midi;
-        press(midi, true);
-      });
-      el.addEventListener('pointerenter', () => {
-        if (!pointerDown || current === midi) return;
-        if (current !== undefined) lift(current);
-        current = midi;
-        press(midi, true);
-      });
       el.addEventListener('keydown', (e) => {
         if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
           e.preventDefault();
           press(midi);
         }
       });
-    });
-    addEventListener('pointerup', () => {
-      if (pointerDown) unlock();
-      pointerDown = false;
-      if (current !== undefined) lift(current);
-      current = undefined;
     });
 
     // Computer keyboard.
@@ -447,16 +469,14 @@ const blacks = keys.filter((k) => k.black);
     bottom: 8px;
     color: rgba(244, 236, 220, 0.35);
   }
-  .white.down,
-  .white:active {
+  .white.down {
     transform: perspective(400px) rotateX(-4deg);
     background: linear-gradient(180deg, var(--key-lit-1) 0%, var(--key-lit-2) 30%, var(--key-lit-3) 100%);
     box-shadow:
       0 2px 0 var(--key-lit-edge),
       0 0 30px rgb(var(--accent-2-rgb) / 0.8);
   }
-  .black.down,
-  .black:active {
+  .black.down {
     transform: perspective(400px) rotateX(-6deg);
     background: linear-gradient(180deg, var(--key-lit-black), var(--key-lit-1));
     box-shadow:
