@@ -144,6 +144,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
   class="form"
   data-form
   data-endpoint={site.formEndpoint}
+  data-lang={lang}
   data-subject={c.mailSubject}
   data-sending={t('form.sending')}
   data-sent={t('form.sent')}
@@ -158,6 +159,8 @@ const dateKinds = ['single', 'range', 'open'] as const;
   action={site.formEndpoint || undefined}
 >
   <input type="hidden" name="_subject" value={c.mailSubject} />
+  <!-- Left empty by people; bots that fill every field are ignored. -->
+  <input class="trap" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
   <fieldset class="group">
     <legend>{c.subject}<Req /></legend>
@@ -423,7 +426,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
     const contact = form.querySelector<HTMLInputElement>('[data-contact]')!;
     const where = form.querySelector<HTMLFieldSetElement>('[data-where]')!;
     const original = label.textContent;
-    const { endpoint, subject, sending, sent, error, instagram, whereRequired, dateQuestion, dateRange } = form.dataset;
+    const { endpoint, lang, subject, sending, sent, error, instagram, whereRequired, dateQuestion, dateRange } = form.dataset;
     const dateKinds = JSON.parse(form.dataset.dateKinds!) as Record<string, string>;
     const ph = JSON.parse(form.dataset.ph!) as Record<string, string>;
 
@@ -522,15 +525,32 @@ const dateKinds = ['single', 'range', 'open'] as const;
       const name = form.querySelector<HTMLInputElement>('input[autocomplete="name"]')?.value.trim();
       const title = [subject, topic, name].filter(Boolean).join(' — ');
 
-      // Formspree: a clear subject line, and replying goes straight to the visitor when they chose email.
-      data.set('_subject', title);
-      if (contact.type === 'email') data.set('_replyto', contact.value);
+      const email = contact.type === 'email' ? contact.value.trim() : '';
 
       label.textContent = sending!;
       form.classList.add('is-busy');
       try {
-        const res = await fetch(endpoint!, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error(String(res.status));
+        if (endpoint!.includes('script.google.com')) {
+          // Google Apps Script (scripts/contact-form.gs): emails João and sends the visitor a thank-you
+          // when they left an email. Sent as plain text so the browser makes a simple request that Google accepts.
+          const body = JSON.stringify({
+            subject: title,
+            lang,
+            name,
+            email,
+            trap: String(data.get('_gotcha') ?? ''),
+            fields: [...data.entries()].filter(([k]) => !k.startsWith('_')).map(([k, v]) => [k, String(v)]),
+          });
+          const res = await fetch(endpoint!, { method: 'POST', body });
+          const out = await res.json().catch(() => ({}));
+          if (!res.ok || !out.ok) throw new Error(String(res.status));
+        } else {
+          // Formspree: a clear subject line, and replying goes straight to the visitor when they chose email.
+          data.set('_subject', title);
+          if (email) data.set('_replyto', email);
+          const res = await fetch(endpoint!, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+          if (!res.ok) throw new Error(String(res.status));
+        }
         form.reset();
         sync();
         form.classList.add('is-sent');
@@ -546,6 +566,13 @@ const dateKinds = ['single', 'range', 'open'] as const;
 </script>
 
 <style>
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
   .form,
   .topic {
     display: grid;

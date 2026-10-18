@@ -48,7 +48,17 @@ never on the live site. Replace them with real ones.
 
 **Contact form:** one form, on the contact page, reached from the "Contacta-me" tab on the right edge of every page.
 It is the only way to reach João on the site: no email or phone number is published.
-Messages go to the [Formspree](https://formspree.io) form in `formEndpoint`; if sending fails, the visitor is pointed to Instagram.
+Messages go to the address in `formEndpoint` (`src/config/site.ts`); if sending fails, the visitor is pointed to Instagram.
+
+The endpoint is a Google Apps Script web app (`scripts/contact-form.gs`) running on João's Google account. It emails João each
+message, sends the visitor a thank-you with a copy of what they wrote when they chose email (from João's Gmail, at most one per
+address every 6 hours and 30 a day), and keeps a copy in a Google Sheet called "Contactos do site". The thank-you texts, in Portuguese and English, are at the top of the script.
+A Formspree URL (`https://formspree.io/f/…`) also still works as `formEndpoint`, without the thank-you.
+
+Setting up the script (once): at [script.google.com](https://script.google.com) create a new project, paste `scripts/contact-form.gs`
+into `Code.gs`, save, pick the `test` function and click **Run** (authorise it; you should get both emails). Then
+**Deploy → New deployment → Web app**, *Execute as*: Me, *Who has access*: Anyone, and put the web app URL in `formEndpoint`.
+After editing the script, update the same deployment (**Manage deployments → Edit → Version: New version**) so the URL stays the same.
 
 ## Development
 
