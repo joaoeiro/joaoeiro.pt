@@ -68,11 +68,11 @@ const c = {
     you: 'About you',
     name: 'Name',
     prefer: 'Preferred way to reach you',
-    preferOpts: { whatsapp: 'WhatsApp', phone: 'Phone call', email: 'Email', other: 'Other' },
+    preferOpts: { whatsapp: 'WhatsApp', email: 'Email', other: 'Other' },
     preferOther: 'Which one?',
-    preferOtherPh: 'e.g. Signal, Telegram, a text message…',
+    preferOtherPh: 'e.g. text message, Instagram, Signal, Telegram…',
     contact: 'Your contact',
-    contactPh: { none: 'Phone number or email', whatsapp: 'WhatsApp number', phone: 'Phone number', email: 'Email address', other: 'Your contact there' },
+    contactPh: { none: 'Phone number or email', whatsapp: 'WhatsApp number', email: 'Email address', other: 'Your contact there' },
     required: 'Required',
   },
   pt: {
@@ -127,11 +127,11 @@ const c = {
     you: 'Sobre ti',
     name: 'Nome',
     prefer: 'Como preferes que te contacte?',
-    preferOpts: { whatsapp: 'WhatsApp', phone: 'Chamada', email: 'Email', other: 'Outro' },
+    preferOpts: { whatsapp: 'WhatsApp', email: 'Email', other: 'Outro' },
     preferOther: 'Qual?',
-    preferOtherPh: 'Ex.: Signal, Telegram, SMS…',
+    preferOtherPh: 'Ex.: SMS, Instagram, Signal, Telegram…',
     contact: 'O teu contacto',
-    contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', phone: 'Número de telefone', email: 'Endereço de email', other: 'O teu contacto nesse meio' },
+    contactPh: { none: 'Número de telefone ou email', whatsapp: 'Número de WhatsApp', email: 'Endereço de email', other: 'O teu contacto nesse meio' },
     required: 'Resposta obrigatória',
   },
 }[lang];
@@ -385,7 +385,7 @@ const dateKinds = ['single', 'range', 'open'] as const;
       <legend>{c.prefer}<Req /></legend>
       <div class="pills">
         {
-          (['whatsapp', 'phone', 'email', 'other'] as const).map((k) => (
+          (['whatsapp', 'email', 'other'] as const).map((k) => (
             <label class="pill">
               <input type="radio" name={c.prefer} value={c.preferOpts[k]} data-via={k} required />
               <span>{c.preferOpts[k]}</span>
