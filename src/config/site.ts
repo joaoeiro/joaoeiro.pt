@@ -15,7 +15,7 @@ export const site = {
    * A Formspree URL (previously https://formspree.io/f/xaeqwkwl) also works, without the thank-you email.
    * The contact form is the only way to reach João on the site: no email or phone is published.
    */
-  formEndpoint: 'https://script.google.com/macros/s/AKfycbzz4mJN4QBONGVXftM38a1APe1skDd7_aZ6SBnZMwZAQhN8Ek6eFrmc_kbM5tiJuSBT/exec',
+  formEndpoint: 'https://script.google.com/macros/s/AKfycbyrxFnCN60E2AvWFEsmeGnfexod0wtOzSJo3LRtI-ehKsjxgB-iKlQhAblnakbK2H0/exec',
 
   socials: {
     youtube: 'https://www.youtube.com/@joaoeiropiano',
