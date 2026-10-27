@@ -36,14 +36,29 @@ const CONFIG = {
   // Guards against the form being abused to send emails to strangers.
   maxRepliesPerDay: 30,
   sheetName: 'Contactos do site',
+  // Spam filter: a person needs at least this long to fill the form (in seconds),
+  // and a real message rarely carries more than this many links.
+  minSeconds: 4,
+  maxLinks: 2,
 };
 
 function doPost(e) {
   try {
     const d = read_(e);
-    if (d.trap) return reply_(true); // a bot filled the hidden field: pretend all is well, send nothing
     const fields = (d.fields || []).filter((f) => f && String(f[1]).trim() !== '');
     if (!fields.length) return reply_(false);
+
+    // Spam: no email to João and no thank-you, but the robot is told all went well (so it doesn't try again)
+    // and the message is kept in the sheet's "Spam" tab, just in case.
+    const why = spam_(d, fields);
+    if (why) {
+      try {
+        log_('Spam', `${why} — ${String(d.subject || '').slice(0, 200)}`, '', false, fields);
+      } catch (err) {
+        console.error(err);
+      }
+      return reply_(true);
+    }
 
     const lang = d.lang === 'en' ? 'en' : 'pt';
     const email = isEmail_(d.email) ? String(d.email).trim() : '';
@@ -78,7 +93,7 @@ function doPost(e) {
 
     // 3. Copy in the sheet (never stops the form from working).
     try {
-      log_(subject, email, replied, fields);
+      log_(null, subject, email, replied, fields);
     } catch (err) {
       console.error(err);
     }
@@ -97,7 +112,19 @@ function read_(e) {
   const fields = Object.keys(p)
     .filter((k) => k.charAt(0) !== '_')
     .map((k) => [k, p[k].join(', ')]);
-  return { fields: fields, trap: p._gotcha && p._gotcha.join(''), subject: p._subject && p._subject[0] };
+  return { fields: fields, trap: p._gotcha && p._gotcha.join(''), subject: p._subject && p._subject[0], plainForm: true };
+}
+
+// Why a send looks like spam (empty when it looks like a person). Robots usually post straight to this script
+// instead of using the site's form, so they lack what the site's form always sends.
+function spam_(d, fields) {
+  if (d.plainForm) return 'não veio do formulário do site';
+  if (d.trap) return 'campo escondido preenchido';
+  if (['lessons', 'events', 'other'].indexOf(d.topic) < 0) return 'sem assunto';
+  if (typeof d.elapsed !== 'number' || d.elapsed < CONFIG.minSeconds * 1000) return 'enviado depressa demais';
+  const text = fields.map((f) => f[1]).join('\n');
+  if ((text.match(/https?:\/\/|www\.|t\.me\/|wa\.me\//gi) || []).length > CONFIG.maxLinks) return 'demasiados links';
+  return '';
 }
 
 function reply_(ok) {
@@ -135,7 +162,8 @@ function esc_(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
-function log_(subject, email, replied, fields) {
+// Messages go to the first tab; spam to a tab called "Spam".
+function log_(tab, subject, email, replied, fields) {
   const props = PropertiesService.getScriptProperties();
   let id = props.getProperty('sheetId');
   let ss;
@@ -149,7 +177,17 @@ function log_(subject, email, replied, fields) {
     ss.getSheets()[0].appendRow(['Data', 'Assunto', 'Email', 'Resposta automática', 'Mensagem']);
     props.setProperty('sheetId', ss.getId());
   }
-  ss.getSheets()[0].appendRow([new Date(), subject, email, replied ? 'Sim' : 'Não', asText_(fields)]);
+  let sheet = ss.getSheets()[0];
+  if (tab) {
+    sheet = ss.getSheetByName(tab);
+    if (!sheet) {
+      sheet = ss.insertSheet(tab);
+      sheet.appendRow(['Data', 'Motivo', 'Mensagem']);
+    }
+    sheet.appendRow([new Date(), subject, asText_(fields)]);
+    return;
+  }
+  sheet.appendRow([new Date(), subject, email, replied ? 'Sim' : 'Não', asText_(fields)]);
 }
 
 /** Run this once from the editor (select "test" and click Run) to authorise the script and see it work. */
@@ -162,6 +200,8 @@ function test() {
         lang: 'pt',
         name: 'João Teste',
         email: me,
+        topic: 'other',
+        elapsed: 10000,
         fields: [['Nome', 'João Teste'], ['A tua mensagem', 'Isto é um teste.']],
       }),
     },

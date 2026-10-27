@@ -52,7 +52,8 @@ Messages go to the address in `formEndpoint` (`src/config/site.ts`); if sending 
 
 The endpoint is a Google Apps Script web app (`scripts/contact-form.gs`) running on João's Google account. It emails João each
 message, sends the visitor a thank-you with a copy of what they wrote when they chose email (from João's Gmail, at most one per
-address every 6 hours and 30 a day), and keeps a copy in a Google Sheet called "Contactos do site". The thank-you texts, in Portuguese and English, are at the top of the script.
+address every 6 hours and 30 a day), and keeps a copy in a Google Sheet called "Contactos do site". Spam (sent straight to the script instead of through the site's form, filling the hidden
+field, sent within a few seconds, or full of links) is not emailed or answered; it goes to the sheet's "Spam" tab instead. The thank-you texts, in Portuguese and English, are at the top of the script.
 A Formspree URL (`https://formspree.io/f/…`) also still works as `formEndpoint`, without the thank-you.
 
 Setting up the script (once): at [script.google.com](https://script.google.com) create a new project, paste `scripts/contact-form.gs`
