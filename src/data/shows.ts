@@ -33,6 +33,15 @@ export interface Show {
 export const shows: Show[] = [
   // Past shows, newest first, with the months João gave; the day is approximate unless the poster says it.
   {
+    // Two parts: Pt. I on 13 Nov at 21h, Pt. II on 14 Nov at 16h.
+    date: '2026-11-13T21:00',
+    title: { en: 'No Fim da Revolução', pt: 'No Fim da Revolução' },
+    with: 'teatroàespada',
+    venue: 'Auditório Fernando Lopes Graça',
+    city: 'Almada',
+    image: '/images/shows/teatroaespada-no-fim-da-revolucao.jpg',
+  },
+  {
     date: '2026-09-24T21:00',
     title: { en: 'A Corrupção de Alora', pt: 'A Corrupção de Alora' },
     with: 'teatroàespada',
